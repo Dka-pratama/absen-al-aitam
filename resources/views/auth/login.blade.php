@@ -1,47 +1,89 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+<!DOCTYPE html>
+<html lang="en">
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    @vite('resources/css/app.css')
+    @vite('resources/js/app.js')
+</head>
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+<body class="bg-gray-100 min-h-screen flex">
+
+    <!-- LEFT SECTION -->
+    <div
+        class="min-h-screen hidden md:flex w-1/2 bg-gradient-to-br from-[#01AF61] to-[#3CB043] text-white items-center justify-center">
+        <div class="flex h-full w-full items-center justify-center">
+            <div class="rounded-es-[4.5rem] rounded-tr-[4.5rem] h-3/4 max-w-md bg-[#FFFFFF]/20 text-center p-14">
+                <h1 class="text-4xl font-bold mb-4">A valuable tool for your classroom</h1>
+                <p class="text-lg">
+                    Track attendance students easily and efficiently with our modern, user-friendly platform.
+                </p>
+            </div>
         </div>
+    </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+    <!-- RIGHT SECTION (LOGIN FORM) -->
+    <div class="w-full md:w-1/2 flex items-center justify-center p-8 bg-white">
+        <div class="w-full max-w-md bg-white">
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Sign in</h2>
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+            <!-- LOGIN FORM -->
+            <form method="POST" action="{{ route('login') }}">
+                @csrf
+
+                <!-- Email -->
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-1">Email</label>
+                    <input type="text" name="email"
+                        class="w-full border rounded-lg p-2 focus:ring focus:ring-purple-300" required autofocus>
+                </div>
+
+                <!-- Password -->
+                <div class="mb-6">
+                    <label class="block text-gray-700 mb-1">Password</label>
+
+                    <div class="relative">
+                        <input type="password" name="password" id="passwordInput"
+                            class="w-full border rounded-lg p-2 pr-10 focus:ring focus:ring-purple-300" required>
+                        <span id="togglePassword" class="absolute right-3 top-3 cursor-pointer text-gray-500">
+                            👁
+                        </span>
+                    </div>
+                </div>
+
+                <!-- SUBMIT -->
+                <button type="submit"
+                    class="w-full bg-[#23DB2E] text-white py-2 rounded-lg hover:bg-[#22C52C] transition">
+                    Sign In
+                </button>
+            </form>
+            <!-- SEPARATOR -->
+            <div class="my-6 flex items-center gap-4">
+                <div class="flex-1 h-px bg-gray-300"></div>
+                <span class="text-gray-500 text-sm">or</span>
+                <div class="flex-1 h-px bg-gray-300"></div>
+            </div>
+            <!-- GOOGLE BUTTON -->
+            <a href="#"
+                class="flex items-center justify-center gap-3 border rounded-lg py-2 hover:bg-gray-100 transition">
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5" alt="Google">
+                <span>Sign in with Google</span>
+            </a>
         </div>
+    </div>
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
+    <script>
+        const toggle = document.getElementById('togglePassword');
+        const input = document.getElementById('passwordInput');
 
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
+        toggle.addEventListener('click', () => {
+            input.type = input.type === 'password' ? 'text' : 'password';
+        });
+    </script>
 
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+</body>
+
+</html>

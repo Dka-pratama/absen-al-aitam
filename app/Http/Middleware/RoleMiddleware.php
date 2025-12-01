@@ -20,8 +20,8 @@ class RoleMiddleware
             return redirect('login');
         }
 
-        if(!in_array(Auth::user()->role, $roles)) {
-            abort(403, 'Anda tidak memiliki akses ke halaman ini.');
+        if (!in_array(Auth::user()->role, $roles)) {
+            abort(403, 'Anda tidak memiliki akses.');
         }
         return $next($request);
     }

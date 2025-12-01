@@ -11,8 +11,8 @@ class WaliCrud extends Controller
 {
     public function index()
     {
-        $wali = Wali::with('user')->get();
-        return view('crud.wali.index', compact('wali'));
+        $walikelas = Wali::with('user')->get();
+        return view('admin.wali.index', compact('walikelas'));
     }
 
     public function show($id)
@@ -70,12 +70,23 @@ class WaliCrud extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
-            'NIP' => 'required|string|unique:wali' . $wali->id,
+            'NUPTK' => 'required|string|unique:wali' . $wali->id,
         ]);
 
         $user->update([
             'nama' => $request->nama,
             'username' => $request->username,
+        ]);
+
+        if ($request->password) {
+            $user->update([
+                'password' => bcrypt($request->password),
+            ]);
+        }
+
+        $wali->update([
+            'NUPTK' => $request->NUPTK,
+            'kelas_id' => $request->kelas_id,
         ]);
 
         return redirect()->route('wali.index')->with('success', 'Akun Wali Kelas berhasil diperbarui.');

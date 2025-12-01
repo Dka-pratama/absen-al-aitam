@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('wali', function (Blueprint $table) {
             $table->id();
-            $table->string('NIP')->unique();
+            $table->string('NUPTK')->unique();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('kelas_id')->constrained('kelas')->onDelete('cascade');
             $table->timestamps();

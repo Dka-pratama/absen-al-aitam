@@ -9,7 +9,7 @@ class Wali extends Model
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
     protected $table = 'wali';
-    protected $fillable = ['NIP', 'user_id', 'kelas_id'];
+    protected $fillable = ['NUPTK', 'user_id', 'kelas_id'];
 
     public function user()
     {

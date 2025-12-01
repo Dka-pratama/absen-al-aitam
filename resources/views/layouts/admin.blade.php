@@ -47,15 +47,15 @@
                 <img src="{{ asset('icons/dashboard.svg') }}" class="w-5"> Dashboard
             </a>
 
-            <a href="/admin/siswa" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/20 transition">
+            <a href="/akun-siswa" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/20 transition">
                 <img src="{{ asset('icons/student.svg') }}" class="w-5"> Siswa
             </a>
 
-            <a href="/admin/walikelas" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/20 transition">
+            <a href="/akun-walikelas" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/20 transition">
                 <img src="{{ asset('icons/teacher.svg') }}" class="w-5"> Wali Kelas
             </a>
 
-            <a href="/admin/kelas" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/20 transition">
+            <a href="/kelas" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/20 transition">
                 <img src="{{ asset('icons/class.svg') }}" class="w-5"> Kelas
             </a>
 
@@ -69,6 +69,7 @@
                     @csrf
                     <button type="submit">Logout</button>
                 </form>
+
             </div>
 
         </nav>
@@ -102,7 +103,7 @@
         </header>
 
         <!-- CONTENT -->
-        <div class="p-6 md:p-8">
+        <div class="">
             @yield('content')
         </div>
 

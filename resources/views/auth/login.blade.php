@@ -36,8 +36,8 @@
 
                 <!-- Email -->
                 <div class="mb-4">
-                    <label class="block text-gray-700 mb-1">Email</label>
-                    <input type="text" name="email"
+                    <label class="block text-gray-700 mb-1">Username</label>
+                    <input type="text" name="username"
                         class="w-full border rounded-lg p-2 focus:ring focus:ring-purple-300" required autofocus>
                 </div>
 
@@ -60,18 +60,6 @@
                     Sign In
                 </button>
             </form>
-            <!-- SEPARATOR -->
-            <div class="my-6 flex items-center gap-4">
-                <div class="flex-1 h-px bg-gray-300"></div>
-                <span class="text-gray-500 text-sm">or</span>
-                <div class="flex-1 h-px bg-gray-300"></div>
-            </div>
-            <!-- GOOGLE BUTTON -->
-            <a href="#"
-                class="flex items-center justify-center gap-3 border rounded-lg py-2 hover:bg-gray-100 transition">
-                <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5" alt="Google">
-                <span>Sign in with Google</span>
-            </a>
         </div>
     </div>
 

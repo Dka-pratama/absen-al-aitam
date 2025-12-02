@@ -47,6 +47,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function username()
+{
+    return 'username';
+}
 
     public function siswa()
     {

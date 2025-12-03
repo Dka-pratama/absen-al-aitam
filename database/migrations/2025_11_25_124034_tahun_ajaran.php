@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tahun_ajaran', function (Blueprint $table) {
+        Schema::create('tahun_ajar', function (Blueprint $table) {
             $table->id();
-            $table->string('tahun_ajaran');
+            $table->string('tahun');
             $table->enum('semester', ['ganjil', 'genap']);
-            $table->enum('status', ['aktif', 'non-aktif'])->default('non-aktif');
+            $table->enum('status', ['aktif', 'non-aktif'])->default('aktif');
             $table->timestamps();
         });
     }

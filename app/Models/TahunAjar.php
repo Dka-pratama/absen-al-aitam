@@ -9,10 +9,15 @@ class TahunAjar extends Model
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
     protected $table = 'tahun_ajar';
-    protected $fillable = ['tahun_ajaran', 'semester', 'status'];
+    protected $fillable = ['tahun', 'semester', 'status'];
 
-    public function absensi()
+    public function walikelas()
     {
-        return $this->hasMany(Absensi::class);
+        return $this->hasMany(WaliKelas::class);
+    }
+
+    public function kelasSiswa()
+    {
+        return $this->hasMany(KelasSiswa::class);
     }
 }

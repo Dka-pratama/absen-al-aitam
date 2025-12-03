@@ -4,17 +4,31 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use App\Models\User;
 
 class UserFactory extends Factory
 {
+    protected $model = User::class;
+
     public function definition(): array
     {
         return [
-            'username' => fake()->unique()->userName(),
-            'email' => null, // karena kamu pakai username
-            'password' => bcrypt('password'),
-            'role' => 'siswa', // default, nanti diubah saat create
-            'remember_token' => Str::random(10),
+            'name'      => $this->faker->name(),
+            'username'  => $this->faker->unique()->userName(),
+            'email'     => null,
+            'password'  => bcrypt('password'),
+            'role'      => 'siswa', // default siswa
         ];
+    }
+
+    public function wali()
+    {
+        return $this->state(fn () => [
+            'role' => 'wali',
+        ]);
+    }
+    public function admin()
+    {
+        return $this->state(fn () => ['role' => 'admin']);
     }
 }

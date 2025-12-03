@@ -3,15 +3,19 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Siswa;
+use App\Models\User;
+use App\Models\Kelas;
 
 class SiswaFactory extends Factory
 {
+    protected $model = Siswa::class;
+
     public function definition(): array
     {
         return [
-            'nama' => fake()->name(),
-            'nis' => fake()->unique()->numerify('#######'),
-            'kelas_id' => null, // diisi saat create
+            'user_id'  => User::factory(),
+            'NISN'      => $this->faker->unique()->numerify('########'),
         ];
     }
 }

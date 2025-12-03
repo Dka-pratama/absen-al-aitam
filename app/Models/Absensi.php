@@ -9,14 +9,17 @@ class Absensi extends Model
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
     protected $table = 'absensi';
-    protected $fillable = ['siswa_id', 'tanggal', 'status','ket', 'method', 'waktu_absen'];
+    protected $fillable = [
+        'kelas_siswa_id',
+        'tanggal',
+        'status',
+        'method',
+        'waktu_absen',
+        'keterangan'
+    ];
 
-    public function siswa()
+    public function kelassiswa()
     {
-        return $this->belongsTo(Siswa::class);
-    }
-    public function tahunAjar()
-    {
-        return $this->belongsTo(TahunAjar::class, 'tahun_ajar_id');
+        return $this->belongsTo(KelasSiswa::class);
     }
 }

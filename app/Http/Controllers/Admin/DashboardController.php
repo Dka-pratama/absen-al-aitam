@@ -11,7 +11,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $Header = 'Dashboard Admin';
+        $Header = 'Dashboard';
         $totalSiswa = User::where('role', 'siswa')->count();
         $totalKelas = Kelas::count();
         $totalWali = User::where('role', 'wali')->count();

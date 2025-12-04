@@ -2,41 +2,41 @@
 
 @section('content')
 
-<div class="p-4 sm:p-6 lg:p-10">
+<div class="p-2 sm:p-4 lg:p-8">
 
     <!-- CARD WRAPPER -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-12">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-6">
         <!-- CARD 1 -->
-        <div class="bg-[#17A85B] text-white p-6 rounded-lg shadow-md flex flex-col items-center">
-            <div class="text-4xl mb-2">🖼️</div>
+        <div class="bg-[#17A85B] text-white p-3 rounded-lg shadow-md flex flex-col items-center">
+            <div class="text-2xl mb-2">🖼️</div>
             <p class="text-3xl font-bold">{{ $totalSiswa }}</p>
             <p class="text-sm mt-1 opacity-90">total siswa</p>
         </div>
 
         <!-- CARD 2 -->
-        <div class="bg-[#17A85B] text-white p-6 rounded-lg shadow-md flex flex-col items-center">
-            <div class="text-4xl mb-2">👨‍🎓</div>
+        <div class="bg-[#17A85B] text-white p-3 rounded-lg shadow-md flex flex-col items-center">
+            <div class="text-2xl mb-2">👨‍🎓</div>
             <p class="text-3xl font-bold">{{ $totalKelas }}</p>
             <p class="text-sm mt-1 opacity-90">total kelas</p>
         </div>
 
         <!-- CARD 3 -->
-        <div class="bg-[#17A85B] text-white p-6 rounded-lg shadow-md flex flex-col items-center">
-            <div class="text-4xl mb-2">🧑‍🏫</div>
+        <div class="bg-[#17A85B] text-white p-3 rounded-lg shadow-md flex flex-col items-center">
+            <div class="text-2xl mb-2">🧑‍🏫</div>
             <p class="text-3xl font-bold">{{ $totalWali }}</p>
             <p class="text-sm mt-1 opacity-90">total wali kelas</p>
         </div>
 
         <!-- CARD 4 -->
-        <div class="bg-[#17A85B] text-white p-6 rounded-lg shadow-md flex flex-col items-center">
-            <div class="text-4xl mb-2">🎓</div>
+        <div class="bg-[#17A85B] text-white p-3 rounded-lg shadow-md flex flex-col items-center">
+            <div class="text-2xl mb-2">🎓</div>
             <p class="text-3xl font-bold">{{ $totalJurusan }}</p>
             <p class="text-sm mt-1 opacity-90">total Jurusan</p>
         </div>
     </div>
 
     <!-- CHART TITLE -->
-    <h2 class="text-xl font-semibold mb-4">Aktivitas web per jam</h2>
+    <h2 class="text-xl font-semibold mb-6">Aktivitas web per jam</h2>
 
     <!-- CHART BOX -->
     <div class="bg-white border rounded-xl shadow p-6 md:p-8 w-full">

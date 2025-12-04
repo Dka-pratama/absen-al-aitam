@@ -24,76 +24,75 @@
     <div id="backdrop" class="fixed inset-0 bg-black/40 hidden md:hidden z-30"></div>
 
     <!-- SIDEBAR -->
-<aside id="sidebar"
-    class="fixed top-0 left-0 h-screen w-64 z-40
+    <aside id="sidebar"
+        class="fixed top-0 left-0 h-screen w-64 z-40
            bg-gradient-to-b from-green-600 to-green-700 text-white
            rounded-br-[80px] shadow-lg
            transform -translate-x-full md:translate-x-0 transition-transform duration-300">
 
-    <!-- LOGO -->
-    <div class="flex items-center gap-3 mb-6 pt-6 px-4">
-        <img src="{{ asset('logo.png') }}" class="w-14 drop-shadow-lg">
-        <div class="text-lg font-bold leading-tight">
-            <div>SMK AL-AITAAM</div>
+        <!-- LOGO -->
+        <div class="flex items-center gap-3 mb-6 pt-6 px-4">
+            <img src="{{ asset('logo.png') }}" class="w-14 drop-shadow-lg">
+            <div class="text-lg font-bold leading-tight">
+                <div>SMK AL-AITAAM</div>
+            </div>
         </div>
-    </div>
 
-    <!-- MENU -->
-    <nav class="space-y-4 mt-4 p-6">
+        <!-- MENU -->
+        <nav class="space-y-2 mt-4 p-6">
 
-        <a href="/admin/dashboard"
-           class="flex items-center gap-3 p-3 rounded-lg transition
+            <a href="/admin/dashboard"
+                class="flex items-center gap-3 p-3 rounded-lg transition
            {{ request()->is('admin/dashboard') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }}">
-           <img src="{{ asset('icons/dashboard.svg') }}" class="w-5"> Dashboard
-        </a>
-
-        <a href="{{ route('akun-siswa.index') }}"
-   class="flex items-center gap-3 p-3 rounded-lg transition
-          {{ Route::is('akun-siswa.*') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }}">
-   <img src="{{ asset('icons/student.svg') }}" class="w-5"> Siswa
-</a>
-
-<a href="{{ route('akun-walikelas.index') }}"
-   class="flex items-center gap-3 p-3 rounded-lg transition
-          {{ Route::is('akun-walikelas.*') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }}">
-   <img src="{{ asset('icons/teacher.svg') }}" class="w-5"> Wali Kelas
-</a>
-
-<a href="{{ route('kelas.index') }}"
-   class="flex items-center gap-3 p-3 rounded-lg transition
-          {{ Route::is('kelas.*') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }}">
-   <img src="{{ asset('icons/class.svg') }}" class="w-5"> Kelas
-</a>
-
-<a href="{{ route('tahun-ajaran.index') }}"
-   class="flex items-center gap-3 p-3 rounded-lg transition
-          {{ Route::is('tahun-ajaran.*') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }}">
-   <img src="{{ asset('icons/setting.svg') }}" class="w-5"> Tahun Ajaran
-</a>
-
-<a href="{{ route('absensi.index') }}"
-   class="flex items-center gap-3 p-3 rounded-lg transition
-          {{ Route::is('absensi.*') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }}">
-   <img src="{{ asset('icons/absensi.svg') }}" class="w-5"> Absensi
-</a>
-
-
-        <div class="pt-5 border-t border-white/40">
-            <a href="/admin/profile"
-               class="flex items-center gap-3 p-3 rounded-lg transition
-               {{ request()->is('admin/profile') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }}">
-               <img src="{{ asset('icons/setting.svg') }}" class="w-5"> Profile
+                <img src="{{ asset('icons/dashboard.svg') }}" class="w-5"> Dashboard
             </a>
 
-            <form method="POST" action="{{ route('logout') }}"
-                  class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/20 transition">
-                @csrf
-                <button type="submit">Logout</button>
-            </form>
-        </div>
+            <a href="{{ route('akun-siswa.index') }}"
+                class="flex items-center gap-3 p-3 rounded-lg transition
+          {{ Route::is('akun-siswa.*') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }}">
+                <img src="{{ asset('icons/student.svg') }}" class="w-5"> Siswa
+            </a>
 
-    </nav>
-</aside>
+            <a href="{{ route('akun-walikelas.index') }}"
+                class="flex items-center gap-3 p-3 rounded-lg transition
+          {{ Route::is('akun-walikelas.*') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }}">
+                <img src="{{ asset('icons/teacher.svg') }}" class="w-5"> Wali Kelas
+            </a>
+
+            <a href="{{ route('kelas.index') }}"
+                class="flex items-center gap-3 p-3 rounded-lg transition
+          {{ Route::is('kelas.*') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }}">
+                <img src="{{ asset('icons/class.svg') }}" class="w-5"> Kelas
+            </a>
+
+            <a href="{{ route('tahun-ajaran.index') }}"
+                class="flex items-center gap-3 p-3 rounded-lg transition
+          {{ Route::is('tahun-ajaran.*') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }}">
+                <img src="{{ asset('icons/setting.svg') }}" class="w-5"> Tahun Ajaran
+            </a>
+
+            <a href="{{ route('absensi.index') }}"
+                class="flex items-center gap-3 p-3 rounded-lg transition
+          {{ Route::is('absensi.*') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }}">
+                <img src="{{ asset('icons/absensi.svg') }}" class="w-5"> Absensi
+            </a>
+
+            <div class="pt-5 border-t border-white/40">
+                <a href="/admin/profile"
+                    class="flex items-center gap-3 p-3 rounded-lg transition
+               {{ request()->is('admin/profile') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }}">
+                    <img src="{{ asset('icons/setting.svg') }}" class="w-5"> Profile
+                </a>
+
+                <form method="POST" action="{{ route('logout') }}"
+                    class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/20 transition">
+                    @csrf
+                    <button type="submit">Logout</button>
+                </form>
+            </div>
+
+        </nav>
+    </aside>
 
 
     <!-- MAIN CONTENT -->
@@ -127,9 +126,7 @@
         <div class="flex-1 overflow-auto">
             @yield('content')
         </div>
-
     </div>
-
     <!-- SIDEBAR SCRIPT -->
     <script>
         const sidebar = document.getElementById('sidebar');
@@ -146,7 +143,7 @@
             backdrop.classList.add('hidden');
         });
     </script>
-
+    @yield('script')
 </body>
 
 </html>

@@ -21,6 +21,26 @@ class SiswaCrud extends Controller
         ->get();
         return view('admin.siswa.index', compact('siswa', 'Header'));
     }
+    public function search(Request $r)
+{
+    $keyword = $r->search;
+
+    $data = Siswa::with(['user', 'kelas'])
+        ->where('NISN', 'like', "%$keyword%")
+        ->orWhereHas('user', function ($q) use ($keyword) {
+            $q->where('name', 'like', "%$keyword%")
+              ->orWhere('username', 'like', "%$keyword%");
+        })
+        ->orWhereHas('kelas', function ($q) use ($keyword) {
+            $q->where('nama_kelas', 'like', "%$keyword%");
+        })
+        ->get();
+
+    return response()->json($data);
+}
+
+
+
 
     public function show($id)
     {

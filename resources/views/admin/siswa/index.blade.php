@@ -6,7 +6,7 @@
         <div class="flex justify-between items-center mb-4">
 
             {{-- Search --}}
-            
+
             <form class="form relative">
                 <button class="absolute left-2 -translate-y-1/2 top-1/2 p-1">
                     <svg width="17" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" role="img"
@@ -16,7 +16,7 @@
                         </path>
                     </svg>
                 </button>
-                <input
+                <input id="searchSiswa"
                     class="input rounded-full px-8 py-2 border-2 border-transparent focus:outline-none focus:border-blue-500 placeholder-gray-400 transition-all duration-300 shadow-md"
                     placeholder="Search..." required="" type="text" />
                 <button type="reset" class="absolute right-3 -translate-y-1/2 top-1/2 p-1">
@@ -39,20 +39,19 @@
 
         {{-- TABLE --}}
         <div class="bg-white shadow rounded-xl overflow-hidden border">
-
             <table class="w-full text-sm">
                 <thead class="bg-gray-100">
                     <tr>
                         <th class="p-3 text-left">No</th>
                         <th class="p-3 text-left">NIS</th>
-                        <th class="p-3 text-left">Nama</th>
                         <th class="p-3 text-left">Username</th>
+                        <th class="p-3 text-left">Nama</th>
                         <th class="p-3 text-left">Kelas</th>
                         <th class="p-3 text-center">Action</th>
                     </tr>
                 </thead>
 
-                <tbody>
+                <tbody id="siswaTable">
                     @foreach ($siswa as $i => $s)
                         <tr class="border-b hover:bg-gray-50">
                             <td class="p-3">{{ $i + 1 }}</td>
@@ -60,9 +59,6 @@
                             <td class="p-3">{{ $s->user->username }}</td>
                             <td class="p-3">{{ $s->user->name }}</td>
                             <td class="p-3">{{ $s->kelasSiswa->first()->kelas->nama_kelas ?? '-' }}</td>
-
-                            {{-- STATUS --}}
-
                             {{-- ACTION --}}
                             <td class="p-3 flex gap-3 justify-center">
                                 <button class="text-blue-600 hover:text-blue-800 text-xl">✏️</button>
@@ -72,8 +68,9 @@
                     @endforeach
                 </tbody>
             </table>
-
         </div>
-
     </div>
+@endsection
+@section('script')
+    <script src="{{ asset('js/siswa-search.js') }}"></script>
 @endsection

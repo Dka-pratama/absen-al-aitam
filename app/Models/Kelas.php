@@ -11,10 +11,12 @@ class Kelas extends Model
     protected $table = 'kelas';
     protected $fillable = ['nama_kelas','jurusan', 'angkatan'];
 
-    public function siswa()
-    {
-        return $this->hasMany(Siswa::class);
-    }
+    // App\Models\Kelas.php
+public function siswa()
+{
+    return $this->belongsToMany(Siswa::class, 'kelas_siswa', 'kelas_id', 'siswa_id');
+}
+
 
     public function walikelas()
     {

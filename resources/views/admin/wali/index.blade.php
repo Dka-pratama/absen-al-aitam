@@ -17,7 +17,7 @@
                         </path>
                     </svg>
                 </button>
-                <input
+                <input id="searchWali"
                     class="input rounded-full px-8 py-2 border-2 border-transparent focus:outline-none focus:border-blue-500 placeholder-gray-400 transition-all duration-300 shadow-md"
                     placeholder="Search..." required="" type="text" />
                 <button type="reset" class="absolute right-3 -translate-y-1/2 top-1/2 p-1">
@@ -37,10 +37,10 @@
         </div>
 
         {{-- TABLE --}}
-        <div class="overflow-x-auto">
+        <div class="bg-white shadow rounded-xl overflow-hidden border">
             <table class="w-full text-sm">
-                <thead>
-                    <tr class="bg-gray-100 border-b">
+                <thead class="bg-gray-100">
+                    <tr>
                         <th class="p-3 text-left">No</th>
                         <th class="p-3 text-left">NUPTK</th>
                         <th class="p-3 text-left">Nama Wali Kelas</th>
@@ -49,7 +49,7 @@
                     </tr>
                 </thead>
 
-                <tbody>
+                <tbody id="waliTable">
                     @foreach ($walikelas as $index => $wk)
                         <tr class="border-b hover:bg-gray-50">
                             <td class="p-3">{{ $index + 1 }}</td>
@@ -57,40 +57,18 @@
                             <td class="p-3">{{ $wk->user->name }}</td>
                             <td class="p-3">{{ $wk->kelas->nama_kelas }}</td>
 
-                            {{-- ACTION ICONS --}}
-                            <td class="p-3 flex items-center gap-4">
-
-                                {{-- EDIT --}}
-                                <a href="/admin/walikelas/{{ $wk->id }}/edit"
-                                    class="text-blue-600 hover:text-blue-800">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M16.862 3.487l3.651 3.65-9.91 9.912L6.95 13.4l9.912-9.912zM6.5 13.5l-1 4.5 4.5-1" />
-                                    </svg>
-                                </a>
-
-                                {{-- DELETE --}}
-                                <form action="/admin/walikelas/{{ $wk->id }}" method="POST"
-                                    onsubmit="return confirm('Hapus data ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="text-red-600 hover:text-red-800">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M6 7h12M9 7V4h6v3m1 0v10a2 2 0 01-2 2H9a2 2 0 01-2-2V7h10z" />
-                                        </svg>
-                                    </button>
-                                </form>
-
+                            {{-- ACTION --}}
+                            <td class="p-3 flex gap-3 justify-center">
+                                <button class="text-blue-600 hover:text-blue-800 text-xl">✏️</button>
+                                <button class="text-red-600 hover:text-red-800 text-xl">🗑️</button>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
-
             </table>
         </div>
-
     </div>
+@endsection
+@section('script')
+   <script src="{{ asset("js/walikelas-search.js") }}"></script>
 @endsection

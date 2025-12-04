@@ -11,8 +11,20 @@ class KelasCrud extends Controller
     public function index()
     {
         $Header = 'Data Kelas';
-        $kelasList = Kelas::all();
+        $kelasList = Kelas::withCount('siswa')->get();
         return view('admin.kelas.index', compact('kelasList','Header'));
+    }
+
+    public function search(Request $request)
+    {
+        $keyword = $request->search;
+
+        $kelasList = Kelas::withCount('siswa')
+            ->where('nama_kelas', 'like', "%$keyword%")
+            ->orWhere('jurusan', 'like', "%$keyword%")
+            ->get();
+
+        return response()->json($kelasList);
     }
 
     public function show($id)

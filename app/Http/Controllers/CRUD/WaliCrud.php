@@ -17,6 +17,23 @@ class WaliCrud extends Controller
         return view('admin.wali.index', compact('walikelas', 'Header'));
     }
 
+public function search(Request $r)
+{
+    $keyword = $r->search;
+
+    $data = Wali::with(['user','kelas'])
+        ->whereHas('user', function ($q) use ($keyword) {
+            $q->where('name', 'like', "%$keyword%")
+              ->orWhere('username', 'like', "%$keyword%");
+        })
+        ->orWhere('NUPTK', 'like', "%$keyword%")
+        ->get();
+
+    return response()->json($data);
+}
+
+
+
     public function show($id)
     {
         $wali = Wali::with('user')->findOrFail($id);
@@ -72,7 +89,7 @@ class WaliCrud extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
-            'NUPTK' => 'required|string|unique:wali' . $wali->id,
+            'NUPTK' => 'required|string|unique:wali,NUPTK,' . $wali->id,
         ]);
 
         $user->update([

@@ -4,18 +4,17 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Siswa;
 use App\Models\Kelas;
-use App\Models\Wali;
 use App\Models\User;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $totalSiswa = Siswa::count();
+        $Header = 'Dashboard Admin';
+        $totalSiswa = User::where('role', 'siswa')->count();
         $totalKelas = Kelas::count();
-        $totalWali = Wali::count();
+        $totalWali = User::where('role', 'wali')->count();
         $totalAkun = User::count();
         $totalJurusan = Kelas::distinct('jurusan')->count('jurusan');
         return view('admin.dashboard', 
@@ -23,6 +22,7 @@ class DashboardController extends Controller
         'totalKelas', 
         'totalWali', 
         'totalAkun',
-        'totalJurusan'));
+        'totalJurusan',
+    'Header'));
     }
 }

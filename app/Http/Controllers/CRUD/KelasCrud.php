@@ -10,14 +10,15 @@ class KelasCrud extends Controller
 {
     public function index()
     {
-        $kelas = Kelas::all();
-        return view('crud.kelas.index', compact('kelas'));
+        $Header = 'Data Kelas';
+        $kelasList = Kelas::all();
+        return view('admin.kelas.index', compact('kelasList','Header'));
     }
 
     public function show($id)
     {
         $kelas = Kelas::findOrFail($id);
-        return view('crud.kelas.show', compact('kelas'));
+        return view('admin.kelas.show', compact('kelas'));
     }
 
     public function destroy($id)
@@ -29,14 +30,15 @@ class KelasCrud extends Controller
 
     public function create()
     {
-        return view('crud.kelas.create');
+        return view('admin.kelas.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'nama_kelas' => 'required|string|max:255',
-            'kompetensi_keahlian' => 'required|string|max:255',
+            'jurusan' => 'required|string|max:255',
+            'angkatan' => 'required|string|max:255',
         ]);
 
         Kelas::create($request->all());
@@ -47,14 +49,15 @@ class KelasCrud extends Controller
     public function edit($id)
     {
         $kelas = Kelas::findOrFail($id);
-        return view('crud.kelas.edit', compact('kelas'));
+        return view('admin.kelas.edit', compact('kelas'));
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
             'nama_kelas' => 'required|string|max:255',
-            'kompetensi_keahlian' => 'required|string|max:255',
+            'jurusan' => 'required|string|max:255',
+            'angkatan' => 'required|string|max:255',
         ]);
 
         $kelas = Kelas::findOrFail($id);

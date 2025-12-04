@@ -11,13 +11,13 @@ class AbsensiCrud extends Controller
     public function index()
     {
         $absensis = Absensi::all();
-        return view('crud.absensi.index', compact('absensis'));
+        return view('admin.absensi.index', compact('absensis'));
     }
 
     public function show($id)
     {
         $absensi = Absensi::findOrFail($id);
-        return view('crud.absensi.show', compact('absensi'));
+        return view('admin.absensi.show', compact('absensi'));
     }
 
     public function destroy($id)

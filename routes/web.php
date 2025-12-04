@@ -10,9 +10,6 @@ use App\Http\Controllers\CRUD\TahunCrud;
 use App\Http\Controllers\CRUD\WaliCrud;
 use App\Http\Controllers\Admin\DashboardController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');

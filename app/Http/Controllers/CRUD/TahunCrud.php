@@ -10,8 +10,9 @@ class TahunCrud extends Controller
 {
     public function index()
     {
+        $Header = 'Data Tahun Ajaran';
         $tahun = Tahun::all();
-        return view('crud.tahun.index', compact('tahun'));
+        return view('admin.tahun.index', compact('tahun', 'Header'));
     }
 
     public function show($id)

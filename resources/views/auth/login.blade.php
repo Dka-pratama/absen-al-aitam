@@ -27,11 +27,9 @@
     <!-- RIGHT SECTION (LOGIN FORM) -->
     <div class="w-full md:w-1/2 flex items-center justify-center p-8 bg-white">
         <div class="w-full max-w-md bg-white">
-
             <h2 class="text-2xl font-bold text-gray-900 mb-6">Sign in</h2>
-
             <!-- LOGIN FORM -->
-            <form method="POST" action="{{ route('login') }}">
+                        <form method="POST" action="{{ route('login') }}">
                 @csrf
 
                 <!-- Email -->
@@ -53,13 +51,24 @@
                         </span>
                     </div>
                 </div>
-
+                @error('username')
+                    <div class="text-red-500 text-sm">{{ $message }}</div>
+                @enderror
+                @error('email')
+                    <div class="text-red-500 text-sm">{{ $message }}</div>
+                @enderror
+                @error('username')
+                    <div class="text-red-500 text-sm">{{ $message }}</div>
+                @enderror
+                
                 <!-- SUBMIT -->
                 <button type="submit"
                     class="w-full bg-[#23DB2E] text-white py-2 rounded-lg hover:bg-[#22C52C] transition">
                     Sign In
                 </button>
             </form>
+
+
         </div>
     </div>
 

@@ -4,15 +4,17 @@ namespace App\Http\Controllers\CRUD;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Wali;
+use App\Models\WaliKelas as Wali;
 use App\Models\User;
+use Illuminate\View\View;
 
 class WaliCrud extends Controller
 {
-    public function index()
+    public function index(): View
     {
-        $walikelas = Wali::with('user')->get();
-        return view('admin.wali.index', compact('walikelas'));
+        $Header = 'Data Wali Kelas';
+        $walikelas = Wali::with('user')->paginate(15);
+        return view('admin.wali.index', compact('walikelas', 'Header'));
     }
 
     public function show($id)

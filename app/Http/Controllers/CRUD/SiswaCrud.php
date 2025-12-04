@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Siswa;
 use App\Models\Kelas;
+use App\Models\KelasSiswa;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -13,14 +14,18 @@ class SiswaCrud extends Controller
 {
     public function index()
     {
-        $siswa = Siswa::with(['user', 'kelas'])->get();
-        return view('admin.siswa.index', compact('siswa'));
+        $Header = 'Data Siswa';
+        $siswa = Siswa::with(['user', 'kelasSiswa.kelas'])->whereHas('kelasSiswa.tahunAjar', function($q){
+            $q->where('status', 'aktif');
+        })
+        ->get();
+        return view('admin.siswa.index', compact('siswa', 'Header'));
     }
 
     public function show($id)
     {
         $siswa = Siswa::with('kelas', 'user')->findOrFail($id);
-        return view('crud.siswa.show', compact('siswa'));
+        return view('admin.siswa.show', compact('siswa'));
     }
 
     public function destroy($id)

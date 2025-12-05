@@ -19,7 +19,7 @@ class SiswaCrud extends Controller
         $siswa = Siswa::with(['user', 'kelasSiswa.kelas'])->whereHas('kelasSiswa.tahunAjar', function ($q) {
             $q->where('status', 'aktif');
         })
-            ->get();
+            ->paginate(15);
         return view('admin.siswa.index', compact('siswa', 'Header'));
     }
     public function search(Request $r)
@@ -35,23 +35,42 @@ class SiswaCrud extends Controller
             ->orWhereHas('kelas', function ($q) use ($keyword) {
                 $q->where('nama_kelas', 'like', "%$keyword%");
             })
-            ->get();
+            ->paginate(15);
 
         return response()->json($data);
     }
 
     public function show($id)
-    {
-        $siswa = Siswa::with('kelas', 'user')->findOrFail($id);
-        return view('admin.siswa.show', compact('siswa'));
-    }
+{
+    $Header = 'Data Siswa';
+    // Ambil siswa beserta relasinya
+    $siswa = Siswa::with(['user', 'kelas', 'absensi'])->findOrFail($id);
+
+    // Hitung jumlah absensi berdasarkan status
+    $hadir = $siswa->absensi->where('status', 'hadir')->count();
+    $sakit = $siswa->absensi->where('status', 'sakit')->count();
+    $izin  = $siswa->absensi->where('status', 'izin')->count();
+    $alpa  = $siswa->absensi->where('status', 'alpa')->count();
+
+    return view('admin.siswa.show', compact('siswa','Header', 'hadir', 'sakit', 'izin', 'alpa'));
+}
+
 
     public function destroy($id)
-    {
-        $siswa = Siswa::findOrFail($id);
-        $siswa->delete();
-        return redirect()->route('siswa.index')->with('success', 'Akun Siswa berhasil dihapus.');
-    }
+{
+    $siswa = Siswa::findOrFail($id);
+
+    // Hapus akun user yang terhubung
+    if ($siswa->user && $siswa->user->role == 'siswa') {
+    $siswa->user->delete();
+}
+
+    // Hapus data siswa
+    $siswa->delete();
+
+    return redirect()->route('akun-siswa.index')->with('success', 'Data siswa & akun user berhasil dihapus.');
+}
+
 
     public function create()
     {
@@ -115,14 +134,14 @@ class SiswaCrud extends Controller
         $user = User::findOrFail($siswa->user_id);
 
         $request->validate([
-            'nama' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
-            'NISN' => 'required|string|max:20|unique:siswas,nisn,' . $siswa->id,
+            'NISN' => 'required|string|max:20|unique:siswa,NISN,' . $siswa->id,
             'kelas_id' => 'required',
         ]);
 
         $user->update([
-            'nama' => $request->nama,
+            'name' => $request->name,
             'username' => $request->username,
         ]);
 
@@ -135,6 +154,6 @@ class SiswaCrud extends Controller
             'NISN' => $request->NISN,
             'kelas_id' => $request->kelas_id,
         ]);
-        return redirect()->route('siswa.index')->with('success', 'Siswa updated successfully.');
+        return redirect()->route('akun-siswa.index')->with('success', 'Akun siswa berhasil di update.');
     }
 }

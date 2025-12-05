@@ -72,5 +72,11 @@ public function run(): void
         'kelas_id' => $kelas->id,
         'tahun_ajar_id' => $tahunAjar->id,
     ]);
-}
+
+    Kelas::factory()
+    ->count(10)
+    ->withSiswa(15)   // setiap kelas berisi 15 siswa
+    ->create();
+
+    }
 }

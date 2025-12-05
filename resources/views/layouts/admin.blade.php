@@ -8,9 +8,13 @@
 
     <!-- Font Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome 7 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
         integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <!-- Sweet Allert -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
@@ -21,7 +25,18 @@
 </head>
 
 <body class="bg-[#F5F6EE] min-h-screen flex">
+     {{-- TOAST CONTAINER --}}
+    @if(session('success'))
+  <x-alert type="success" :message="session('success')" />
+@endif
 
+@if(session('error'))
+  <x-alert type="danger" :message="session('error')" />
+@endif
+
+@if(session('info'))
+  <x-alert type="info" :message="session('info')" />
+@endif   
     <!-- BACKDROP (HP MODE) -->
     <div id="backdrop" class="fixed inset-0 bg-black/40 hidden md:hidden z-30"></div>
 
@@ -96,7 +111,6 @@
 
         <!-- TOPBAR -->
         <header class="bg-white shadow-sm py-3 px-5 flex justify-between items-center sticky top-0 z-20">
-
             <!-- HAMBURGER BUTTON -->
             <button id="toggleSidebar" class="md:hidden p-2 rounded hover:bg-gray-200">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24"
@@ -104,12 +118,8 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
             </button>
-
             <h1 class="text-xl md:text-2xl font-semibold tracking-wide">{{ $Header ?? '-' }}</h1>
-
             <div class="flex items-center gap-3">
-                <img src="https://via.placeholder.com/40"
-                    class="w-10 h-10 md:w-11 md:h-11 rounded-full object-cover border shadow-sm">
 
                 <div class="leading-tight hidden sm:block">
                     <p class="font-bold text-sm">Admin</p>
@@ -140,6 +150,9 @@
         });
     </script>
     @yield('script')
+    <script src="{{ asset('js/Sweet-Alert.js') }}"></script>
+    <!-- Alpine JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.15.0/cdn.js" integrity="sha512-nHfCQtLDRfNgzsuMx2O2Joo3+xM8antMOBxo9GodZry1h33+lWa2Dd3a/lkVY4fHJK1CAkFcUrz2jilsaZFWeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 
 </html>

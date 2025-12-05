@@ -64,23 +64,26 @@
                                 <a href="{{ route('akun-siswa.edit', $s->id) }}">
                                     <i class="fa-solid fa-pen-to-square fa-lg" style="color: #0045bd;"></i>
                                 </a>
-                                <form action="{{ route('akun-siswa.destroy', $s->id) }}" method="POST"
-                                    onsubmit="return confirm('Yakin ingin menghapus?')" class="inline">
+                                <form action="{{ route('akun-siswa.destroy', $s->id) }}"
+                                    method="POST"
+                                    class="form-hapus inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit">
+                                    <button type="submit" class="btn-hapus">
                                         <i class="fa-solid fa-trash fa-lg" style="color: #e00000;"></i>
                                     </button>
                                 </form>
                                 <a href="{{ route('akun-siswa.show', $s->id) }}">
                                     <i class="fa-solid fa-info fa-lg"></i>
                                 </a>
-
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
+            <div class="mt-4 px-4">
+                    {{ $siswa->appends(request()->query())->links() }}
+            </div>
         </div>
     </div>
 @endsection

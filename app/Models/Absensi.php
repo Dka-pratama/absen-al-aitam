@@ -22,4 +22,22 @@ class Absensi extends Model
     {
         return $this->belongsTo(KelasSiswa::class);
     }
+
+    public function kelas()
+    {
+        return $this->hasOneThrough(
+            Kelas::class,
+            KelasSiswa::class,
+            'id',
+            'id',
+            'kelas_siswa_id',
+            'kelas_id'
+        );
+    }
+
+    public function tahunAjar()
+    {
+        return $this->kelas->waliKelas->tahunAjar();
+    }
+
 }

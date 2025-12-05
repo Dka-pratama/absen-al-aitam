@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\WaliKelas as Wali;
 use App\Models\User;
+use App\Models\Kelas;
 use Illuminate\View\View;
 
 class WaliCrud extends Controller
@@ -13,7 +14,7 @@ class WaliCrud extends Controller
     public function index(): View
     {
         $Header = 'Data Wali Kelas';
-        $walikelas = Wali::with('user')->paginate(15);
+        $walikelas = Wali::with(['user','kelas'])->paginate(15);
         return view('admin.wali.index', compact('walikelas', 'Header'));
     }
 
@@ -49,7 +50,9 @@ public function search(Request $r)
 
     public function create()
     {
-        return view('admin.wali.create');
+        $kelas = Kelas::all();
+        $Header = 'Data Wali Kelas';
+        return view('admin.wali.create', compact('Header','kelas'));
     }
 
     public function store(Request $request)
@@ -77,8 +80,9 @@ public function search(Request $r)
 
     public function edit($id)
     {
+        $Header = 'Edit Wali Kelas';
         $wali = Wali::with('user')->findOrFail($id);
-        return view('admin.wali.edit', compact('wali'));
+        return view('admin.wali.edit', compact('wali','Header'));
     }
 
     public function update(Request $request, $id)

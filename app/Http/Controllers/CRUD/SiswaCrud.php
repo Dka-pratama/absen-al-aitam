@@ -9,6 +9,7 @@ use App\Models\Kelas;
 use App\Models\KelasSiswa;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Models\TahunAjar;
 
 class SiswaCrud extends Controller
 {
@@ -39,9 +40,6 @@ class SiswaCrud extends Controller
     return response()->json($data);
 }
 
-
-
-
     public function show($id)
     {
         $siswa = Siswa::with('kelas', 'user')->findOrFail($id);
@@ -57,41 +55,53 @@ class SiswaCrud extends Controller
 
     public function create()
     {
+        $Header = 'Tambah Akun Siswa';
         $kelas = Kelas::all();
-        return view('admin.siswa.create', compact('kelas'));
+        return view('admin.siswa.create', compact('kelas','Header'));
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'nama'      => 'required',
-            'username'  => 'required|unique:users',
-            'password'  => 'required',
-            'NISN'      => 'required|unique:siswa',
-            'kelas_id'  => 'required'
-        ]);
+{
+    $request->validate([
+        'name'      => 'required',
+        'username'  => 'required|unique:users',
+        'password'  => 'required',
+        'NISN'      => 'required|unique:siswa',
+        'kelas_id'  => 'required'
+    ]);
 
-        $user = User::create([
-            'nama'     => $request->nama,
-            'username' => $request->username,
-            'password' => Hash::make($request->password),
-            'role'     => 'siswa',
-        ]);
+    // 1. Buat akun user
+    $user = User::create([
+        'name'     => $request->name,
+        'username' => $request->username,
+        'password' => Hash::make($request->password),
+        'role'     => 'siswa',
+    ]);
 
-        Siswa::create([
-            'NISN'     => $request->NISN,
-            'kelas_id' => $request->kelas_id,
-            'user_id'  => $user->id,
-        ]);
+    // 2. Masukkan siswa
+    $siswa = Siswa::create([
+        'NISN'     => $request->NISN,
+        'user_id'  => $user->id,
+    ]);
 
-        return redirect()->route('siswa.index')->with('success', 'Akun Siswa berhasil dibuat.');
-    }
+    // 3. Masukkan ke tabel kelas_siswa (relasi siswa ke kelas saat ini)
+    KelasSiswa::create([
+        'siswa_id' => $siswa->id,
+        'kelas_id' => $request->kelas_id,
+        'tahun_ajar_id' => TahunAjar::where('status', 'aktif')->first()->id ?? null, // opsional jika ada tahun ajar aktif
+    ]);
+
+    return redirect()->route('akun-siswa.index')
+        ->with('success', 'Akun Siswa berhasil dibuat & dimasukkan ke kelas.');
+}
+
 
     public function edit($id)
     {
+        $Header = 'Edit Akun Siswa';
         $siswa = Siswa::with('user')->findOrFail($id);
         $kelas = Kelas::all();
-        return view('admin.siswa.edit', compact('siswa','kelas'));
+        return view('admin.siswa.edit', compact('siswa','kelas','Header'));
     }
 
     public function update(Request $request, $id)

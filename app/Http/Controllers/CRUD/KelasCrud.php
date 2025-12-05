@@ -42,7 +42,8 @@ class KelasCrud extends Controller
 
     public function create()
     {
-        return view('admin.kelas.create');
+        $Header = 'Tambah Kelas';
+        return view('admin.kelas.create', compact('Header'));
     }
 
     public function store(Request $request)
@@ -60,8 +61,9 @@ class KelasCrud extends Controller
 
     public function edit($id)
     {
+        $Header = 'Edit Kelas';
         $kelas = Kelas::findOrFail($id);
-        return view('admin.kelas.edit', compact('kelas'));
+        return view('admin.kelas.edit', compact('kelas','Header'));
     }
 
     public function update(Request $request, $id)

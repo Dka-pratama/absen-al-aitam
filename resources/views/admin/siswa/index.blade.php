@@ -61,8 +61,21 @@
                             <td class="p-3">{{ $s->kelasSiswa->first()->kelas->nama_kelas ?? '-' }}</td>
                             {{-- ACTION --}}
                             <td class="p-3 flex gap-3 justify-center">
-                                <button class="text-blue-600 hover:text-blue-800 text-xl">✏️</button>
-                                <button class="text-red-600 hover:text-red-800 text-xl">🗑️</button>
+                                <a href="{{ route('akun-siswa.edit', $s->id) }}">
+                                    <i class="fa-solid fa-pen-to-square fa-lg" style="color: #0045bd;"></i>
+                                </a>
+                                <form action="{{ route('akun-siswa.destroy', $s->id) }}" method="POST"
+                                    onsubmit="return confirm('Yakin ingin menghapus?')" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit">
+                                        <i class="fa-solid fa-trash fa-lg" style="color: #e00000;"></i>
+                                    </button>
+                                </form>
+                                <a href="{{ route('akun-siswa.show', $s->id) }}">
+                                    <i class="fa-solid fa-info fa-lg"></i>
+                                </a>
+
                             </td>
                         </tr>
                     @endforeach

@@ -8,7 +8,9 @@
 
     <!-- Font Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
@@ -63,12 +65,6 @@
                 class="flex items-center gap-3 p-3 rounded-lg transition
           {{ Route::is('kelas.*') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }}">
                 <img src="{{ asset('icons/class.svg') }}" class="w-5"> Kelas
-            </a>
-
-            <a href="{{ route('tahun-ajaran.index') }}"
-                class="flex items-center gap-3 p-3 rounded-lg transition
-          {{ Route::is('tahun-ajaran.*') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }}">
-                <img src="{{ asset('icons/setting.svg') }}" class="w-5"> Tahun Ajaran
             </a>
 
             <a href="{{ route('absensi.index') }}"

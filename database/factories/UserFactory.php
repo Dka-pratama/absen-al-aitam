@@ -13,22 +13,24 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name'      => $this->faker->name(),
-            'username'  => $this->faker->unique()->userName(),
-            'email'     => null,
-            'password'  => bcrypt('password'),
-            'role'      => 'siswa', // default siswa
+            'name' => $this->faker->name(),
+            'username' => $this->faker->unique()->userName(),
+            'email' => null,
+            'password' => bcrypt('password'),
+            'role' => 'siswa', // default siswa
         ];
     }
 
     public function wali()
     {
-        return $this->state(fn () => [
-            'role' => 'wali',
-        ]);
+        return $this->state(
+            fn() => [
+                'role' => 'wali',
+            ],
+        );
     }
     public function admin()
     {
-        return $this->state(fn () => ['role' => 'admin']);
+        return $this->state(fn() => ['role' => 'admin']);
     }
 }

@@ -5,33 +5,41 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\KelasSiswa;
 use App\Models\Absensi;
+use App\Models\Siswa;
+use App\Models\Kelas;
 
 class KelasSiswaFactory extends Factory
 {
     protected $model = KelasSiswa::class;
 
-public function definition(): array
-{
-    return [
-        'siswa_id' => \App\Models\Siswa::factory(), // WAJIB ADA!
-        'kelas_id' => \App\Models\Kelas::factory(),
-        'tahun_ajar_id' => \App\Models\TahunAjar::factory(),
-    ];
-}
+    public function definition(): array
+    {
+        return [
+            'siswa_id' => Siswa::factory(),
+            'kelas_id' => Kelas::factory(),
+            'tahun_ajar_id' => null, // WAJIB null agar dipasang manual
+        ];
+    }
 
-public function configure()
-{
-    return $this->afterCreating(function (KelasSiswa $ks) {
+    public function forTahunAjar($tahunAjar)
+    {
+        return $this->state([
+            'tahun_ajar_id' => $tahunAjar->id,
+        ]);
+    }
 
-        Absensi::factory()
-            ->count(30)
-            ->state(fn () => [
-                'kelas_siswa_id' => $ks->id,
-                'tanggal' => now()->subDays(rand(1,30))->format('Y-m-d')
-            ])
-            ->create();
-    });
-}
-
-
+    public function configure()
+    {
+        return $this->afterCreating(function (KelasSiswa $ks) {
+            Absensi::factory()
+                ->count(30)
+                ->state(function () use ($ks) {
+                    return [
+                        'kelas_siswa_id' => $ks->id,
+                        'tanggal' => now()->subDays(rand(1, 30))->format('Y-m-d'),
+                    ];
+                })
+                ->create();
+        });
+    }
 }

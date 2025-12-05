@@ -13,5 +13,4 @@ return [
         'KelasSiswa' => App\Models\KelasSiswa::class,
         'Absensi' => App\Models\Absensi::class,
     ],
-
 ];

@@ -50,8 +50,8 @@ class WaliKelasFactory extends Factory
     public function forTahunAjarAktif()
     {
         return $this->state(function () {
-            $tahunAjar = TahunAjar::where('status', 'aktif')->first()
-                ?? TahunAjar::factory()->create(['status' => 'aktif']);
+            $tahunAjar =
+                TahunAjar::where('status', 'aktif')->first() ?? TahunAjar::factory()->create(['status' => 'aktif']);
 
             return ['tahun_ajar_id' => $tahunAjar->id];
         });

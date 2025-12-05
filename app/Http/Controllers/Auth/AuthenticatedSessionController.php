@@ -34,7 +34,7 @@ class AuthenticatedSessionController extends Controller
             return redirect()->route('admin.dashboard');
         } elseif ($user->role === 'siswa') {
             return redirect()->route('siswa.dashboard');
-        } else if ($user->role ==='wali') {
+        } elseif ($user->role === 'wali') {
             return redirect()->route('wali.dashboard');
         }
         return redirect('/');

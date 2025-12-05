@@ -10,7 +10,6 @@ class AbsensiCrud extends Controller
 {
     public function index(Request $request)
     {
-
         $Header = 'Data Absensi';
         $kelasId = $request->kelas_id;
         $tahunAjarId = $request->tahun_ajar_id;
@@ -27,7 +26,7 @@ class AbsensiCrud extends Controller
                 'kelas.nama_kelas',
                 'tahun_ajar.id as tahun_ajar_id',
                 'tahun_ajar.tahun',
-                'tahun_ajar.semester'
+                'tahun_ajar.semester',
             )
             ->when($kelasId, function ($q) use ($kelasId) {
                 $q->where('kelas.id', $kelasId);
@@ -44,7 +43,7 @@ class AbsensiCrud extends Controller
                 'kelas.nama_kelas',
                 'tahun_ajar.id',
                 'tahun_ajar.tahun',
-                'tahun_ajar.semester'
+                'tahun_ajar.semester',
             )
             ->orderBy('absensi.tanggal', 'desc')
             ->get();
@@ -52,13 +51,8 @@ class AbsensiCrud extends Controller
         $kelas = \App\Models\Kelas::all();
         $tahunAjar = \App\Models\TahunAjar::all();
 
-        return view('admin.absensi.index', compact(
-            'absensi', 
-            'kelas', 
-            'tahunAjar', 
-            'Header'));
+        return view('admin.absensi.index', compact('absensi', 'kelas', 'tahunAjar', 'Header'));
     }
-
 
     public function show($id)
     {
@@ -72,6 +66,4 @@ class AbsensiCrud extends Controller
         $absensi->delete();
         return redirect()->route('absensi.index')->with('success', 'Absensi deleted successfully.');
     }
-
-
 }

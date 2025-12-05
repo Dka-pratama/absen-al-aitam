@@ -17,23 +17,14 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'name',
-        'username',
-        'email',
-        'password',
-        'role',
-    ];
+    protected $fillable = ['name', 'username', 'email', 'password', 'role'];
 
     /**
      * The attributes that should be hidden for serialization.
      *
      * @var list<string>
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    protected $hidden = ['password', 'remember_token'];
 
     /**
      * Get the attributes that should be cast.
@@ -48,9 +39,9 @@ class User extends Authenticatable
         ];
     }
     public function username()
-{
-    return 'username';
-}
+    {
+        return 'username';
+    }
 
     public function siswa()
     {

@@ -21,6 +21,6 @@ class AbsenController extends Controller
 
         //mengambil data siswa berdasarkan kelas_id wali kelas
         $siswa = Siswa::where('kelas_id', $wali->kelas_id)->with('user')->get();
-        return view('wali.absen.siswa', compact('siswa','wali'));
+        return view('wali.absen.siswa', compact('siswa', 'wali'));
     }
 }

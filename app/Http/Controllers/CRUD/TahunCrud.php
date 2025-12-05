@@ -11,14 +11,14 @@ class TahunCrud extends Controller
     public function index()
     {
         $Header = 'Data Tahun Ajaran';
-        $tahun = Tahun::all();
+        $tahun = Tahun::orderBy('created_at', 'desc')->paginate(15);
         return view('admin.tahun.index', compact('tahun', 'Header'));
     }
 
     public function show($id)
     {
         $tahun = Tahun::findOrFail($id);
-        return view('crud.tahun.show', compact('tahun'));
+        return view('admin.tahun.show', compact('tahun'));
     }
 
     public function destroy($id)

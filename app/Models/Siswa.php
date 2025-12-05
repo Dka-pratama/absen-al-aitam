@@ -22,16 +22,16 @@ class Siswa extends Model
     }
 
     public function kelas()
-{
-    return $this->hasOneThrough(
-        Kelas::class,          // model tujuan
-        KelasSiswa::class,     // model perantara
-        'siswa_id',            // FK di kelas_siswa
-        'id',                  // PK di kelas
-        'id',                  // PK siswa
-        'kelas_id'             // kelas_id di kelas_siswa
-    );
-}
+    {
+        return $this->hasOneThrough(
+            Kelas::class, // model tujuan
+            KelasSiswa::class, // model perantara
+            'siswa_id', // FK di kelas_siswa
+            'id', // PK di kelas
+            'id', // PK siswa
+            'kelas_id', // kelas_id di kelas_siswa
+        );
+    }
 
     public function absensi()
     {
@@ -41,7 +41,7 @@ class Siswa extends Model
             'siswa_id', // Foreign key on KelasSiswa table
             'kelas_siswa_id', // Foreign key on Absensi table
             'id', // Local key on Siswa table
-            'id'  // Local key on KelasSiswa table
+            'id', // Local key on KelasSiswa table
         );
     }
 }

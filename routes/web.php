@@ -9,7 +9,6 @@ use App\Http\Controllers\CRUD\TahunCrud;
 use App\Http\Controllers\CRUD\WaliCrud;
 use App\Http\Controllers\Admin\DashboardController;
 
-
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::resource('akun-siswa', SiswaCrud::class);
@@ -17,8 +16,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('akun-walikelas', WaliCrud::class);
     Route::get('/wali-search', [WaliCrud::class, 'search']);
     Route::resource('kelas', KelasCrud::class);
+    Route::post('/kelas/{id}/naik', [KelasCrud::class, 'naikkanSiswa'])
+    ->name('kelas.naik');
     Route::get('/kelas-search', [KelasCrud::class, 'search'])->name('kelas.search');
-    Route::resource('tahun-ajaran', TahunCrud::class);
+    Route::resource('tahun', TahunCrud::class);
     Route::resource('absensi', AbsensiCrud::class);
 });
 
@@ -28,4 +29,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

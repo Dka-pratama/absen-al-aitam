@@ -4,9 +4,8 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Kelas;
-use App\Models\KelasSiswa;
 use App\Models\Siswa;
-use App\Models\TahunAjar;
+use App\Models\KelasSiswa;
 
 class KelasFactory extends Factory
 {
@@ -21,19 +20,16 @@ class KelasFactory extends Factory
         ];
     }
 
-    public function withSiswa($jumlah = 10)
+    public function withSiswa($tahunAjar, $jumlah = 10)
     {
-        return $this->afterCreating(function ($kelas) use ($jumlah) {
-
-            // Membuat siswa sebanyak jumlah
-            Siswa::factory($jumlah)->create()->each(function ($siswa) use ($kelas) {
-
-                // Menghubungkan siswa ke kelas_siswa
-                KelasSiswa::factory()->create([
-                    'siswa_id' => $siswa->id,
-                    'kelas_id' => $kelas->id,
-                    'tahun_ajar_id' => TahunAjar::factory(),
-                ]);
+        return $this->afterCreating(function ($kelas) use ($jumlah, $tahunAjar) {
+            Siswa::factory($jumlah)->create()->each(function ($siswa) use ($kelas, $tahunAjar) {
+                KelasSiswa::factory()
+                    ->forTahunAjar($tahunAjar)
+                    ->create([
+                        'siswa_id' => $siswa->id,
+                        'kelas_id' => $kelas->id,
+                    ]);
             });
         });
     }

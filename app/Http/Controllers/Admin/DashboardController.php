@@ -17,12 +17,9 @@ class DashboardController extends Controller
         $totalWali = User::where('role', 'wali')->count();
         $totalAkun = User::count();
         $totalJurusan = Kelas::distinct('jurusan')->count('jurusan');
-        return view('admin.dashboard', 
-        compact('totalSiswa', 
-        'totalKelas', 
-        'totalWali', 
-        'totalAkun',
-        'totalJurusan',
-    'Header'));
+        return view(
+            'admin.dashboard',
+            compact('totalSiswa', 'totalKelas', 'totalWali', 'totalAkun', 'totalJurusan', 'Header'),
+        );
     }
 }

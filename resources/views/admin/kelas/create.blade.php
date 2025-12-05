@@ -1,30 +1,37 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="p-4">
-    <div class="bg-white border rounded-xl shadow-md p-6 max-w-xl mx-auto">
+    <div class="p-4">
+        <div class="mx-auto max-w-xl rounded-xl border bg-white p-6 shadow-md">
+            <h2 class="mb-6 text-2xl font-bold">Tambah Kelas</h2>
 
-        <h2 class="text-2xl font-bold mb-6">Tambah Kelas</h2>
+            <form action="{{ route('kelas.store') }}" method="POST" class="space-y-4">
+                @csrf
 
-        <form action="{{ route('kelas.store') }}" method="POST" class="space-y-4">
-            @csrf
+                <div>
+                    <label class="font-semibold">Nama Kelas</label>
+                    <input type="text" name="nama_kelas" class="w-full rounded-lg border p-2 focus:ring" required />
+                </div>
 
-            <div>
-                <label class="font-semibold">Nama Kelas</label>
-                <input type="text" name="nama_kelas" class="border rounded-lg p-2 w-full focus:ring" required>
+                <div>
+                    <label class="font-semibold">Jurusan</label>
+                    <input type="text" name="jurusan" class="w-full rounded-lg border p-2 focus:ring" required />
+                </div>
+                <div>
+                    <label class="font-semibold">Angkatan</label>
+                    <input type="text" name="angkatan" class="w-full rounded-lg border p-2 focus:ring" required />
+                </div>
+
+                <button class="w-full rounded-lg bg-green-600 p-2 text-white hover:bg-green-700">Simpan</button>
+            </form>
+            <div class="mt-6">
+                <a
+                    href="{{ route('kelas.index') }}"
+                    class="rounded-lg bg-gray-200 px-4 py-2 text-sm font-semibold hover:bg-gray-300"
+                >
+                    ← Kembali
+                </a>
             </div>
-
-            <div>
-                <label class="font-semibold">Jurusan</label>
-                <input type="text" name="jurusan" class="border rounded-lg p-2 w-full focus:ring" required>
-            </div>
-
-            <button class="bg-green-600 hover:bg-green-700 text-white p-2 rounded-lg w-full">
-                Simpan
-            </button>
-
-        </form>
-
+        </div>
     </div>
-</div>
 @endsection

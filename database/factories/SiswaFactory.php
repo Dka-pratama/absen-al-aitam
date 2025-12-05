@@ -13,20 +13,8 @@ class SiswaFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id'  => User::factory(),
-            'NISN'     => $this->faker->unique()->numerify('########'),
+            'user_id' => User::factory(),
+            'NISN' => $this->faker->unique()->numerify('########'),
         ];
-    }
-
-    public function withKelas()
-    {
-        return $this->has(
-            \App\Models\KelasSiswa::factory()->state(function () {
-                return [
-                    'kelas_id'       => \App\Models\Kelas::factory(),
-                    'tahun_ajar_id'  => \App\Models\TahunAjar::factory(),
-                ];
-            })
-        );
     }
 }

@@ -16,29 +16,29 @@ class SiswaCrud extends Controller
     public function index()
     {
         $Header = 'Data Siswa';
-        $siswa = Siswa::with(['user', 'kelasSiswa.kelas'])->whereHas('kelasSiswa.tahunAjar', function($q){
+        $siswa = Siswa::with(['user', 'kelasSiswa.kelas'])->whereHas('kelasSiswa.tahunAjar', function ($q) {
             $q->where('status', 'aktif');
         })
-        ->get();
+            ->get();
         return view('admin.siswa.index', compact('siswa', 'Header'));
     }
     public function search(Request $r)
-{
-    $keyword = $r->search;
+    {
+        $keyword = $r->search;
 
-    $data = Siswa::with(['user', 'kelas'])
-        ->where('NISN', 'like', "%$keyword%")
-        ->orWhereHas('user', function ($q) use ($keyword) {
-            $q->where('name', 'like', "%$keyword%")
-              ->orWhere('username', 'like', "%$keyword%");
-        })
-        ->orWhereHas('kelas', function ($q) use ($keyword) {
-            $q->where('nama_kelas', 'like', "%$keyword%");
-        })
-        ->get();
+        $data = Siswa::with(['user', 'kelas'])
+            ->where('NISN', 'like', "%$keyword%")
+            ->orWhereHas('user', function ($q) use ($keyword) {
+                $q->where('name', 'like', "%$keyword%")
+                    ->orWhere('username', 'like', "%$keyword%");
+            })
+            ->orWhereHas('kelas', function ($q) use ($keyword) {
+                $q->where('nama_kelas', 'like', "%$keyword%");
+            })
+            ->get();
 
-    return response()->json($data);
-}
+        return response()->json($data);
+    }
 
     public function show($id)
     {
@@ -57,52 +57,57 @@ class SiswaCrud extends Controller
     {
         $Header = 'Tambah Akun Siswa';
         $kelas = Kelas::all();
-        return view('admin.siswa.create', compact('kelas','Header'));
+        return view('admin.siswa.create', compact('kelas', 'Header'));
     }
 
     public function store(Request $request)
-{
-    $request->validate([
-        'name'      => 'required',
-        'username'  => 'required|unique:users',
-        'password'  => 'required',
-        'NISN'      => 'required|unique:siswa',
-        'kelas_id'  => 'required'
-    ]);
+    {
+        $request->validate([
+            'name' => 'required',
+            'username' => 'required|unique:users',
+            'password' => 'required',
+            'NISN' => 'required|unique:siswa',
+            'kelas_id' => 'required'
+        ]);
 
-    // 1. Buat akun user
-    $user = User::create([
-        'name'     => $request->name,
-        'username' => $request->username,
-        'password' => Hash::make($request->password),
-        'role'     => 'siswa',
-    ]);
+        // 1. Buat akun user
+        $user = User::create([
+            'name' => $request->name,
+            'username' => $request->username,
+            'password' => Hash::make($request->password),
+            'role' => 'siswa',
+        ]);
 
-    // 2. Masukkan siswa
-    $siswa = Siswa::create([
-        'NISN'     => $request->NISN,
-        'user_id'  => $user->id,
-    ]);
+        // 2. Masukkan siswa
+        $siswa = Siswa::create([
+            'NISN' => $request->NISN,
+            'user_id' => $user->id,
+        ]);
 
-    // 3. Masukkan ke tabel kelas_siswa (relasi siswa ke kelas saat ini)
-    KelasSiswa::create([
-        'siswa_id' => $siswa->id,
-        'kelas_id' => $request->kelas_id,
-        'tahun_ajar_id' => TahunAjar::where('status', 'aktif')->first()->id ?? null, // opsional jika ada tahun ajar aktif
-    ]);
+        // 3. Masukkan ke tabel kelas_siswa (relasi siswa ke kelas saat ini)
+        KelasSiswa::create([
+            'siswa_id' => $siswa->id,
+            'kelas_id' => $request->kelas_id,
+            'tahun_ajar_id' => TahunAjar::where('status', 'aktif')->first()->id ?? null, // opsional jika ada tahun ajar aktif
+        ]);
 
-    return redirect()->route('akun-siswa.index')
-        ->with('success', 'Akun Siswa berhasil dibuat & dimasukkan ke kelas.');
-}
+        return redirect()->route('akun-siswa.index')
+            ->with('success', 'Akun Siswa berhasil dibuat & dimasukkan ke kelas.');
+    }
 
 
     public function edit($id)
     {
-        $Header = 'Edit Akun Siswa';
-        $siswa = Siswa::with('user')->findOrFail($id);
-        $kelas = Kelas::all();
-        return view('admin.siswa.edit', compact('siswa','kelas','Header'));
+        $Header = 'Data Siswa';
+        $siswa = Siswa::with(['user', 'kelasSiswa.kelas'])->findOrFail($id);
+
+        $kelasAktif = $siswa->kelasSiswa->last()->kelas->id ?? null;
+
+        $kelasList = Kelas::all();
+
+        return view('admin.siswa.edit', compact('siswa', 'kelasList', 'kelasAktif', 'Header'));
     }
+
 
     public function update(Request $request, $id)
     {

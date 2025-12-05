@@ -12,7 +12,7 @@
 
                 <div>
                     <label class="font-semibold">Nama</label>
-                    <input type="text" name="nama" value="{{ $siswa->user->nama }}"
+                    <input type="text" name="name" value="{{ $siswa->user->name }}"
                         class="border rounded-lg p-2 w-full focus:ring" required>
                 </div>
 
@@ -36,14 +36,14 @@
 
                 <div>
                     <label class="font-semibold">Kelas</label>
-                    <select name="kelas_id" class="border rounded-lg p-2 w-full focus:ring" required>
-                        @foreach ($kelas as $k)
-                            <option value="{{ $k->id }}"
-                                {{ $siswa->kelas_siswa->kelas_id == $k->id ? 'selected' : '' }}>
+                    <select name="kelas_id" class="border p-2 rounded w-full">
+                        @foreach ($kelasList as $k)
+                            <option value="{{ $k->id }}" {{ $kelasAktif == $k->id ? 'selected' : '' }}>
                                 {{ $k->nama_kelas }}
                             </option>
                         @endforeach
                     </select>
+
                 </div>
 
                 <button class="bg-blue-600 hover:bg-blue-700 text-white rounded-lg p-2 w-full">

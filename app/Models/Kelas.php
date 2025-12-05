@@ -13,9 +13,12 @@ class Kelas extends Model
 
     // App\Models\Kelas.php
     public function siswa()
-    {
-        return $this->belongsToMany(Siswa::class, 'kelas_siswa', 'kelas_id', 'siswa_id');
-    }
+{
+    return $this->belongsToMany(Siswa::class, 'kelas_siswa')
+        ->withPivot('tahun_ajar_id')
+        ->withTimestamps();
+}
+
 
     public function walikelas()
     {

@@ -17,7 +17,8 @@ class TahunAjar extends Model
     }
 
     public function kelasSiswa()
-    {
-        return $this->hasMany(KelasSiswa::class);
-    }
+{
+    return $this->hasMany(KelasSiswa::class);
+}
+
 }

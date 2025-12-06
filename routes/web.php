@@ -20,31 +20,25 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/kelas-search', [KelasCrud::class, 'search'])->name('kelas.search');
     Route::resource('tahun', TahunCrud::class);
     // Aktif / Nonaktifkan tahun ajar
-    Route::post('/tahun/{id}/activate', [TahunCrud::class, 'activate'])
-        ->name('tahun.activate');
+    Route::post('/tahun/{id}/activate', [TahunCrud::class, 'activate'])->name('tahun.activate');
 
-    Route::post('/tahun/{id}/deactivate', [TahunCrud::class, 'deactivate'])
-        ->name('tahun.deactivate');
+    Route::post('/tahun/{id}/deactivate', [TahunCrud::class, 'deactivate'])->name('tahun.deactivate');
     Route::resource('absen', AbsensiCrud::class);
     // Export routes
     Route::get('/absen/{id}/export-excel', [AbsensiCrud::class, 'exportExcel'])->name('absen.export.excel');
     Route::get('/absen/{id}/export-pdf', [AbsensiCrud::class, 'exportPDF'])->name('absen.export.pdf');
     // PROFILE ADMIN
-    Route::get('/admin/profile', [ProfileController::class, 'index'])
-        ->name('admin.profile');
+    Route::get('/admin/profile', [ProfileController::class, 'index'])->name('admin.profile');
 
-    Route::get('/admin/profile/edit', [ProfileController::class, 'edit'])
-        ->name('admin.profile.edit');
+    Route::get('/admin/profile/edit', [ProfileController::class, 'edit'])->name('admin.profile.edit');
 
-    Route::post('/admin/profile/update', [ProfileController::class, 'update'])
-        ->name('admin.profile.update');
+    Route::post('/admin/profile/update', [ProfileController::class, 'update'])->name('admin.profile.update');
 
-    Route::get('/admin/profile/password', [ProfileController::class, 'passwordForm'])
-        ->name('admin.profile.password');
+    Route::get('/admin/profile/password', [ProfileController::class, 'passwordForm'])->name('admin.profile.password');
 
-    Route::post('/admin/profile/password', [ProfileController::class, 'changePassword'])
-        ->name('admin.profile.password.update');
-
+    Route::post('/admin/profile/password', [ProfileController::class, 'changePassword'])->name(
+        'admin.profile.password.update',
+    );
 });
 
 require __DIR__ . '/auth.php';

@@ -8,8 +8,13 @@
 
                 <div>
                     <label class="font-semibold">Tahun Ajar</label>
-                    <input type="text" name="tahun" placeholder="2024/2025"
-                        class="w-full rounded-lg border p-2 focus:ring" required />
+                    <input
+                        type="text"
+                        name="tahun"
+                        placeholder="2024/2025"
+                        class="w-full rounded-lg border p-2 focus:ring"
+                        required
+                    />
                 </div>
 
                 <div>
@@ -28,14 +33,14 @@
                     </select>
                 </div>
 
-                <button class="w-full rounded-lg bg-green-600 p-2 text-white hover:bg-green-700">
-                    Simpan
-                </button>
+                <button class="w-full rounded-lg bg-green-600 p-2 text-white hover:bg-green-700">Simpan</button>
             </form>
 
             <div class="mt-6">
-                <a href="{{ route('tahun.index') }}"
-                    class="rounded-lg bg-gray-200 px-4 py-2 text-sm font-semibold hover:bg-gray-300">
+                <a
+                    href="{{ route('tahun.index') }}"
+                    class="rounded-lg bg-gray-200 px-4 py-2 text-sm font-semibold hover:bg-gray-300"
+                >
                     ← Kembali
                 </a>
             </div>

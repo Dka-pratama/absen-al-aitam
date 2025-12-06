@@ -23,9 +23,7 @@ class TahunCrud extends Controller
         $tahunAjar = Tahun::findOrFail($id);
 
         // Ambil semua baris pivot kelas_siswa milik tahun ajar ini
-        $kelasSiswaIds = \DB::table('kelas_siswa')
-            ->where('tahun_ajar_id', $id)
-            ->pluck('id'); // ← ambil ID pivot (kelas_siswa_id)
+        $kelasSiswaIds = \DB::table('kelas_siswa')->where('tahun_ajar_id', $id)->pluck('id'); // ← ambil ID pivot (kelas_siswa_id)
 
         // Statistik absensi berdasarkan pivot kelas_siswa_id
         $stats = [
@@ -37,12 +35,8 @@ class TahunCrud extends Controller
 
         // Rekap Per Kelas
         $rekapKelas = Kelas::get()->map(function ($k) use ($id) {
-
             // Ambil semua pivot kelas_siswa untuk kelas tersebut & tahun ajar tersebut
-            $pivotIds = \DB::table('kelas_siswa')
-                ->where('kelas_id', $k->id)
-                ->where('tahun_ajar_id', $id)
-                ->pluck('id');
+            $pivotIds = \DB::table('kelas_siswa')->where('kelas_id', $k->id)->where('tahun_ajar_id', $id)->pluck('id');
 
             // Hitung absensi untuk pivot itu
             $k->absensi_count = Absensi::whereIn('kelas_siswa_id', $pivotIds)->count();
@@ -78,9 +72,6 @@ class TahunCrud extends Controller
         return redirect()->back()->with('success', 'Tahun ajar berhasil dinonaktifkan.');
     }
 
-
-
-
     public function destroy($id)
     {
         $tahun = Tahun::findOrFail($id);
@@ -112,7 +103,6 @@ class TahunCrud extends Controller
         return redirect()->route('tahun.index')->with('success', 'Tahun ajar berhasil ditambahkan.');
     }
 
-
     public function edit($id)
     {
         $tahunAjar = Tahun::findOrFail($id);
@@ -140,5 +130,4 @@ class TahunCrud extends Controller
 
         return redirect()->route('tahun.index')->with('success', 'Tahun ajar berhasil diperbarui.');
     }
-
 }

@@ -2,7 +2,6 @@
 
 @section('content')
     <div class="mx-5 my-8 max-w-6xl space-y-8">
-
         <!-- Header -->
         <div class="rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 p-6 text-white shadow-lg">
             <h1 class="text-3xl font-bold">{{ $kelas->nama_kelas }}</h1>
@@ -17,14 +16,14 @@
         <!-- Card Utama -->
         <div class="rounded-xl bg-white p-6 shadow-md">
             <!-- Naik Kelas -->
-            <div class="rounded-xl bg-gray-50 p-6 shadow-inner mb-10">
+            <div class="mb-10 rounded-xl bg-gray-50 p-6 shadow-inner">
                 <h3 class="mb-4 text-2xl font-bold text-gray-800">Naikkan Semua Siswa ke Kelas Lain</h3>
 
                 <form action="{{ route('kelas.naik', $kelas->id) }}" method="POST" class="space-y-4">
                     @csrf
 
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Pilih Kelas Tujuan</label>
+                        <label class="mb-2 block text-sm font-semibold text-gray-700">Pilih Kelas Tujuan</label>
                         <select name="kelas_tujuan" class="w-full rounded-lg border p-3 focus:ring focus:ring-blue-300">
                             <option value="">-- Pilih Kelas Tujuan --</option>
                             @foreach ($daftarKelas as $k)
@@ -34,7 +33,8 @@
                     </div>
 
                     <button
-                        class="w-full rounded-lg bg-blue-600 px-5 py-3 text-base font-semibold text-white transition hover:bg-blue-700">
+                        class="w-full rounded-lg bg-blue-600 px-5 py-3 text-base font-semibold text-white transition hover:bg-blue-700"
+                    >
                         Naikkan Semua Siswa
                     </button>
                 </form>
@@ -51,7 +51,7 @@
                     <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
                         <table class="min-w-full border-collapse">
                             <thead>
-                                <tr class="bg-gray-100 text-left text-gray-700 text-sm">
+                                <tr class="bg-gray-100 text-left text-sm text-gray-700">
                                     <th class="border px-4 py-3">#</th>
                                     <th class="border px-4 py-3">NISN</th>
                                     <th class="border px-4 py-3">Nama Lengkap</th>
@@ -59,7 +59,7 @@
                             </thead>
                             <tbody>
                                 @foreach ($siswa as $index => $ks)
-                                    <tr class="hover:bg-gray-50 transition">
+                                    <tr class="transition hover:bg-gray-50">
                                         <td class="border px-4 py-3 font-medium">{{ $index + 1 }}</td>
                                         <td class="border px-4 py-3">{{ $ks->siswa->NISN }}</td>
                                         <td class="border px-4 py-3">{{ $ks->siswa->user->name }}</td>
@@ -70,9 +70,6 @@
                     </div>
                 @endif
             </div>
-
-
-
         </div>
     </div>
 @endsection

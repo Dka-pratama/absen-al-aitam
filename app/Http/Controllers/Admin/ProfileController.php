@@ -10,7 +10,7 @@ class ProfileController extends Controller
 {
     public function index()
     {
-        $Header = "Profil Admin";
+        $Header = 'Profil Admin';
         $user = Auth::user();
         return view('admin.profile', compact('user', 'Header'));
     }
@@ -18,7 +18,7 @@ class ProfileController extends Controller
     public function edit()
     {
         $user = Auth::user();
-        $Header = "Edit Profil Admin";
+        $Header = 'Edit Profil Admin';
         return view('admin.profile-edit', compact('user', 'Header'));
     }
 
@@ -42,18 +42,21 @@ class ProfileController extends Controller
 
     public function passwordForm()
     {
-        $Header = "Ganti Password";
+        $Header = 'Ganti Password';
         return view('admin.change-password', compact('Header'));
     }
     public function changePassword(Request $request)
     {
-        $request->validate([
-            'old_password' => 'required',
-            'new_password' => 'required|min:6|confirmed',
-        ], [
-            'new_password.confirmed' => 'Konfirmasi password tidak cocok.',
-            'new_password.min' => 'Password baru minimal 6 karakter.',
-        ]);
+        $request->validate(
+            [
+                'old_password' => 'required',
+                'new_password' => 'required|min:6|confirmed',
+            ],
+            [
+                'new_password.confirmed' => 'Konfirmasi password tidak cocok.',
+                'new_password.min' => 'Password baru minimal 6 karakter.',
+            ],
+        );
 
         $user = Auth::user();
 
@@ -64,7 +67,7 @@ class ProfileController extends Controller
 
         // update password
         $user->update([
-            'password' => bcrypt($request->new_password)
+            'password' => bcrypt($request->new_password),
         ]);
 
         return redirect()->route('admin.profile')->with('success', 'Password berhasil diganti.');

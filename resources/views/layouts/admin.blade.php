@@ -106,8 +106,8 @@
                 </a>
 
                 <a
-                    href="{{ route('absensi.index') }}"
-                    class="{{ Route::is('absensi.*') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }} flex items-center gap-3 rounded-lg p-3 transition"
+                    href="{{ route('absen.index') }}"
+                    class="{{ Route::is('absen.*') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }} flex items-center gap-3 rounded-lg p-3 transition"
                 >
                     <img src="{{ asset('icons/absensi.svg') }}" class="w-5" />
                     Absensi

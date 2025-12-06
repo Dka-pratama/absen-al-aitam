@@ -3,8 +3,6 @@
 @section('content')
     <div class="p-4">
         <div class="mx-auto max-w-xl rounded-xl border bg-white p-6 shadow-md">
-            <h2 class="mb-6 text-2xl font-bold">Edit Wali Kelas</h2>
-
             <form action="{{ route('akun-walikelas.update', $wali->id) }}" method="POST" class="space-y-4">
                 @csrf
                 @method('PUT')

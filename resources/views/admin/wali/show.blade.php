@@ -1,11 +1,10 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="mx-5 my-5 max-w-3xl">
-        <div class="space-y-4 rounded-lg bg-white p-6 shadow-md">
-            <h2 class="mb-6 text-2xl font-bold">Detail Wali Kelas</h2>
-
-            {{-- Data Wali --}}
+    <div class="mx-5 my-5">
+        <div class="mx-auto max-w-4xl space-y-6 rounded-lg bg-white p-6 shadow-md">
+            <div class="">                
+                {{-- Data Wali --}}
             <div>
                 <p class="text-sm text-gray-600">Nama Wali</p>
                 <p class="text-lg font-semibold">{{ $wali->user->name }}</p>
@@ -42,7 +41,7 @@
 
             {{-- Rekap Siswa --}}
             <h3 class="text-xl font-bold">Rekap Siswa</h3>
-
+            
             <div class="rounded-lg bg-blue-100 p-4 text-center">
                 <p class="text-sm text-gray-600">Jumlah Siswa</p>
                 <p class="text-2xl font-semibold text-blue-700">
@@ -58,6 +57,7 @@
                     ← Kembali
                 </a>
             </div>
+        </div>
         </div>
     </div>
 @endsection

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CRUD\AbsensiCrud;
 use App\Http\Controllers\CRUD\KelasCrud;
@@ -19,13 +19,32 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/kelas/{id}/naik', [KelasCrud::class, 'naikkelas'])->name('kelas.naik');
     Route::get('/kelas-search', [KelasCrud::class, 'search'])->name('kelas.search');
     Route::resource('tahun', TahunCrud::class);
-    Route::resource('absensi', AbsensiCrud::class);
-});
+    // Aktif / Nonaktifkan tahun ajar
+    Route::post('/tahun/{id}/activate', [TahunCrud::class, 'activate'])
+        ->name('tahun.activate');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+    Route::post('/tahun/{id}/deactivate', [TahunCrud::class, 'deactivate'])
+        ->name('tahun.deactivate');
+    Route::resource('absen', AbsensiCrud::class);
+    // Export routes
+    Route::get('/absen/{id}/export-excel', [AbsensiCrud::class, 'exportExcel'])->name('absen.export.excel');
+    Route::get('/absen/{id}/export-pdf', [AbsensiCrud::class, 'exportPDF'])->name('absen.export.pdf');
+    // PROFILE ADMIN
+    Route::get('/admin/profile', [ProfileController::class, 'index'])
+        ->name('admin.profile');
+
+    Route::get('/admin/profile/edit', [ProfileController::class, 'edit'])
+        ->name('admin.profile.edit');
+
+    Route::post('/admin/profile/update', [ProfileController::class, 'update'])
+        ->name('admin.profile.update');
+
+    Route::get('/admin/profile/password', [ProfileController::class, 'changePassword'])
+        ->name('admin.profile.password');
+    
+    Route::get('/admin/profile/logs', [ProfileController::class, 'logs'])
+        ->name('admin.profile.logs');
+
+    });
 
 require __DIR__ . '/auth.php';

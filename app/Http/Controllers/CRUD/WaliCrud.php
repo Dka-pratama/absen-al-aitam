@@ -53,7 +53,7 @@ class WaliCrud extends Controller
 
     public function show($id)
     {
-        $Header = 'Data Wali Kelas';
+        $Header = 'Detail Wali Kelas';
         $wali = Wali::with('user')->findOrFail($id);
         return view('admin.wali.show', compact('wali', 'Header'));
     }
@@ -77,7 +77,7 @@ class WaliCrud extends Controller
     {
         $tahunAjar = TahunAjar::all();
         $kelas = Kelas::all();
-        $Header = 'Data Wali Kelas';
+        $Header = 'Tambah Wali Kelas';
         return view('admin.wali.create', compact('tahunAjar', 'Header', 'kelas'));
     }
 

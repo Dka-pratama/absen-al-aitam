@@ -3,8 +3,6 @@
 @section('content')
     <div class="p-4">
         <div class="mx-auto w-full max-w-xl rounded-xl border bg-white p-6 shadow-md">
-            <h2 class="mb-6 text-2xl font-bold">Tambah Wali Kelas</h2>
-
             <form action="{{ route('akun-walikelas.store') }}" method="POST" class="space-y-4">
                 @csrf
 

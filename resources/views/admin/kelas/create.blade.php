@@ -3,11 +3,8 @@
 @section('content')
     <div class="p-4">
         <div class="mx-auto max-w-xl rounded-xl border bg-white p-6 shadow-md">
-            <h2 class="mb-6 text-2xl font-bold">Tambah Kelas</h2>
-
             <form action="{{ route('kelas.store') }}" method="POST" class="space-y-4">
                 @csrf
-
                 <div>
                     <label class="font-semibold">Nama Kelas</label>
                     <input type="text" name="nama_kelas" class="w-full rounded-lg border p-2 focus:ring" required />

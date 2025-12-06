@@ -21,16 +21,36 @@ class KelasCrud extends Controller
     }
 
     public function search(Request $request)
-    {
-        $keyword = $request->search;
+{
+    $keyword = $request->search;
 
-        $kelasList = Kelas::withCount('siswa')
-            ->where('nama_kelas', 'like', "%$keyword%")
-            ->orWhere('jurusan', 'like', "%$keyword%")
-            ->get();
+    $kelasList = Kelas::withCount('siswa')
+        ->where(function ($q) use ($keyword) {
+            $q->where('nama_kelas', 'like', "%$keyword%")
+              ->orWhere('jurusan', 'like', "%$keyword%")
+              ->orWhere('angkatan', 'like', "%$keyword%");
+        })
+        ->get();
 
-        return response()->json($kelasList);
-    }
+    return response()->json(
+        $kelasList->map(function ($k) {
+            return [
+                'id'          => $k->id,
+                'nama_kelas'  => $k->nama_kelas,
+                'jurusan'     => $k->jurusan,
+                'angkatan'    => $k->angkatan,
+                'siswa_count' => $k->siswa_count,
+
+                'url_edit'   => route('kelas.edit', $k->id),
+                'url_delete' => route('kelas.destroy', $k->id),
+                'url_show'   => route('kelas.show', $k->id),
+            ];
+        })
+    );
+}
+
+
+
 
     public function show($id)
     {

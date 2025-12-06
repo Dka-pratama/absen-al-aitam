@@ -64,7 +64,7 @@
                         <th class="p-3 text-left">NUPTK</th>
                         <th class="p-3 text-left">Nama Wali Kelas</th>
                         <th class="p-3 text-left">Kelas</th>
-                        <th class="p-3 text-left">Action</th>
+                        <th class="p-3 text-center">Action</th>
                     </tr>
                 </thead>
 
@@ -77,23 +77,47 @@
                             <td class="p-3">{{ $wk->kelas->nama_kelas }}</td>
                             {{-- ACTION --}}
                             <td class="flex justify-center gap-3 p-3">
-                                <a href="{{ route('akun-walikelas.edit', $wk->id) }}">
-                                    <i class="fa-solid fa-pen-to-square fa-lg" style="color: #0045bd"></i>
-                                </a>
-                                <form
-                                    action="{{ route('akun-walikelas.destroy', $wk->id) }}"
-                                    method="POST"
-                                    class="form-hapus inline"
-                                >
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn-hapus">
-                                        <i class="fa-solid fa-trash fa-lg" style="color: #e00000"></i>
-                                    </button>
-                                </form>
-                                <a href="{{ route('akun-walikelas.show', $wk->id) }}">
-                                    <i class="fa-solid fa-info fa-lg"></i>
-                                </a>
+                                {{-- Edit --}}
+                                <div class="group relative">
+                                    <a href="{{ route('akun-walikelas.edit', $wk->id) }}">
+                                        <i class="fa-solid fa-pen-to-square fa-lg" style="color: #0045bd"></i>
+                                    </a>
+                                    <div
+                                        class="pointer-events-none absolute left-1/2 z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 shadow transition group-hover:opacity-100"
+                                    >
+                                        Edit Akun
+                                    </div>
+                                </div>
+                                {{-- Hapus --}}
+                                <div class="group relative">
+                                    <form
+                                        action="{{ route('akun-walikelas.destroy', $wk->id) }}"
+                                        method="POST"
+                                        class="form-hapus inline"
+                                    >
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-hapus">
+                                            <i class="fa-solid fa-trash fa-lg" style="color: #e00000"></i>
+                                        </button>
+                                    </form>
+                                    <div
+                                        class="pointer-events-none absolute left-1/2 z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 shadow transition group-hover:opacity-100"
+                                    >
+                                        Hapus Akun
+                                    </div>
+                                </div>
+                                {{-- Info --}}
+                                <div class="group relative">
+                                    <a href="{{ route('akun-walikelas.show', $wk->id) }}">
+                                        <i class="fa-solid fa-info fa-lg"></i>
+                                    </a>
+                                    <div
+                                        class="pointer-events-none absolute left-1/2 z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 shadow transition group-hover:opacity-100"
+                                    >
+                                        Detail Akun
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     @endforeach
@@ -107,5 +131,9 @@
 @endsection
 
 @section('script')
+    <script>
+        const csrfToken = "{{ csrf_token() }}";
+    </script>
+
     <script src="{{ asset('js/walikelas-search.js') }}"></script>
 @endsection

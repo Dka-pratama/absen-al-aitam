@@ -1,4 +1,3 @@
-// Debounce function
 function debounce(func, delay = 350) {
     let timeout;
     return function (...args) {
@@ -7,14 +6,19 @@ function debounce(func, delay = 350) {
     };
 }
 
-// Main search handler
 const searchKelas = debounce(function () {
-    const keyword = document.getElementById('searchInput').value;
+    const keyword = document.getElementById('searchInput').value.trim();
+    const pagination = document.getElementById('paginationContainer');
+
+    // Hide paginate saat search
+    if (pagination) {
+        pagination.style.display = keyword === "" ? "block" : "none";
+    }
 
     fetch(`/kelas-search?search=` + keyword)
         .then(res => res.json())
         .then(data => {
-            let rows = '';
+            let rows = "";
 
             data.forEach((k, i) => {
                 rows += `
@@ -23,50 +27,43 @@ const searchKelas = debounce(function () {
                         <td class="p-3">${k.nama_kelas}</td>
                         <td class="p-3">${k.siswa_count}</td>
                         <td class="p-3">${k.jurusan ?? '-'}</td>
-                        {{-- ACTION --}}
-                            <td class="flex justify-center gap-3 p-3">
-                                {{-- Edit --}}
-                                <div class="group relative">
-                                    <a href="{{ route('kelas.edit', $k->id) }}">
-                                        <i class="fa-solid fa-pen-to-square fa-lg" style="color: #0045bd"></i>
-                                    </a>
-                                    <div
-                                        class="pointer-events-none absolute left-1/2 z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 shadow transition group-hover:opacity-100"
-                                    >
-                                        Edit Kelas
-                                    </div>
+                        <td class="p-3">${k.angkatan ?? '-'}</td>
+
+                        <td class="flex justify-center gap-3 p-3">
+                            <!-- EDIT -->
+                            <a href="${k.url_edit}" class="group relative">
+                                <i class="fa-solid fa-pen-to-square fa-lg" style="color:#0045bd"></i>
+                                <div class="pointer-events-none absolute left-1/2 mt-2 -translate-x-1/2 
+                                    whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white 
+                                    opacity-0 shadow transition group-hover:opacity-100">
+                                    Edit Kelas
                                 </div>
-                                {{-- Hapus --}}
-                                <div class="group relative">
-                                    <form
-                                        action="{{ route('kelas.destroy', $k->id) }}"
-                                        method="POST"
-                                        class="form-hapus inline"
-                                    >
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn-hapus">
-                                            <i class="fa-solid fa-trash fa-lg" style="color: #e00000"></i>
-                                        </button>
-                                    </form>
-                                    <div
-                                        class="pointer-events-none absolute left-1/2 z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 shadow transition group-hover:opacity-100"
-                                    >
-                                        Hapus Kelas
-                                    </div>
+                            </a>
+
+                            <!-- HAPUS -->
+                            <form action="${k.url_delete}" method="POST" class="inline group relative form-hapus">
+                                <input type="hidden" name="_token" value="${csrfToken}">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit">
+                                    <i class="fa-solid fa-trash fa-lg" style="color:#e00000"></i>
+                                </button>
+                                <div class="pointer-events-none absolute left-1/2 mt-2 -translate-x-1/2 
+                                    whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white 
+                                    opacity-0 shadow transition group-hover:opacity-100">
+                                    Hapus Kelas
                                 </div>
-                                {{-- Info --}}
-                                <div class="group relative">
-                                    <a href="{{ route('kelas.show', $k->id) }}">
-                                        <i class="fa-solid fa-info fa-lg"></i>
-                                    </a>
-                                    <div
-                                        class="pointer-events-none absolute left-1/2 z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 shadow transition group-hover:opacity-100"
-                                    >
-                                        Detail Kelas
-                                    </div>
+                            </form>
+
+                            <!-- DETAIL -->
+                            <a href="${k.url_show}" class="group relative">
+                                <i class="fa-solid fa-info fa-lg"></i>
+                                <div class="pointer-events-none absolute left-1/2 mt-2 -translate-x-1/2 
+                                    whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white 
+                                    opacity-0 shadow transition group-hover:opacity-100">
+                                    Detail Kelas
                                 </div>
-                            </td>
+                            </a>
+                        </td>
                     </tr>
                 `;
             });
@@ -75,7 +72,6 @@ const searchKelas = debounce(function () {
         });
 }, 400);
 
-// Event listener input
 document.addEventListener('DOMContentLoaded', function () {
     const input = document.getElementById('searchInput');
     if (input) {

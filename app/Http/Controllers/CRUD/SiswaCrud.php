@@ -24,36 +24,74 @@ class SiswaCrud extends Controller
         return view('admin.siswa.index', compact('siswa', 'Header'));
     }
     public function search(Request $r)
-    {
-        $keyword = $r->search;
+{
+    $keyword = $r->search;
 
-        $data = Siswa::with(['user', 'kelas'])
-            ->where('NISN', 'like', "%$keyword%")
-            ->orWhereHas('user', function ($q) use ($keyword) {
-                $q->where('name', 'like', "%$keyword%")->orWhere('username', 'like', "%$keyword%");
-            })
-            ->orWhereHas('kelas', function ($q) use ($keyword) {
-                $q->where('nama_kelas', 'like', "%$keyword%");
-            })
-            ->paginate(15);
+    $data = Siswa::with(['user', 'kelasSiswa.kelas'])
+        ->where('NISN', 'like', "%$keyword%")
+        ->orWhereHas('user', function ($q) use ($keyword) {
+            $q->where('username', 'like', "%$keyword%")
+              ->orWhere('name', 'like', "%$keyword%");
+        })
+        ->orWhereHas('kelasSiswa.kelas', function ($q) use ($keyword) {
+            $q->where('nama_kelas', 'like', "%$keyword%");
+        })
+        ->get();
 
-        return response()->json($data);
-    }
+    return response()->json(
+        $data->map(function ($s) {
+            return [
+                'id' => $s->id,
+                'NISN' => $s->NISN,
+
+                'user' => [
+                    'username' => $s->user->username ?? '-',
+                    'name'     => $s->user->name ?? '-',
+                ],
+
+                'kelas' => [
+                    'nama_kelas' => $s->kelasSiswa->first()->kelas->nama_kelas ?? '-',
+                ],
+
+                // URL aman dipakai di JS
+                'url_edit'   => route('akun-siswa.edit', $s->id),
+                'url_delete' => route('akun-siswa.destroy', $s->id),
+                'url_show'   => route('akun-siswa.show', $s->id),
+            ];
+        })
+    );
+}
+
+
+
+
+
 
     public function show($id)
-    {
-        $Header = 'Data Siswa';
-        // Ambil siswa beserta relasinya
-        $siswa = Siswa::with(['user', 'kelas', 'absensi'])->findOrFail($id);
+{
+    $Header = 'Data Siswa';
 
-        // Hitung jumlah absensi berdasarkan status
-        $hadir = $siswa->absensi->where('status', 'hadir')->count();
-        $sakit = $siswa->absensi->where('status', 'sakit')->count();
-        $izin = $siswa->absensi->where('status', 'izin')->count();
-        $alpa = $siswa->absensi->where('status', 'alpa')->count();
+    $siswa = Siswa::with(['user', 'absensi'])->findOrFail($id);
 
-        return view('admin.siswa.show', compact('siswa', 'Header', 'hadir', 'sakit', 'izin', 'alpa'));
-    }
+    // Ambil Tahun Ajar aktif
+    $tahunAjarAktif = TahunAjar::where('status', 'aktif')->first();
+
+    // Ambil kelas siswa pada tahun ajar aktif
+    $kelasAktif = $siswa->kelas()
+        ->wherePivot('tahun_ajar_id', $tahunAjarAktif->id)
+        ->first();
+
+    // Hitung absensi
+    $hadir = $siswa->absensi->where('status', 'hadir')->count();
+    $sakit = $siswa->absensi->where('status', 'sakit')->count();
+    $izin = $siswa->absensi->where('status', 'izin')->count();
+    $alpa = $siswa->absensi->where('status', 'alpa')->count();
+
+    return view('admin.siswa.show', compact(
+        'siswa', 'Header', 'hadir', 'sakit', 'izin', 'alpa', 'kelasAktif'
+    ));
+}
+
 
     public function destroy($id)
     {

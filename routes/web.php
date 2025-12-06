@@ -39,12 +39,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/profile/update', [ProfileController::class, 'update'])
         ->name('admin.profile.update');
 
-    Route::get('/admin/profile/password', [ProfileController::class, 'changePassword'])
+    Route::get('/admin/profile/password', [ProfileController::class, 'passwordForm'])
         ->name('admin.profile.password');
-    
-    Route::get('/admin/profile/logs', [ProfileController::class, 'logs'])
-        ->name('admin.profile.logs');
 
-    });
+    Route::post('/admin/profile/password', [ProfileController::class, 'changePassword'])
+        ->name('admin.profile.password.update');
+
+});
 
 require __DIR__ . '/auth.php';

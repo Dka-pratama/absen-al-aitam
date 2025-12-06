@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Support\Facades\DB;
 class Kelas extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,6 +19,9 @@ class Kelas extends Model
         ->withTimestamps();
 }
 
+function aktif() {
+    return DB::table('tahun_ajar')->where('is_active', 1)->value('id');
+}
 
     public function walikelas()
     {

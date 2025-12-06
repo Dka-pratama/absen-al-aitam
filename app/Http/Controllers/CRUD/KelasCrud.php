@@ -5,6 +5,7 @@ namespace App\Http\Controllers\CRUD;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Kelas;
+use Illuminate\Support\Facades\DB;
 use App\Models\Siswa;
 use App\Models\TahunAjar;
 use App\Models\KelasSiswa;
@@ -32,59 +33,68 @@ class KelasCrud extends Controller
     }
 
    public function show($id)
-    {
-        $kelas = Kelas::findOrFail($id);
+{
+    $kelas = Kelas::findOrFail($id);
+    $tahunAjarAktif = TahunAjar::where('status', 'aktif')->first();
 
-        // Ambil tahun ajar aktif
-        $tahunAktif = TahunAjar::where('status', 'aktif')->first();
+    $siswa = KelasSiswa::with('siswa.user')
+        ->where('kelas_id', $id)
+        ->where('tahun_ajar_id', $tahunAjarAktif->id)
+        ->get();
 
-        // Ambil siswa dari pivot pada tahun ajar aktif
-        $siswaList = KelasSiswa::where('kelas_id', $id)
-            ->where('tahun_ajar_id', $tahunAktif->id)
-            ->with('siswa.user')
-            ->get();
+    $daftarKelas = Kelas::orderBy('nama_kelas')->get(); // untuk dropdown
 
-        $jumlahSiswa = $siswaList->count();
+    return view('admin.kelas.show', compact(
+        'kelas',
+        'siswa',
+        'tahunAjarAktif',
+        'daftarKelas'
+    ));
+}
 
-        // Kelas tujuan untuk naik kelas (kecuali dirinya)
-        $kelasList = Kelas::where('id', '!=', $kelas->id)->get();
 
-        return view('admin.kelas.show', compact(
-            'kelas',
-            'siswaList',
-            'jumlahSiswa',
-            'kelasList',
-            'tahunAktif'
-        ));
+
+    public function naikKelas(Request $request, $id)
+{
+    $request->validate([
+        'kelas_tujuan' => 'required|exists:kelas,id',
+    ]);
+
+    $kelasAsal = Kelas::findOrFail($id);
+    $kelasTujuan = Kelas::findOrFail($request->kelas_tujuan);
+    $tahunAjarAktif = TahunAjar::where('status', 'aktif')->first();
+
+    $siswa = KelasSiswa::where('kelas_id', $id)
+        ->where('tahun_ajar_id', $tahunAjarAktif->id)
+        ->get();
+
+    foreach ($siswa as $ks) {
+
+        // pastikan tidak ada data ganda
+        KelasSiswa::updateOrCreate(
+            [
+                'siswa_id' => $ks->siswa_id,
+                'tahun_ajar_id' => $tahunAjarAktif->id,
+            ],
+            [
+                'kelas_id' => $kelasTujuan->id,
+            ]
+        );
     }
 
-    public function naikkanSiswa(Request $request, $id)
-    {
-        $request->validate([
-            'kelas_tujuan_id' => 'required|exists:kelas,id'
-        ]);
+    return back()->with('success', 'Semua siswa berhasil dinaikkan ke kelas ' . $kelasTujuan->nama_kelas);
+}
 
-        $kelasAsal = Kelas::findOrFail($id);
-        $kelasTujuanId = $request->kelas_tujuan_id;
 
-        $tahunAktif = TahunAjar::where('status', 'aktif')->first();
+private function nextKelasName($nama)
+{
+    // Contoh: "X RPL 1" → "XI RPL 1"
+    if (str_starts_with($nama, 'X ')) return 'XI ' . substr($nama, 2);
+    if (str_starts_with($nama, 'XI ')) return 'XII ' . substr($nama, 3);
+    return $nama;
+}
 
-        // Ambil siswa dari kelas asal untuk tahun ajar aktif
-        $pivotList = KelasSiswa::where('kelas_id', $kelasAsal->id)
-            ->where('tahun_ajar_id', $tahunAktif->id)
-            ->get();
 
-        foreach ($pivotList as $pivot) {
-            // Buat baris pivot baru untuk kelas tujuan
-            KelasSiswa::create([
-                'kelas_id'      => $kelasTujuanId,
-                'siswa_id'      => $pivot->siswa_id,
-                'tahun_ajar_id' => $tahunAktif->id,
-            ]);
-        }
-
-        return back()->with('success', 'Semua siswa berhasil dinaikkan ke kelas tujuan.');
-    }
 
     public function destroy($id)
     {

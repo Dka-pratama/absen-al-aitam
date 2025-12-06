@@ -137,31 +137,60 @@ class SiswaCrud extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        $siswa = Siswa::findOrFail($id);
-        $user = User::findOrFail($siswa->user_id);
+{
+    $siswa = Siswa::findOrFail($id);
+    $user = $siswa->user;
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
-            'NISN' => 'required|string|max:20|unique:siswa,NISN,' . $siswa->id,
-            'kelas_id' => 'required',
-        ]);
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+        'NISN' => 'required|string|max:20|unique:siswa,NISN,' . $siswa->id,
+        'kelas_id' => 'required|exists:kelas,id',
+    ]);
 
+    // Update User
+    $user->update([
+        'name' => $request->name,
+        'username' => $request->username,
+    ]);
+
+    if ($request->password) {
         $user->update([
-            'name' => $request->name,
-            'username' => $request->username,
+            'password' => Hash::make($request->password),
         ]);
-
-        if ($request->password) {
-            $user->update([
-                'password' => Hash::make($request->password),
-            ]);
-        }
-        $siswa->update([
-            'NISN' => $request->NISN,
-            'kelas_id' => $request->kelas_id,
-        ]);
-        return redirect()->route('akun-siswa.index')->with('success', 'Akun siswa berhasil di update.');
     }
+
+    // Update NISN
+    $siswa->update([
+        'NISN' => $request->NISN,
+    ]);
+
+    // ================================================
+    //       UPDATE KELAS AKTIF DI TABLE PIVOT
+    // ================================================
+    
+    $tahunAktif = TahunAjar::where('status', 'aktif')->first();
+
+    // Ambil pivot untuk tahun ajar aktif
+    $pivot = $siswa->kelasSiswa()
+        ->where('tahun_ajar_id', $tahunAktif->id)
+        ->first();
+
+    if ($pivot) {
+        // Update pivot
+        $pivot->update([
+            'kelas_id' => $request->kelas_id
+        ]);
+    } else {
+        // Jika belum ada pivot (kasus tertentu)
+        $siswa->kelasSiswa()->create([
+            'kelas_id' => $request->kelas_id,
+            'tahun_ajar_id' => $tahunAktif->id
+        ]);
+    }
+
+    return redirect()->route('akun-siswa.index')
+        ->with('success', 'Akun siswa berhasil di update.');
+}
+
 }

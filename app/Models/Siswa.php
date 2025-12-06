@@ -22,16 +22,12 @@ class Siswa extends Model
     }
 
     public function kelas()
-    {
-        return $this->hasOneThrough(
-            Kelas::class, // model tujuan
-            KelasSiswa::class, // model perantara
-            'siswa_id', // FK di kelas_siswa
-            'id', // PK di kelas
-            'id', // PK siswa
-            'kelas_id', // kelas_id di kelas_siswa
-        );
-    }
+{
+    return $this->belongsToMany(Kelas::class, 'kelas_siswa')
+        ->withPivot('tahun_ajar_id')
+        ->withTimestamps();
+}
+
 
     public function absensi()
     {

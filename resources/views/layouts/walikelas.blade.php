@@ -1,121 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <title>Wali - {{ $title ?? 'Dashboard' }}</title>
 
-        @vite('resources/css/app.css')
-        <style>
-            /* small helper for the big rounded sidebar bottom-right like design */
-            .sidebar-curve {
-                border-bottom-right-radius: 80px;
-            }
-        </style>
-    </head>
-    <body class="min-h-screen bg-[#F2F3F0] font-sans">
-        <div class="flex min-h-screen">
-            <!-- SIDEBAR -->
-            <aside
-                class="sidebar-curve flex w-72 flex-col justify-between bg-gradient-to-b from-green-600 to-green-500 text-white shadow-lg"
-            >
-                <div>
-                    <div class="flex items-center gap-3 px-6 py-8">
-                        <img src="{{ asset('logo.png') }}" alt="logo" class="h-12 w-12 object-contain" />
-                        <div class="text-white">
-                            <div class="text-lg font-bold leading-tight">SMK AL-</div>
-                            <div class="text-lg font-bold leading-tight">AITAAM</div>
-                        </div>
-                    </div>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ $title ?? 'Dashboard' }}</title>
 
-                    <nav class="mt-2 space-y-4 px-4">
-                        <a
-                            href="{{ route('walikelas.dashboard') }}"
-                            class="flex items-center gap-3 rounded-md px-3 py-2 text-white/90 hover:text-white"
-                        >
-                            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path d="M3 12h18M6 6h12M6 18h12" />
-                            </svg>
-                            <span class="text-sm">Dashboard</span>
-                        </a>
+    <!-- Font Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <!-- Sweet Allert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-                        <a
-                            href="{{ route('walikelas.absensi') }}"
-                            class="flex items-center gap-3 rounded-md px-3 py-2 text-white/80 hover:text-white"
-                        >
-                            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path d="M5 3h14v18H5z" />
-                            </svg>
-                            <span class="text-sm">Absensi</span>
-                        </a>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-                        <a
-                            href="{{ route('walikelas.laporan') }}"
-                            class="flex items-center gap-3 rounded-md px-3 py-2 text-white/80 hover:text-white"
-                        >
-                            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path d="M19 11H5M19 17H5M19 5H5" />
-                            </svg>
-                            <span class="text-sm">Laporan</span>
-                        </a>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
 
-                        <a
-                            href="{{ route('walikelas.profile') }}"
-                            class="flex items-center gap-3 rounded-md px-3 py-2 text-white/80 hover:text-white"
-                        >
-                            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path d="M12 12a5 5 0 100-10 5 5 0 000 10zM3 21a9 9 0 0118 0" />
-                            </svg>
-                            <span class="text-sm">Profile</span>
-                        </a>
-                    </nav>
-                </div>
+<body class="flex min-h-screen bg-[#F5F6EE]">
+    {{-- TOAST CONTAINER --}}
+    @if (session('success'))
+        <x-alert type="success" :message="session('success')" />
+    @endif
 
-                <div class="px-6 pb-6">
-                    <form action="/logout" method="POST">
-                        @csrf
-                        <button class="flex items-center gap-3 text-sm text-white/80 hover:text-white">
-                            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path d="M15 3h4v18h-4M10 17l5-5-5-5m5 5H3" />
-                            </svg>
-                            Logout
-                        </button>
-                    </form>
-                </div>
-            </aside>
+    @if (session('error'))
+        <x-alert type="danger" :message="session('error')" />
+    @endif
 
-            <!-- MAIN -->
-            <div class="flex min-h-screen flex-1 flex-col">
-                <!-- TOPBAR: centered title, avatar on right -->
-                <header class="bg-white shadow-sm">
-                    <div class="mx-auto flex max-w-[1200px] items-center justify-between px-8 py-6">
-                        <h1 class="text-2xl font-extrabold tracking-wide">SISTEM ABSENSI SISWA</h1>
+    @if (session('info'))
+        <x-alert type="info" :message="session('info')" />
+    @endif
 
-                        <div class="flex items-center gap-3">
-                            <img
-                                src="{{ asset('profile.jpg') }}"
-                                alt="profile"
-                                class="h-11 w-11 rounded-full border-2 border-white object-cover shadow-sm"
-                            />
-                            <div class="text-right">
-                                <div class="text-sm font-semibold text-gray-800">
-                                    {{ $nama_wali ?? 'Wali Kelas' }}
-                                </div>
-                                <div class="text-xs text-gray-500">
-                                    {{ $email ?? 'email@example.com' }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </header>
+    @if ($errors->any())
+        <x-alert type="danger" :message="$errors->first()" />
+    @endif
 
-                <!-- CONTENT AREA -->
-                <main class="flex-1">
-                    <div class="mx-auto max-w-[1200px] px-10 py-8">
-                        @yield('content')
-                    </div>
-                </main>
+    <!-- BACKDROP (HP MODE) -->
+    <div id="backdrop" class="fixed inset-0 z-30 hidden bg-black/40 md:hidden"></div>
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar"
+        class="fixed left-0 top-0 z-40 h-screen w-64 -translate-x-full transform rounded-br-[80px] 
+           bg-gradient-to-b from-green-600 to-green-700 text-white shadow-lg 
+           transition-transform duration-300 md:translate-x-0">
+        <!-- LOGO -->
+        <div class="mb-6 flex items-center gap-3 px-4 pt-6">
+            <img src="{{ asset('logo.png') }}" class="w-14 drop-shadow-lg" />
+            <div class="text-lg font-bold leading-tight">
+                <div>SMK AL-AITAAM</div>
+                <p class="text-sm font-normal opacity-80">Wali Kelas</p>
             </div>
         </div>
-    </body>
+
+        <!-- MENU -->
+        <nav class="mt-4 space-y-2 p-6">
+
+            <!-- DASHBOARD -->
+            <a href="{{ route('wali.dashboard') }}"
+                class="{{ request()->is('walikelas/dashboard') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }}
+                   flex items-center gap-3 rounded-lg p-3 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-layout-dashboard">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M9 3a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-4a2
+                         2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2zm0 12a2
+                         2 0 0 1 2 2v2a2 2 0 0 1 -2
+                         2h-4a2 2 0 0 1 -2 -2v-2a2 2 0 0 1 2
+                         -2zm10 -4a2 2 0 0 1 2 2v6a2
+                         2 0 0 1 -2 2h-4a2 2 0 0 1 -2
+                         -2v-6a2 2 0 0 1 2 -2zm0 -8a2
+                         2 0 0 1 2 2v2a2 2 0 0 1 -2
+                         2h-4a2 2 0 0 1 -2 -2v-2a2 2 0 0 1 2 -2z" />
+                </svg>
+                Dashboard
+            </a>
+
+            <!-- DATA SISWA -->
+            <a href="#"
+                class="{{ request()->is('walikelas/siswa*') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }}
+                   flex items-center gap-3 rounded-lg p-3 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-users">
+                    <path d="M9 7a4 4 0 1 1 8 0" />
+                    <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                    <path d="M16 7a4 4 0 1 0 0 7.75" />
+                </svg>
+                Data Siswa
+            </a>
+
+            <!-- ABSENSI -->
+            <a href="#"
+                class="{{ request()->is('walikelas/absensi*') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }}
+                   flex items-center gap-3 rounded-lg p-3 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-calendar-check">
+                    <path d="M8 2v4" />
+                    <path d="M16 2v4" />
+                    <rect width="18" height="18" x="3" y="4" rx="2" />
+                    <path d="M3 10h18" />
+                    <path d="m9 16 2 2 4-4" />
+                </svg>
+                Absensi
+            </a>
+
+            <!-- PENGUMUMAN -->
+            <a href="#"
+                class="{{ request()->is('walikelas/pengumuman*') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }}
+                   flex items-center gap-3 rounded-lg p-3 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-megaphone">
+                    <path d="M3 11l18-5v12l-18-5v-2z" />
+                    <path d="M11 12a4 4 0 0 0 0 8h1" />
+                </svg>
+                Pengumuman
+            </a>
+
+            <!-- GARIS PEMBATAS -->
+            <div class="space-y-2 border-t border-white/40 py-5">
+
+                <!-- PROFILE -->
+                <a href="#"
+                    class="{{ request()->is('walikelas/profile') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }}
+                       flex items-center gap-3 rounded-lg p-3 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" class="lucide lucide-circle-user-round">
+                        <circle cx="12" cy="7" r="4" />
+                        <path d="M18 20a6 6 0 0 0-12 0" />
+                        <circle cx="12" cy="12" r="10" />
+                    </svg>
+                    Profile
+                </a>
+
+                <!-- LOGOUT -->
+                <form method="POST" action="{{ route('logout') }}"
+                    class="flex items-center gap-3 rounded-lg p-3 transition hover:bg-white/20">
+                    @csrf
+                    <button class="flex w-full items-center gap-3 text-left">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" class="lucide lucide-log-out">
+                            <path d="M9 21H5a2 2 0 0 1 -2 -2V5a2 2 0 0 1 2 -2h4" />
+                            <path d="M16 17l5-5-5-5" />
+                            <path d="M21 12H9" />
+                        </svg>
+                        Logout
+                    </button>
+                </form>
+            </div>
+        </nav>
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <div class="flex flex-1 flex-col md:ml-64">
+        <!-- TOPBAR -->
+        <header class="sticky top-0 z-20 flex items-center justify-between bg-white px-5 py-3 shadow-sm">
+            <!-- HAMBURGER BUTTON -->
+            <button id="toggleSidebar" class="rounded p-2 hover:bg-gray-200 md:hidden">
+                <i class="fa-solid fa-bars fa-xl"></i>
+            </button>
+            <h1 class="text-xl font-semibold tracking-wide md:text-2xl">
+                {{ $Header ?? '-' }}
+            </h1>
+            <div class="flex items-center gap-3">
+                <div class="hidden leading-tight sm:block">
+                    <p class="text-sm font-bold">Admin</p>
+                    <p class="text-xs text-gray-600">admin@gmail.com</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- CONTENT -->
+        <div class="flex-1 overflow-auto">
+            @yield('content')
+        </div>
+    </div>
+    <!-- SIDEBAR SCRIPT -->
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const toggleSidebar = document.getElementById('toggleSidebar');
+        const backdrop = document.getElementById('backdrop');
+
+        toggleSidebar.addEventListener('click', () => {
+            sidebar.classList.remove('-translate-x-full');
+            backdrop.classList.remove('hidden');
+        });
+
+        backdrop.addEventListener('click', () => {
+            sidebar.classList.add('-translate-x-full');
+            backdrop.classList.add('hidden');
+        });
+    </script>
+    @yield('script')
+    <script src="{{ asset('js/Sweet-Alert.js') }}"></script>
+    <!-- Alpine JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.15.0/cdn.js"
+        integrity="sha512-nHfCQtLDRfNgzsuMx2O2Joo3+xM8antMOBxo9GodZry1h33+lWa2Dd3a/lkVY4fHJK1CAkFcUrz2jilsaZFWeQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Toggle Password Visibility -->
+    <script>
+        function togglePassword(inputId, eyeOpenId, eyeCloseId) {
+            const input = document.getElementById(inputId);
+            const eyeOpen = document.getElementById(eyeOpenId);
+            const eyeClose = document.getElementById(eyeCloseId);
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                eyeOpen.classList.add('hidden');
+                eyeClose.classList.remove('hidden');
+            } else {
+                input.type = 'password';
+                eyeOpen.classList.remove('hidden');
+                eyeClose.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+
 </html>

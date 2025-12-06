@@ -41,4 +41,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     );
 });
 
+Route::middleware(['auth', 'role:wali'])->group(function () {
+    Route::get('/wali/dashboard', [App\Http\Controllers\Wali\DashboardController::class, 'index'])->name('wali.dashboard');
+});
+
 require __DIR__ . '/auth.php';

@@ -1,65 +1,82 @@
 @extends('layouts.walikelas')
 
-@section('title', 'Dashboard Wali Kelas')
-
 @section('content')
+<div class="px-6 py-6">
 
     {{-- Header --}}
-    <h2 class="text-2xl font-bold text-gray-800 mb-6">
-        Dashboard Wali Kelas
-    </h2>
-
-    {{-- Informasi Wali Kelas --}}
-    <div class="bg-white shadow rounded-lg p-6 mb-8">
-        <h3 class="text-lg font-semibold mb-4">Informasi Wali Kelas</h3>
-
-        <p><b>Nama:</b> {{ $user->name }}</p>
-        <p><b>NUPTK:</b> {{ $wali->NUPTK }}</p>
-        <p><b>Kelas:</b> {{ $wali->kelas->nama_kelas }}</p>
-        <p><b>Tahun Ajar:</b> {{ $wali->tahunAjar->tahun }} ({{ $wali->tahunAjar->semester }})</p>
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">
+            Dashboard Wali Kelas
+        </h1>
+        <p class="text-gray-600">
+            Tahun Ajar: <span class="font-semibold">{{ $tahunAjar->tahun }} ({{ $tahunAjar->semester }})</span> • 
+            Kelas: <span class="font-semibold">{{ $kelas->nama_kelas }}</span>
+        </p>
     </div>
 
-    {{-- Statistik --}}
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    {{-- GRID STATISTIK --}}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
 
-        <div class="bg-blue-600 text-white p-6 rounded-lg shadow">
-            <div class="text-3xl font-bold">{{ $jumlahSiswa }}</div>
-            <div>Jumlah Siswa</div>
+        {{-- Total Siswa --}}
+        <div class="bg-white shadow-md rounded-xl p-5">
+            <p class="text-gray-500">Total Siswa</p>
+            <h2 class="text-3xl font-bold text-blue-600">{{ $totalSiswa }}</h2>
         </div>
 
-        <div class="bg-green-600 text-white p-6 rounded-lg shadow">
-            <div class="text-3xl font-bold">{{ $absensiHariIni }}</div>
-            <div>Absensi Hari Ini</div>
+        {{-- Persentase Hadir --}}
+        <div class="bg-white shadow-md rounded-xl p-5">
+            <p class="text-gray-500">Persentase Hadir Hari Ini</p>
+            <h2 class="text-3xl font-bold text-green-600">{{ $persentaseHadir }}%</h2>
         </div>
 
-        <div class="bg-yellow-500 text-white p-6 rounded-lg shadow">
-            <div class="text-2xl font-bold">Kelas {{ $wali->kelas->nama_kelas }}</div>
-            <div>Homeroom</div>
+        {{-- Hadir --}}
+        <div class="bg-white shadow-md rounded-xl p-5">
+            <p class="text-gray-500">Hadir</p>
+            <h2 class="text-3xl font-bold text-green-600">{{ $hadir }}</h2>
         </div>
 
-    </div>
+        {{-- Izin --}}
+        <div class="bg-white shadow-md rounded-xl p-5">
+            <p class="text-gray-500">Izin</p>
+            <h2 class="text-3xl font-bold text-yellow-500">{{ $izin }}</h2>
+        </div>
 
-    {{-- Menu Aksi --}}
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+        {{-- Sakit --}}
+        <div class="bg-white shadow-md rounded-xl p-5">
+            <p class="text-gray-500">Sakit</p>
+            <h2 class="text-3xl font-bold text-blue-400">{{ $sakit }}</h2>
+        </div>
 
-        <a href="#"
-           class="bg-white border p-6 rounded-lg shadow hover:bg-gray-100 text-center">
-            <h4 class="text-lg font-bold">Data Siswa</h4>
-            <p class="text-gray-600 text-sm mt-2">Lihat daftar siswa</p>
-        </a>
-
-        <a href="#"
-           class="bg-white border p-6 rounded-lg shadow hover:bg-gray-100 text-center">
-            <h4 class="text-lg font-bold">Input Absensi</h4>
-            <p class="text-gray-600 text-sm mt-2">Isi absensi hari ini</p>
-        </a>
-
-        <a href="#"
-           class="bg-white border p-6 rounded-lg shadow hover:bg-gray-100 text-center">
-            <h4 class="text-lg font-bold">Rekap Absensi</h4>
-            <p class="text-gray-600 text-sm mt-2">Lihat laporan absensi</p>
-        </a>
+        {{-- Alpa --}}
+        <div class="bg-white shadow-md rounded-xl p-5">
+            <p class="text-gray-500">Alpa</p>
+            <h2 class="text-3xl font-bold text-red-500">{{ $alpa }}</h2>
+        </div>
 
     </div>
 
+    {{-- CHART SECTION --}}
+    <div class="bg-white shadow-md rounded-xl p-5">
+        <h2 class="text-xl font-bold mb-4 text-gray-700">Grafik Absensi 30 Hari Terakhir</h2>
+
+        {{-- Canvas Chart (Chart.js Support) --}}
+        <canvas id="chartAbsensi" class="w-full h-64"></canvas>
+
+    </div>
+
+</div>
+
+@endsection
+
+@section('scripts')
+<script>
+    // Data Variabel dari Controller
+    const labels = @json($chartTanggal);
+    const dataHadir = @json($chartHadir);
+    const dataIzin = @json($chartIzin);
+    const dataSakit = @json($chartSakit);
+    const dataAlpa = @json($chartAlpa);
+
+    // (Nanti saya isi Chart.js kalau kamu bilang lanjut)
+</script>
 @endsection

@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 pagination.style.display = "block";
             }
             
-            fetch(`/siswa-search?search=${keyword}`)
+            fetch(`/admin/siswa-search?search=${keyword}`)
                 .then(res => res.json())
                 .then(data => {
                     let html = "";
@@ -43,7 +43,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
                                 <!-- EDIT -->
                                 <a href="${s.url_edit}" class="group relative">
-                                    <i class="fa-solid fa-pen-to-square fa-lg" style="color:#0045bd"></i>
+                                    <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="24"
+                                            height="24"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="h-6 w-6 text-blue-600"
+                                        >
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                            <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
+                                            <path
+                                                d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"
+                                            />
+                                            <path d="M16 5l3 3" />
+                                        </svg>
                                     <div class="pointer-events-none absolute left-1/2 mt-2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 shadow transition group-hover:opacity-100">
                                         Edit Akun
                                     </div>
@@ -55,7 +73,24 @@ document.addEventListener("DOMContentLoaded", () => {
                                     <input type="hidden" name="_method" value="DELETE">
 
                                     <button type="submit">
-                                        <i class="fa-solid fa-trash fa-lg" style="color:#e00000"></i>
+                                        <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="24"
+                                                height="24"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                class="lucide lucide-trash2-icon lucide-trash-2 text-red-600"
+                                            >
+                                                <path d="M10 11v6" />
+                                                <path d="M14 11v6" />
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                                <path d="M3 6h18" />
+                                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                            </svg>
                                     </button>
 
                                     <div class="pointer-events-none absolute left-1/2 mt-2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 shadow transition group-hover:opacity-100">

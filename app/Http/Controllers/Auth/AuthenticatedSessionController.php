@@ -23,22 +23,35 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(Request $request)
     {
-        $request->authenticate();
+        $request->validate([
+            'username' => 'required',
+            'password' => 'required',
+        ]);
+
+        if (!Auth::attempt($request->only('username', 'password'))) {
+            return back()->withErrors([
+                'username' => 'Username atau password salah',
+            ]);
+        }
+
+
         $request->session()->regenerate();
 
-        $user = Auth::user();
-
-        if ($user->role === 'admin') {
+        // redirect sesuai role
+        $user = auth()->user();
+        if ($user->hasRole('admin')) {
             return redirect()->route('admin.dashboard');
-        } elseif ($user->role === 'siswa') {
-            return redirect()->route('siswa.dashboard');
-        } elseif ($user->role === 'wali') {
+        } elseif ($user->hasRole('wali')) {
             return redirect()->route('wali.dashboard');
+        } elseif ($user->hasRole('siswa')) {
+            return redirect()->route('siswa.dashboard');
         }
-        return redirect('/');
+
+        return redirect('/'); // fallback
     }
+
 
     /**
      * Destroy an authenticated session.
@@ -51,6 +64,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect()->route('login');
     }
 }

@@ -4,25 +4,27 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Auth;
 
 class RoleMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
-    public function handle(Request $request, Closure $next, ...$roles): Response
+    public function handle(Request $request, Closure $next, $role)
     {
-        if (!Auth::check()) {
-            return redirect('login');
+        if (!auth()->check()) {
+            return redirect()->route('login');
         }
 
-        if (!in_array(Auth::user()->role, $roles)) {
-            abort(403, 'Anda tidak memiliki akses.');
+        // jika user tidak sesuai role, redirect ke dashboard sesuai role
+        if (!auth()->user()->hasRole($role)) {
+            if(auth()->user()->hasRole('admin')) {
+                return redirect()->route('admin.dashboard');
+            } elseif(auth()->user()->hasRole('wali')) {
+                return redirect()->route('wali.dashboard');
+            } elseif(auth()->user()->hasRole('siswa')) {
+                return redirect()->route('siswa.dashboard');
+            }
+            abort(403); // akses ditolak
         }
+
         return $next($request);
     }
 }

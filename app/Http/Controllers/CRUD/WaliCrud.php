@@ -19,39 +19,37 @@ class WaliCrud extends Controller
         return view('admin.wali.index', compact('walikelas', 'Header'));
     }
 
-   public function search(Request $r)
-{
-    $keyword = $r->search;
+    public function search(Request $r)
+    {
+        $keyword = $r->search;
 
-    $data = Wali::with(['user', 'kelas'])
-        ->whereHas('user', function ($q) use ($keyword) {
-            $q->where('name', 'like', "%$keyword%")
-              ->orWhere('username', 'like', "%$keyword%");
-        })
-        ->orWhere('NUPTK', 'like', "%$keyword%")
-        ->get();
+        $data = Wali::with(['user', 'kelas'])
+            ->whereHas('user', function ($q) use ($keyword) {
+                $q->where('name', 'like', "%$keyword%")->orWhere('username', 'like', "%$keyword%");
+            })
+            ->orWhere('NUPTK', 'like', "%$keyword%")
+            ->get();
 
-    return response()->json(
-        $data->map(function ($w) {
-            return [
-                'id' => $w->id,
-                'NUPTK' => $w->NUPTK,
-                'user' => [
-                'name' => $w->user->name,
-                ],
-                'kelas' => [
-                    'nama_kelas' => $w->kelas->nama_kelas ?? '-',
-                ],
+        return response()->json(
+            $data->map(function ($w) {
+                return [
+                    'id' => $w->id,
+                    'NUPTK' => $w->NUPTK,
+                    'user' => [
+                        'name' => $w->user->name,
+                    ],
+                    'kelas' => [
+                        'nama_kelas' => $w->kelas->nama_kelas ?? '-',
+                    ],
 
-                // URL dikirim sebagai string aman
-                'url_edit'   => route('akun-walikelas.edit', $w->id),
-                'url_delete' => route('akun-walikelas.destroy', $w->id),
-                'url_show'   => route('akun-walikelas.show', $w->id),
-            ];
-        })
-    );
-}
-
+                    // URL dikirim sebagai string aman
+                    'url_edit' => route('akun-walikelas.edit', $w->id),
+                    'url_delete' => route('akun-walikelas.destroy', $w->id),
+                    'url_show' => route('akun-walikelas.show', $w->id),
+                ];
+            }),
+        );
+    }
 
     public function show($id)
     {

@@ -135,8 +135,8 @@
 @endsection
 
 @section('script')
-<script>
-    const csrfToken = "{{ csrf_token() }}";
-</script>
+    <script>
+        const csrfToken = '{{ csrf_token() }}';
+    </script>
     <script src="{{ asset('js/siswa-search.js') }}"></script>
 @endsection

@@ -132,7 +132,7 @@
 
 @section('script')
     <script>
-        const csrfToken = "{{ csrf_token() }}";
+        const csrfToken = '{{ csrf_token() }}';
     </script>
 
     <script src="{{ asset('js/walikelas-search.js') }}"></script>

@@ -16,8 +16,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('akun-walikelas', WaliCrud::class);
     Route::get('/wali-search', [WaliCrud::class, 'search']);
     Route::resource('kelas', KelasCrud::class);
-    Route::post('/kelas/{id}/naik', [KelasCrud::class, 'naikkelas'])
-    ->name('kelas.naik');
+    Route::post('/kelas/{id}/naik', [KelasCrud::class, 'naikkelas'])->name('kelas.naik');
     Route::get('/kelas-search', [KelasCrud::class, 'search'])->name('kelas.search');
     Route::resource('tahun', TahunCrud::class);
     Route::resource('absensi', AbsensiCrud::class);

@@ -32,68 +32,48 @@ class KelasCrud extends Controller
         return response()->json($kelasList);
     }
 
-   public function show($id)
-{
-    $kelas = Kelas::findOrFail($id);
-    $tahunAjarAktif = TahunAjar::where('status', 'aktif')->first();
+    public function show($id)
+    {
+        $kelas = Kelas::findOrFail($id);
+        $tahunAjarAktif = TahunAjar::where('status', 'aktif')->first();
 
-    $siswa = KelasSiswa::with('siswa.user')
-        ->where('kelas_id', $id)
-        ->where('tahun_ajar_id', $tahunAjarAktif->id)
-        ->get();
+        $siswa = KelasSiswa::with('siswa.user')
+            ->where('kelas_id', $id)
+            ->where('tahun_ajar_id', $tahunAjarAktif->id)
+            ->get();
 
-    $daftarKelas = Kelas::orderBy('nama_kelas')->get(); // untuk dropdown
+        $daftarKelas = Kelas::orderBy('nama_kelas')->get(); // untuk dropdown
 
-    return view('admin.kelas.show', compact(
-        'kelas',
-        'siswa',
-        'tahunAjarAktif',
-        'daftarKelas'
-    ));
-}
-
-
-
-    public function naikKelas(Request $request, $id)
-{
-    $request->validate([
-        'kelas_tujuan' => 'required|exists:kelas,id',
-    ]);
-
-    $kelasAsal = Kelas::findOrFail($id);
-    $kelasTujuan = Kelas::findOrFail($request->kelas_tujuan);
-    $tahunAjarAktif = TahunAjar::where('status', 'aktif')->first();
-
-    $siswa = KelasSiswa::where('kelas_id', $id)
-        ->where('tahun_ajar_id', $tahunAjarAktif->id)
-        ->get();
-
-    foreach ($siswa as $ks) {
-
-        // pastikan tidak ada data ganda
-        KelasSiswa::updateOrCreate(
-            [
-                'siswa_id' => $ks->siswa_id,
-                'tahun_ajar_id' => $tahunAjarAktif->id,
-            ],
-            [
-                'kelas_id' => $kelasTujuan->id,
-            ]
-        );
+        return view('admin.kelas.show', compact('kelas', 'siswa', 'tahunAjarAktif', 'daftarKelas'));
     }
 
-    return back()->with('success', 'Semua siswa berhasil dinaikkan ke kelas ' . $kelasTujuan->nama_kelas);
-}
+    public function naikKelas(Request $request, $id)
+    {
+        $request->validate([
+            'kelas_tujuan' => 'required|exists:kelas,id',
+        ]);
 
+        $kelasAsal = Kelas::findOrFail($id);
+        $kelasTujuan = Kelas::findOrFail($request->kelas_tujuan);
+        $tahunAjarAktif = TahunAjar::where('status', 'aktif')->first();
 
-private function nextKelasName($nama)
-{
-    // Contoh: "X RPL 1" → "XI RPL 1"
-    if (str_starts_with($nama, 'X ')) return 'XI ' . substr($nama, 2);
-    if (str_starts_with($nama, 'XI ')) return 'XII ' . substr($nama, 3);
-    return $nama;
-}
+        $siswa = KelasSiswa::where('kelas_id', $id)->where('tahun_ajar_id', $tahunAjarAktif->id)->get();
 
+        foreach ($siswa as $ks) {
+            // pastikan tidak ada data ganda
+            KelasSiswa::updateOrCreate(
+                [
+                    'siswa_id' => $ks->siswa_id,
+                    'tahun_ajar_id' => $tahunAjarAktif->id,
+                ],
+                [
+                    'kelas_id' => $kelasTujuan->id,
+                ],
+            );
+        }
+
+        return back()->with('success', 'Semua siswa berhasil dinaikkan ke kelas ' . $kelasTujuan->nama_kelas);
+    }
 
 
     public function destroy($id)
@@ -111,15 +91,18 @@ private function nextKelasName($nama)
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nama_kelas' => 'required|string|max:255',
-            'jurusan' => 'required|string|max:255',
-            'angkatan' => 'required|string|max:255',
-        ],[
-            'nama_kelas.required' => 'Nama Kelas harus diisi.',
-            'jurusan.required' => 'Jurusan harus diisi.',
-            'angkatan.required' => 'Angkatan harus diisi.',
-        ]);
+        $request->validate(
+            [
+                'nama_kelas' => 'required|string|max:255',
+                'jurusan' => 'required|string|max:255',
+                'angkatan' => 'required|string|max:255',
+            ],
+            [
+                'nama_kelas.required' => 'Nama Kelas harus diisi.',
+                'jurusan.required' => 'Jurusan harus diisi.',
+                'angkatan.required' => 'Angkatan harus diisi.',
+            ],
+        );
 
         Kelas::create($request->all());
 
@@ -135,15 +118,18 @@ private function nextKelasName($nama)
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'nama_kelas' => 'required|string|max:255',
-            'jurusan' => 'required|string|max:255',
-            'angkatan' => 'required|string|max:255',
-        ],[
-            'nama_kelas.required' => 'Nama Kelas harus diisi.',
-            'jurusan.required' => 'Jurusan harus diisi.',
-            'angkatan.required' => 'Angkatan harus diisi.',
-        ]);
+        $request->validate(
+            [
+                'nama_kelas' => 'required|string|max:255',
+                'jurusan' => 'required|string|max:255',
+                'angkatan' => 'required|string|max:255',
+            ],
+            [
+                'nama_kelas.required' => 'Nama Kelas harus diisi.',
+                'jurusan.required' => 'Jurusan harus diisi.',
+                'angkatan.required' => 'Angkatan harus diisi.',
+            ],
+        );
 
         $kelas = Kelas::findOrFail($id);
         $kelas->update($request->all());

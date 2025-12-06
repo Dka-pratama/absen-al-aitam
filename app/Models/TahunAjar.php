@@ -17,13 +17,11 @@ class TahunAjar extends Model
     }
 
     public function kelasSiswa()
-{
-    return $this->hasMany(KelasSiswa::class);
-}
-public static function aktif()
-{
-    return self::where('status', 'aktif')->first();
-}
-
-
+    {
+        return $this->hasMany(KelasSiswa::class);
+    }
+    public static function aktif()
+    {
+        return self::where('status', 'aktif')->first();
+    }
 }

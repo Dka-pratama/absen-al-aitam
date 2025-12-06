@@ -22,12 +22,9 @@ class Siswa extends Model
     }
 
     public function kelas()
-{
-    return $this->belongsToMany(Kelas::class, 'kelas_siswa')
-        ->withPivot('tahun_ajar_id')
-        ->withTimestamps();
-}
-
+    {
+        return $this->belongsToMany(Kelas::class, 'kelas_siswa')->withPivot('tahun_ajar_id')->withTimestamps();
+    }
 
     public function absensi()
     {

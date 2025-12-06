@@ -13,15 +13,14 @@ class Kelas extends Model
 
     // App\Models\Kelas.php
     public function siswa()
-{
-    return $this->belongsToMany(Siswa::class, 'kelas_siswa')
-        ->withPivot('tahun_ajar_id')
-        ->withTimestamps();
-}
+    {
+        return $this->belongsToMany(Siswa::class, 'kelas_siswa')->withPivot('tahun_ajar_id')->withTimestamps();
+    }
 
-function aktif() {
-    return DB::table('tahun_ajar')->where('is_active', 1)->value('id');
-}
+    function aktif()
+    {
+        return DB::table('tahun_ajar')->where('is_active', 1)->value('id');
+    }
 
     public function walikelas()
     {

@@ -81,16 +81,17 @@ class DatabaseSeeder extends Seeder
             ->count(5)
             ->create()
             ->each(function ($kelas) use ($tahunAjar) {
-
                 // Buat 15 siswa untuk setiap kelas
-                Siswa::factory(15)->create()->each(function ($siswa) use ($kelas, $tahunAjar) {
-                    KelasSiswa::factory()
-                        ->forTahunAjar($tahunAjar)
-                        ->create([
-                            'siswa_id' => $siswa->id,
-                            'kelas_id' => $kelas->id,
-                        ]);
-                });
+                Siswa::factory(15)
+                    ->create()
+                    ->each(function ($siswa) use ($kelas, $tahunAjar) {
+                        KelasSiswa::factory()
+                            ->forTahunAjar($tahunAjar)
+                            ->create([
+                                'siswa_id' => $siswa->id,
+                                'kelas_id' => $kelas->id,
+                            ]);
+                    });
 
                 // Wali kelas
                 WaliKelas::factory()

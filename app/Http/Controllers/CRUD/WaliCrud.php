@@ -37,7 +37,7 @@ class WaliCrud extends Controller
     {
         $Header = 'Data Wali Kelas';
         $wali = Wali::with('user')->findOrFail($id);
-        return view('admin.wali.show', compact('wali','Header'));
+        return view('admin.wali.show', compact('wali', 'Header'));
     }
 
     public function destroy($id)
@@ -60,7 +60,7 @@ class WaliCrud extends Controller
         $tahunAjar = TahunAjar::all();
         $kelas = Kelas::all();
         $Header = 'Data Wali Kelas';
-        return view('admin.wali.create', compact('tahunAjar','Header', 'kelas'));
+        return view('admin.wali.create', compact('tahunAjar', 'Header', 'kelas'));
     }
 
     public function store(Request $request)

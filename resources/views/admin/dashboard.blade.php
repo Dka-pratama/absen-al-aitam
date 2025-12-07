@@ -1,48 +1,61 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="p-2 sm:p-4 lg:p-8">
+    <div class="p-2 sm:p-4 md:p-6 lg:p-8">
         <!-- CARD WRAPPER -->
-        <div class="mb-6 grid grid-cols-2 place-items-center gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-            <!-- CARD TEMPLATE -->
+        <div class="box-border grid w-full gap-2 px-3 md:grid-cols-2 xl:grid-cols-4">
             @php
                 $cards = [
-                    ['value' => $totalSiswa, 'label' => 'Total Siswa'],
-                    ['value' => $totalKelas, 'label' => 'Total Kelas'],
-                    ['value' => $totalWali, 'label' => 'Total Wali Kelas'],
-                    ['value' => $totalJurusan, 'label' => 'Total Jurusan'],
+                    [
+                        'value' => $totalSiswa,
+                        'label' => 'Total Siswa',
+                        'bg' => 'bg-green-600',
+                        'shadow' => 'hover:shadow-[0_-8px_0px_0px_#2196f3]',
+                        'svg' => '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-user text-white"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 2a5 5 0 1 1 -5 5l.005 -.217a5 5 0 0 1 4.995 -4.783z" /><path d="M14 14a5 5 0 0 1 5 5v1a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-1a5 5 0 0 1 5 -5h4z" /></svg>',
+                    ],
+                    [
+                        'value' => $totalKelas,
+                        'label' => 'Total Kelas',
+                        'bg' => 'bg-[rgb(41,49,79)]',
+                        'shadow' => 'hover:shadow-[0_-8px_0px_0px_#2196f3]',
+                        'svg' => '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white icon icon-tabler icons-tabler-outline icon-tabler-building-arch"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 21l18 0" /><path d="M4 21v-15a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v15" /><path d="M9 21v-8a3 3 0 0 1 6 0v8" /></svg>',
+                    ],
+                    [
+                        'value' => $totalWali,
+                        'label' => 'Total Wali Kelas',
+                        'bg' => 'bg-[#673ab7]',
+                        'shadow' => 'hover:shadow-[0_-8px_0px_0px_#2196f3]',
+                        'svg' => '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chalkboard-teacher text-white"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 19h-3a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v11a1 1 0 0 1 -1 1" /><path d="M12 14a2 2 0 1 0 4.001 -.001a2 2 0 0 0 -4.001 .001" /><path d="M17 19a2 2 0 0 0 -2 -2h-2a2 2 0 0 0 -2 2" /></svg>',
+                    ],
+                    [
+                        'value' => $totalJurusan,
+                        'label' => 'Total Jurusan',
+                        'bg' => 'bg-[rgb(41,49,79)]',
+                        'shadow' => 'hover:shadow-[0_-8px_0px_0px_#2196f3]',
+                        'svg' => '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-databricks text-white"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 17l9 5l9 -5v-3l-9 5l-9 -5v-3l9 5l9 -5v-3l-9 5l-9 -5l9 -5l5.418 3.01" /></svg>',
+                    ],
                 ];
             @endphp
 
             @foreach ($cards as $card)
                 <div
-                    class="group relative flex h-36 w-36 flex-col items-center justify-center overflow-hidden rounded-xl bg-neutral-50 text-neutral-700 shadow-md duration-500 hover:-translate-y-2"
+                    class="{{ $card['bg'] }} {{ $card['shadow'] }} group relative w-full cursor-pointer rounded-lg p-5 transition duration-300 hover:translate-y-[3px]"
                 >
-                    <svg
-                        viewBox="0 0 200 200"
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="absolute z-10 fill-red-300 blur duration-500 group-hover:scale-105 group-hover:blur-none"
-                    >
-                        <path
-                            transform="translate(100 100)"
-                            d="M39.5,-49.6C54.8,-43.2,73.2,-36.5,78.2,-24.6C83.2,-12.7,74.8,4.4,69,22.5C63.3,40.6,60.2,59.6,49.1,64.8C38.1,70,19,61.5,0.6,60.7C-17.9,59.9,-35.9,67,-47.2,61.9C-58.6,56.7,-63.4,39.5,-70,22.1C-76.6,4.7,-84.9,-12.8,-81.9,-28.1C-79,-43.3,-64.6,-56.3,-49.1,-62.5C-33.6,-68.8,-16.8,-68.3,-2.3,-65.1C12.1,-61.9,24.2,-55.9,39.5,-49.6Z"
-                        ></path>
-                    </svg>
+                    <p class="text-2xl text-white">{{ $card['value'] }}</p>
+                    <p class="text-sm text-white">{{ $card['label'] }}</p>
 
-                    <div class="z-20 flex flex-col items-center justify-center text-center">
-                        <span class="text-4xl font-bold">
-                            {{ $card['value'] }}
-                        </span>
-                        <p class="mt-1 text-sm font-semibold">
-                            {{ $card['label'] }}
-                        </p>
+                    <!-- Contoh SVG kecil, bisa diganti sesuai kebutuhan -->
+                    <div
+                        class="absolute right-[10%] top-[50%] translate-y-[-50%] opacity-20 transition duration-300 group-hover:scale-110 group-hover:opacity-100"
+                    >
+                        {!! $card['svg'] !!}
                     </div>
                 </div>
             @endforeach
         </div>
 
         <!-- CHART TITLE -->
-        <h2 class="mb-6 text-xl font-semibold">Aktivitas web per jam</h2>
+        <h2 class="mb-6 mt-6 text-xl font-semibold">Aktivitas web per jam</h2>
 
         <!-- CHART BOX -->
         <div class="w-full rounded-xl border bg-white p-6 shadow md:p-8">

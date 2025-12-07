@@ -19,6 +19,8 @@ return new class extends Migration {
             $table->time('waktu_absen')->nullable();
             $table->string('keterangan')->nullable();
             $table->timestamps();
+
+            $table->unique(['kelas_siswa_id', 'tanggal'], 'unique_absensi_siswa_tanggal');
         });
     }
 

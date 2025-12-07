@@ -85,13 +85,13 @@ class DatabaseSeeder extends Seeder
                 Siswa::factory(15)
                     ->create()
                     ->each(function ($siswa) use ($kelas, $tahunAjar) {
-                        KelasSiswa::factory()
-                            ->forTahunAjar($tahunAjar)
-                            ->create([
-                                'siswa_id' => $siswa->id,
-                                'kelas_id' => $kelas->id,
-                            ]);
-                    });
+                    KelasSiswa::factory()
+                        ->forTahunAjar($tahunAjar)
+                        ->create([
+                            'siswa_id' => $siswa->id,
+                            'kelas_id' => $kelas->id,
+                        ]);
+                });
 
                 // Wali kelas
                 WaliKelas::factory()
@@ -101,5 +101,7 @@ class DatabaseSeeder extends Seeder
                     ])
                     ->create();
             });
+            $this->call(AbsensiSeeder::class);
+            $this->command->info("DatabaseSeeder selesai Semua ✔");
     }
 }

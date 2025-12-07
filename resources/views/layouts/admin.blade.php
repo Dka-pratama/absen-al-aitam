@@ -269,16 +269,10 @@
                 <h1 class="text-xl font-semibold tracking-wide md:text-2xl">
                     {{ $Header ?? '-' }}
                 </h1>
-                <div class="flex items-center gap-3">
-                    <div class="hidden leading-tight sm:block">
-                        <p class="text-sm font-bold">Admin</p>
-                        <p class="text-xs text-gray-600">admin@gmail.com</p>
-                    </div>
-                </div>
             </header>
 
             <!-- CONTENT -->
-            <div class="flex-1 overflow-auto">
+            <div class="flex-1 overflow-y-auto overflow-x-hidden">
                 @yield('content')
             </div>
         </div>

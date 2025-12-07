@@ -36,7 +36,6 @@ class AuthenticatedSessionController extends Controller
             ]);
         }
 
-
         $request->session()->regenerate();
 
         // redirect sesuai role
@@ -51,7 +50,6 @@ class AuthenticatedSessionController extends Controller
 
         return redirect('/'); // fallback
     }
-
 
     /**
      * Destroy an authenticated session.

@@ -29,17 +29,8 @@ class KelasSiswaFactory extends Factory
     }
 
     public function configure()
-    {
-        return $this->afterCreating(function (KelasSiswa $ks) {
-            Absensi::factory()
-                ->count(30)
-                ->state(function () use ($ks) {
-                    return [
-                        'kelas_siswa_id' => $ks->id,
-                        'tanggal' => now()->subDays(rand(1, 30))->format('Y-m-d'),
-                    ];
-                })
-                ->create();
-        });
-    }
+{
+    return $this;
+}
+
 }

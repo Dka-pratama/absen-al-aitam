@@ -1,82 +1,86 @@
 @extends('layouts.walikelas')
 
 @section('content')
-<div class="px-6 py-6">
+    <div class="p-2 sm:p-4 lg:p-8">
+        <div class="mb-4">
+            <p class="text-xl font-semibold text-gray-800 sm:text-2xl">Halo, {{ $wali->user->name }}!</p>
+        </div>
+        <div class="mb-6 flex flex-col gap-4 border-b pb-3 text-gray-700 sm:flex-row sm:items-center sm:justify-start">
+            <div>
+                <span class="text-sm font-semibold">Hari Ini:</span>
+                <span class="text-base font-medium">
+                    {{ \Carbon\Carbon::parse($hariIni)->translatedFormat('l, d F Y') }}
+                </span>
+            </div>
+            <div>
+                <span class="text-sm font-semibold">Kelas:</span>
+                <span class="text-base font-medium">{{ $kelas->nama_kelas }}</span>
+            </div>
+            <div>
+                <span class="text-sm font-semibold">Tahun Ajar:</span>
+                <span class="text-base font-medium">{{ $tahunAjar->tahun }}</span>
+            </div>
+        </div>
+        <!-- CARD WRAPPER -->
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
+            @php
+                $cards = [
+                    [
+                        'value' => $totalSiswa,
+                        'label' => 'Total Siswa',
+                        'bg' => 'bg-[#673ab7]',
+                        'shadow' => 'hover:shadow-[0_-8px_0px_0px_#2196f3]',
+                        'icon' =>
+                            '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-round-icon lucide-users-round text-white"><path d="M18 21a8 8 0 0 0-16 0"/><circle cx="10" cy="8" r="5"/><path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3"/></svg>',
+                    ],
+                    [
+                        'value' => $hadir,
+                        'label' => 'Hadir',
+                        'bg' => 'bg-green-600',
+                        'shadow' => 'hover:shadow-[0_-8px_0px_0px_#22c55e]',
+                        'icon' =>
+                            '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-check-big-icon lucide-circle-check-big text-white"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>',
+                    ],
+                    [
+                        'value' => $izin + $sakit + $alpa,
+                        'label' => 'Tidak Hadir',
+                        'bg' => 'bg-red-500',
+                        'shadow' => 'hover:shadow-[0_-8px_0px_0px_#ef4444]',
+                        'icon' =>
+                            '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white lucide lucide-circle-x-icon lucide-circle-x"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>',
+                    ],
+                    [
+                        'value' => $persentaseHadir . '%',
+                        'label' => 'Persentase Hadir',
+                        'bg' => 'bg-blue-600',
+                        'shadow' => 'hover:shadow-[0_-8px_0px_0px_#3b82f6]',
+                        'icon' =>
+                            '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-percent-icon lucide-circle-percent text-white"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="M9 9h.01"/><path d="M15 15h.01"/></svg>',
+                    ],
+                ];
+            @endphp
 
-    {{-- Header --}}
-    <div class="mb-6">
-        <h1 class="text-2xl font-bold text-gray-800">
-            Dashboard Wali Kelas
-        </h1>
-        <p class="text-gray-600">
-            Tahun Ajar: <span class="font-semibold">{{ $tahunAjar->tahun }} ({{ $tahunAjar->semester }})</span> • 
-            Kelas: <span class="font-semibold">{{ $kelas->nama_kelas }}</span>
-        </p>
+            @foreach ($cards as $card)
+                <div
+                    class="{{ $card['bg'] }} {{ $card['shadow'] }} group relative w-full cursor-pointer rounded-lg p-5 transition duration-300 hover:translate-y-[3px]">
+                    <p class="text-2xl font-bold text-white">{{ $card['value'] }}</p>
+                    <p class="text-sm text-white">{{ $card['label'] }}</p>
+
+                    <!-- SVG icon unik -->
+                    <div
+                        class="absolute right-5 top-1/2 -translate-y-1/2 opacity-20 transition duration-300 group-hover:scale-110 group-hover:opacity-100">
+                        {!! $card['icon'] !!}
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+        <!-- CHART TITLE -->
+        <h2 class="mb-6 mt-6 text-xl font-semibold">Aktivitas web per jam</h2>
+
+        <!-- CHART BOX -->
+        <div class="w-full rounded-xl border bg-white p-6 shadow md:p-8">
+            <canvas id="myChart" class="h-64 w-full md:h-80"></canvas>
+        </div>
     </div>
-
-    {{-- GRID STATISTIK --}}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-
-        {{-- Total Siswa --}}
-        <div class="bg-white shadow-md rounded-xl p-5">
-            <p class="text-gray-500">Total Siswa</p>
-            <h2 class="text-3xl font-bold text-blue-600">{{ $totalSiswa }}</h2>
-        </div>
-
-        {{-- Persentase Hadir --}}
-        <div class="bg-white shadow-md rounded-xl p-5">
-            <p class="text-gray-500">Persentase Hadir Hari Ini</p>
-            <h2 class="text-3xl font-bold text-green-600">{{ $persentaseHadir }}%</h2>
-        </div>
-
-        {{-- Hadir --}}
-        <div class="bg-white shadow-md rounded-xl p-5">
-            <p class="text-gray-500">Hadir</p>
-            <h2 class="text-3xl font-bold text-green-600">{{ $hadir }}</h2>
-        </div>
-
-        {{-- Izin --}}
-        <div class="bg-white shadow-md rounded-xl p-5">
-            <p class="text-gray-500">Izin</p>
-            <h2 class="text-3xl font-bold text-yellow-500">{{ $izin }}</h2>
-        </div>
-
-        {{-- Sakit --}}
-        <div class="bg-white shadow-md rounded-xl p-5">
-            <p class="text-gray-500">Sakit</p>
-            <h2 class="text-3xl font-bold text-blue-400">{{ $sakit }}</h2>
-        </div>
-
-        {{-- Alpa --}}
-        <div class="bg-white shadow-md rounded-xl p-5">
-            <p class="text-gray-500">Alpa</p>
-            <h2 class="text-3xl font-bold text-red-500">{{ $alpa }}</h2>
-        </div>
-
-    </div>
-
-    {{-- CHART SECTION --}}
-    <div class="bg-white shadow-md rounded-xl p-5">
-        <h2 class="text-xl font-bold mb-4 text-gray-700">Grafik Absensi 30 Hari Terakhir</h2>
-
-        {{-- Canvas Chart (Chart.js Support) --}}
-        <canvas id="chartAbsensi" class="w-full h-64"></canvas>
-
-    </div>
-
-</div>
-
-@endsection
-
-@section('scripts')
-<script>
-    // Data Variabel dari Controller
-    const labels = @json($chartTanggal);
-    const dataHadir = @json($chartHadir);
-    const dataIzin = @json($chartIzin);
-    const dataSakit = @json($chartSakit);
-    const dataAlpa = @json($chartAlpa);
-
-    // (Nanti saya isi Chart.js kalau kamu bilang lanjut)
-</script>
 @endsection

@@ -28,12 +28,14 @@ class LaporanController extends Controller
             ->join('kelas_siswa', 'absensi.kelas_siswa_id', '=', 'kelas_siswa.id')
             ->where('kelas_siswa.kelas_id', $kelas_id)
             ->where('kelas_siswa.tahun_ajar_id', $tahun_ajar_id)
-            ->selectRaw('tanggal,
+            ->selectRaw(
+                'tanggal,
             SUM(status = "hadir") as hadir,
             SUM(status = "izin") as izin,
             SUM(status = "sakit") as sakit,
             SUM(status = "alpa") as alpa
-        ')
+        ',
+            )
             ->groupBy('tanggal')
             ->orderBy('tanggal', 'desc');
 
@@ -71,10 +73,6 @@ class LaporanController extends Controller
             ->where('tanggal', $tanggal)
             ->get();
 
-
-
         return view('wali.laporan_detail', compact('absensi', 'wali', 'tanggal'));
     }
-
-
 }

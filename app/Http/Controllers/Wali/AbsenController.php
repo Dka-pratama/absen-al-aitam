@@ -9,15 +9,15 @@ use App\Models\KelasSiswa;
 use App\Models\Absensi;
 use Carbon\Carbon;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Models\Siswa;
+use Illuminate\Support\Facades\Cache;
 
 class AbsenController extends Controller
 {
     public function index()
     {
         $user = auth()->user();
-        $wali = WaliKelas::with('kelas', 'tahunAjar')
-            ->where('user_id', $user->id)
-            ->firstOrFail();
+        $wali = WaliKelas::with('kelas', 'tahunAjar')->where('user_id', $user->id)->firstOrFail();
 
         // Ambil siswa
         $siswa = KelasSiswa::with('siswa.user')
@@ -25,53 +25,62 @@ class AbsenController extends Controller
             ->where('tahun_ajar_id', $wali->tahun_ajar_id)
             ->get();
 
-
         // Ambil absensi hari ini
         $today = Carbon::today()->toDateString();
 
         $absensiToday = Absensi::whereHas('kelasSiswa', function ($q) use ($wali) {
-            $q->where('kelas_id', $wali->kelas_id)
-                ->where('tahun_ajar_id', $wali->tahun_ajar_id);
+            $q->where('kelas_id', $wali->kelas_id)->where('tahun_ajar_id', $wali->tahun_ajar_id);
         })
             ->where('tanggal', $today)
             ->get();
 
-        // PENTING: kirim absensi dalam bentuk keyed by siswa_id
         $absensiMap = $absensiToday->keyBy('kelas_siswa_id');
-
-        // Hitung persentase
         $persentase = $this->hitungPersentase($siswa, $absensiToday);
 
-        return view('wali.absensi', compact(
-            'wali',
-            'siswa',
-            'persentase',
-            'absensiMap'
-        ));
-    }
+        // ==========================
+        // 🔥 Tambahkan ini
+        // ==========================
+        $payload = [
+            'kelas_id' => $wali->kelas_id,
+            'tahun_ajar_id' => $wali->tahun_ajar_id,
+            'tanggal' => $today,
+        ];
 
-    public function simpan(Request $request)
-{
-    $wali = WaliKelas::where('user_id', auth()->id())->firstOrFail();
-    $tanggal = Carbon::today()->toDateString();
+        $qr = base64_encode(QrCode::size(300)->generate(json_encode($payload)));
+        // ==========================
 
-    foreach ($request->status as $kelasSiswaId => $status) {
-
-        Absensi::updateOrCreate(
-            [
-                'kelas_siswa_id' => $kelasSiswaId,
-                'tanggal' => $tanggal,
-            ],
-            [
-                'status' => $status,
-                'keterangan' => $request->keterangan[$kelasSiswaId] ?? null,
-            ]
+        return view(
+            'wali.absensi',
+            compact(
+                'wali',
+                'siswa',
+                'persentase',
+                'absensiMap',
+                'qr', // 🔥 jangan lupa ini
+            ),
         );
     }
 
-    return back()->with('success', 'Absensi berhasil disimpan!');
-}
+    public function simpan(Request $request)
+    {
+        $wali = WaliKelas::where('user_id', auth()->id())->firstOrFail();
+        $tanggal = Carbon::today()->toDateString();
 
+        foreach ($request->status as $kelasSiswaId => $status) {
+            Absensi::updateOrCreate(
+                [
+                    'kelas_siswa_id' => $kelasSiswaId,
+                    'tanggal' => $tanggal,
+                ],
+                [
+                    'status' => $status,
+                    'keterangan' => $request->keterangan[$kelasSiswaId] ?? null,
+                ],
+            );
+        }
+
+        return back()->with('success', 'Absensi berhasil disimpan!');
+    }
 
     private function hitungPersentase($siswa, $absensi)
     {
@@ -89,4 +98,28 @@ class AbsenController extends Controller
         ];
     }
 
+    public function absensi()
+    {
+        $wali = auth()->user()->waliKelas; // relasi
+        $kelasId = $wali->kelas_id;
+
+        $qrContent = $kelasId . '|' . now()->format('Y-m-d');
+
+        $qr = QrCode::size(220)->generate($qrContent);
+
+        $siswa = Siswa::where('kelas_id', $kelasId)->get();
+
+        return view('wali.absensi', compact('qr', 'siswa'));
+    }
+    public function toggleAbsensiMandiri($kelasId)
+    {
+        $key = 'absensi_mandiri_kelas_' . $kelasId;
+
+        $status = Cache::get($key, false);
+        $newStatus = !$status;
+
+        Cache::put($key, $newStatus, now()->addHours(12));
+
+        return back()->with('success', 'Absensi mandiri: ' . ($newStatus ? 'AKTIF' : 'NON-AKTIF'));
+    }
 }

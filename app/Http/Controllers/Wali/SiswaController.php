@@ -36,15 +36,7 @@ class SiswaController extends Controller
         ];
 
         foreach ($siswaData as $i => $s) {
-            $exportData[] = [
-                $i + 1,
-                $s['nama'],
-                $s['nisn'],
-                $s['hadir'],
-                $s['izin'],
-                $s['sakit'],
-                $s['alpa'],
-            ];
+            $exportData[] = [$i + 1, $s['nama'], $s['nisn'], $s['hadir'], $s['izin'], $s['sakit'], $s['alpa']];
         }
 
         // Hapus semua karakter terlarang di filename
@@ -54,22 +46,19 @@ class SiswaController extends Controller
 
         return Excel::download(
             new class ($exportData) implements \Maatwebsite\Excel\Concerns\FromArray {
-            protected $data;
-            public function __construct($data)
-            {
-                $this->data = $data;
-            }
-            public function array(): array
-            {
-                return $this->data;
-            }
+                protected $data;
+                public function __construct($data)
+                {
+                    $this->data = $data;
+                }
+                public function array(): array
+                {
+                    return $this->data;
+                }
             },
-            $filename
+            $filename,
         );
     }
-
-
-
 
     public function exportPdf()
     {
@@ -82,12 +71,9 @@ class SiswaController extends Controller
 
     private function getDataSiswa(WaliKelas $wali)
     {
-        $kelasSiswaIds = KelasSiswa::where('kelas_id', $wali->kelas_id)
-            ->pluck('id');
+        $kelasSiswaIds = KelasSiswa::where('kelas_id', $wali->kelas_id)->pluck('id');
 
-        $siswa = KelasSiswa::with('siswa.user')
-            ->whereIn('id', $kelasSiswaIds)
-            ->get();
+        $siswa = KelasSiswa::with('siswa.user')->whereIn('id', $kelasSiswaIds)->get();
 
         $data = [];
         foreach ($siswa as $ks) {
@@ -104,4 +90,3 @@ class SiswaController extends Controller
         return $data;
     }
 }
-

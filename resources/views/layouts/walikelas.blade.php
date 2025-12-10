@@ -265,13 +265,6 @@
         </script>
         @yield('script')
         <script src="{{ asset('js/Sweet-Alert.js') }}"></script>
-        <!-- Alpine JS -->
-        <script
-            src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.15.0/cdn.js"
-            integrity="sha512-nHfCQtLDRfNgzsuMx2O2Joo3+xM8antMOBxo9GodZry1h33+lWa2Dd3a/lkVY4fHJK1CAkFcUrz2jilsaZFWeQ=="
-            crossorigin="anonymous"
-            referrerpolicy="no-referrer"
-        ></script>
         <!-- Toggle Password Visibility -->
         <script>
             function togglePassword(inputId, eyeOpenId, eyeCloseId) {
@@ -290,5 +283,12 @@
                 }
             }
         </script>
+        <!-- Alpine JS -->
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.15.0/cdn.js"
+            integrity="sha512-nHfCQtLDRfNgzsuMx2O2Joo3+xM8antMOBxo9GodZry1h33+lWa2Dd3a/lkVY4fHJK1CAkFcUrz2jilsaZFWeQ=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        ></script>
     </body>
 </html>

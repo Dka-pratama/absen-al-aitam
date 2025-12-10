@@ -2,7 +2,6 @@
 
 @section('content')
     <div class="p-6">
-
         {{-- Header --}}
         <div class="mb-6">
             <h1 class="text-2xl font-bold text-gray-800">Detail Absensi Kelas {{ $wali->kelas->nama_kelas }}</h1>
@@ -25,7 +24,7 @@
                 </thead>
                 <tbody>
                     @forelse ($absensi as $i => $a)
-                        <tr class="border-b hover:bg-gray-50 text-center">
+                        <tr class="border-b text-center hover:bg-gray-50">
                             <td class="p-3 text-left">{{ $i + 1 }}</td>
                             <td class="p-3 text-left">
                                 {{ $a->kelasSiswa?->siswa?->user?->name ?? 'Data siswa tidak tersedia' }}
@@ -44,7 +43,8 @@
                                         default => 'bg-gray-200 text-gray-800',
                                     };
                                 @endphp
-                                <span class="px-2 py-1 rounded {{ $statusColor }}">
+
+                                <span class="{{ $statusColor }} rounded px-2 py-1">
                                     {{ ucfirst($a->status) }}
                                 </span>
                             </td>
@@ -62,7 +62,10 @@
         </div>
         {{-- Tombol Kembali --}}
         <div class="mt-4">
-            <a href="{{ route('wali.laporan') }}" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">
+            <a
+                href="{{ route('wali.laporan') }}"
+                class="rounded bg-gray-300 px-4 py-2 text-gray-800 hover:bg-gray-400"
+            >
                 ← Kembali
             </a>
         </div>

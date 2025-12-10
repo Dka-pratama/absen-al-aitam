@@ -8,6 +8,8 @@ use App\Http\Controllers\Siswa\DashboardSiswaController;
 use App\Http\Controllers\Wali\SiswaController;
 use App\Http\Controllers\Wali\LaporanController;
 use App\Http\Controllers\Wali\AbsenController;
+use App\Http\Controllers\Wali\QrController;
+use App\Http\Controllers\Siswa\ScanController;
 use App\Http\Controllers\CRUD\{AbsensiCrud, KelasCrud, SiswaCrud, TahunCrud, WaliCrud};
 
 Route::get('/', function () {
@@ -70,12 +72,16 @@ Route::middleware(['auth', 'role:wali'])
 
         Route::get('absensi', [AbsenController::class, 'index'])->name('wali.absensi');
         Route::post('absensi', [AbsenController::class, 'simpan'])->name('wali.absensi.simpan');
-        Route::get('/absensi/scan/{kelas_id}', [AbsenController::class, 'scan'])
-    ->name('absensi.scan');
+        Route::post('/qr/generate', [QrController::class, 'generate'])->name('wali.qr.generate');
 
+        Route::post('/kelas/{kelasId}/toggle-mandiri', [
+            App\Http\Controllers\Wali\AbsenController::class,
+            'toggleAbsensiMandiri',
+        ])->name('wali.toggleMandiri');
         // Export Siswa Routes
-        Route::get('walikelas/siswa/export-excel/{wali}', [SiswaController::class, 'exportExcel'])
-            ->name('siswa.export.excel');
+        Route::get('walikelas/siswa/export-excel/{wali}', [SiswaController::class, 'exportExcel'])->name(
+            'siswa.export.excel',
+        );
         Route::get('siswa/export/pdf', [SiswaController::class, 'exportPdf'])->name('siswa.export.pdf');
     });
 
@@ -84,6 +90,11 @@ Route::middleware(['auth', 'role:siswa'])
     ->prefix('siswa')
     ->group(function () {
         Route::get('dashboard', [DashboardSiswaController::class, 'index'])->name('siswa.dashboard');
+        Route::post('/absen', [App\Http\Controllers\Siswa\AbsenController::class, 'absen'])->name('siswa.absen');
+        Route::post('/scan', [ScanController::class, 'scan'])->name('siswa.scan');
+        Route::post('/absen-mandiri', [App\Http\Controllers\Siswa\AbsenController::class, 'absenMandiri'])->name(
+            'siswa.absenMandiri',
+        );
     });
 
 require __DIR__ . '/auth.php';

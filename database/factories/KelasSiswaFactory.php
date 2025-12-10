@@ -29,8 +29,7 @@ class KelasSiswaFactory extends Factory
     }
 
     public function configure()
-{
-    return $this;
-}
-
+    {
+        return $this;
+    }
 }

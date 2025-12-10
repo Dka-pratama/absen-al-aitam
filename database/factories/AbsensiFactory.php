@@ -19,9 +19,7 @@ class AbsensiFactory extends Factory
         $tanggal = fake()->dateTimeBetween('-20 days', 'now')->format('Y-m-d');
 
         // Pastikan tidak ada absensi ganda pada hari itu
-        $cek = Absensi::where('kelas_siswa_id', $kelasSiswa->id)
-            ->where('tanggal', $tanggal)
-            ->exists();
+        $cek = Absensi::where('kelas_siswa_id', $kelasSiswa->id)->where('tanggal', $tanggal)->exists();
 
         if ($cek) {
             // Jika sudah ada, jangan buat absensi untuk hari itu → pilih tanggal lain

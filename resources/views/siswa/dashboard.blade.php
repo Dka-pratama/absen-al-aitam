@@ -22,7 +22,7 @@
 
                 {{-- PRESENSI --}}
                 <div
-                    x-data="qrScanner()"
+                    x-data="scanQr()"
                     x-cloak
                     class="rounded-2xl bg-gradient-to-br from-green-500 to-green-600 p-6 text-white shadow-md"
                 >

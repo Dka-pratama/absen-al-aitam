@@ -15,6 +15,7 @@ class LaporanController extends Controller
 {
     public function index(Request $request)
     {
+        $Header = 'Laporan';
         $user = auth()->user();
         $wali = WaliKelas::where('user_id', $user->id)->firstOrFail();
 
@@ -52,7 +53,7 @@ class LaporanController extends Controller
 
         $tahunAjar = TahunAjar::all();
 
-        return view('wali.laporan', compact('absensi', 'tahunAjar', 'wali'));
+        return view('wali.laporan', compact('Header','absensi', 'tahunAjar', 'wali'));
     }
 
     public function laporanDetail(Request $request)

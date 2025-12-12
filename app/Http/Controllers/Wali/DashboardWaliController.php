@@ -13,6 +13,7 @@ class DashboardWaliController extends Controller
 {
     public function index()
     {
+        $Header = 'Dashboard';
         $user = Auth::user();
         $wali = WaliKelas::with('user', 'kelas', 'tahunAjar')->where('user_id', $user->id)->first();
         if (!$wali) {
@@ -83,6 +84,6 @@ class DashboardWaliController extends Controller
             'chartIzin' => $izinChart,
             'chartSakit' => $sakitChart,
             'chartAlpa' => $alpaChart,
-        ]);
+        ], compact('Header'));
     }
 }

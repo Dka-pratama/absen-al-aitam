@@ -4,11 +4,84 @@ namespace App\Http\Controllers\Siswa;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Kelas;
+use App\Models\Absensi;
+use Illuminate\Support\Facades\DB;
 
 class DashboardSiswaController extends Controller
 {
     public function index()
     {
-        return view('siswa.dashboard');
+        $Header = 'Dashboard';
+        $user = Auth::user();
+        $kelas = $user->siswa->kelasSiswa()->with('kelas')->first();
+
+        $siswa = $user->siswa;
+
+        $kelasSiswa = $siswa->KelasSiswa()->pluck('id');
+        $kelasSiswa2 = $siswa->kelasSiswa()->first();
+        $hariIni = now()->toDateString();
+
+        $absenHariIni = Absensi::where('kelas_siswa_id', $kelasSiswa2->id)->whereDate('tanggal', $hariIni)->first();
+        $absen = Absensi::whereIn('kelas_siswa_id', $kelasSiswa)
+            ->select('status', DB::raw('count(*) as total'))
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+        $absensiMingguIni = Absensi::whereIn('kelas_siswa_id', $kelasSiswa)
+            ->whereBetween('tanggal', [now()->startOfWeek(), now()->endOfWeek()])
+            ->get()
+            ->keyBy(function ($a) {
+                return \Carbon\Carbon::parse($a->tanggal)->format('l'); // e.g. "Monday"
+            });
+
+        // List hari (urutan tetap)
+        $hariList = [
+            'Monday' => 'Senin',
+            'Tuesday' => 'Selasa',
+            'Wednesday' => 'Rabu',
+            'Thursday' => 'Kamis',
+            'Friday' => 'Jumat',
+        ];
+
+        $riwayat = [];
+
+        foreach ($hariList as $eng => $indo) {
+            $riwayat[] = [
+                'hari' => $indo,
+                'status' => $absensiMingguIni[$eng]->status ?? '-', // default "-"
+            ];
+        }
+        return view('siswa.dashboard', 
+        compact('user', 'kelas', 'absen', 'absenHariIni', 'riwayat', 'Header'));
+    }
+
+    public function rekap(Request $request)
+    {
+        $Header = 'Rekap Absensi';
+        $user = Auth::user();
+
+        // dapatkan siswa berdasarkan user id
+        $siswa = $user->siswa;
+
+        // dapatkan relasi kelas_siswa terbaru (misal kelas aktif)
+        $kelasSiswa = $siswa->kelasSiswa()->latest()->first();
+
+        // query dasar
+        $query = Absensi::where('kelas_siswa_id', $kelasSiswa->id);
+
+        // jika filter tanggal diisi
+        if ($request->start_date) {
+            $query->whereDate('tanggal', '>=', $request->start_date);
+        }
+
+        if ($request->end_date) {
+            $query->whereDate('tanggal', '<=', $request->end_date);
+        }
+
+        $rekap = $query->orderBy('tanggal', 'desc')->paginate(15);
+
+        return view('siswa.rekap', compact('rekap','Header'));
     }
 }

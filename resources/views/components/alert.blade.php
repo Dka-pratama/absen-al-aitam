@@ -6,7 +6,7 @@
 @php
     $map = [
         'success' => [
-            'bg' => 'bg-green-100 dark:bg-green-900',
+            'bg' => '#66cdaa',
             'border' => 'border-green-500 dark:border-green-700',
             'text' => 'text-green-900 dark:text-green-100',
             'icon' => 'text-green-600',
@@ -18,15 +18,15 @@
             'icon' => 'text-blue-600',
         ],
         'warning' => [
-            'bg' => 'bg-yellow-100 dark:bg-yellow-900',
+            'bg' => '#FF4463',
             'border' => 'border-yellow-500 dark:border-yellow-700',
             'text' => 'text-yellow-900 dark:text-yellow-100',
             'icon' => 'text-yellow-600',
         ],
         'danger' => [
-            'bg' => 'bg-red-100 dark:bg-red-900',
+            'bg' => '#FF4463',
             'border' => 'border-red-500 dark:border-red-700',
-            'text' => 'text-red-900 dark:text-red-100',
+            'text' => 'text-[#FF4463]',
             'icon' => 'text-red-600',
         ],
     ];
@@ -40,26 +40,38 @@
     x-show="show"
     x-transition.opacity.duration.500ms
     role="alert"
-    class="{{ $c['bg'] }} {{ $c['border'] }} {{ $c['text'] }} fixed right-4 top-4 z-[9999] flex w-72 items-center rounded-lg border-l-4 p-3 shadow-xl transition duration-300 ease-in-out"
+    class="fixed bottom-4 right-4 z-50 flex h-24 w-3/4 max-w-96 justify-end overflow-hidden rounded-xl bg-white shadow-lg transition duration-300 ease-in-out"
 >
-    <svg
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        fill="none"
-        class="{{ $c['icon'] }} mr-2 h-5 w-5 flex-shrink-0"
-        xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg width="16" height="96" xmlns="http://www.w3.org/2000/svg">
         <path
-            d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            d="M 8 0
+               Q 4 4.8, 8 9.6
+               T 8 19.2
+               Q 4 24, 8 28.8
+               T 8 38.4
+               Q 4 43.2, 8 48
+               T 8 57.6
+               Q 4 62.4, 8 67.2
+               T 8 76.8
+               Q 4 81.6, 8 86.4
+               T 8 96
+               L 0 96
+               L 0 0
+               Z"
+            fill="{{ $c['bg'] }}"
+            stroke="{{ $c['bg'] }}"
             stroke-width="2"
-            stroke-linejoin="round"
             stroke-linecap="round"
         ></path>
     </svg>
-
-    <p class="flex-1 text-xs font-semibold">
-        {{ $slot->isEmpty() ? $message : $slot }}
-    </p>
-
-    <button @click="show = false" class="ml-2 text-lg leading-none opacity-60 hover:opacity-100">&times;</button>
+    <div class="mx-2.5 w-full overflow-hidden">
+        <p
+            class="{{ $c['text'] }} mr-3 mt-1.5 overflow-hidden text-ellipsis whitespace-nowrap text-xl font-bold leading-8"
+        >
+            {{ $type }}
+        </p>
+        <p class="max-h-10 overflow-hidden break-all leading-5 text-zinc-600">
+            {{ $slot->isEmpty() ? $message : $slot }}
+        </p>
+    </div>
 </div>

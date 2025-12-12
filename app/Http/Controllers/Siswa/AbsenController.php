@@ -34,7 +34,7 @@ class AbsenController extends Controller
             ]);
         }
 
-        $kelasSiswa = \App\Models\KelasSiswa::where('siswa_id', $siswa->id)
+        $kelasSiswa = KelasSiswa::where('siswa_id', $siswa->id)
             ->where('kelas_id', $kelasId)
             ->where('tahun_ajar_id', $tahunAjarId)
             ->first();
@@ -47,7 +47,7 @@ class AbsenController extends Controller
         }
 
         // Cek sudah absen
-        $cek = \App\Models\Absensi::whereDate('tanggal', $tanggal)->where('kelas_siswa_id', $kelasSiswa->id)->first();
+        $cek = Absensi::whereDate('tanggal', $tanggal)->where('kelas_siswa_id', $kelasSiswa->id)->first();
 
         if ($cek) {
             return response()->json([

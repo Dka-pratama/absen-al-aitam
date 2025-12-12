@@ -3,7 +3,7 @@
 @section('content')
     <div class="p-6">
         <!-- HEADER -->
-        <div class="mb-6 flex flex-col lg:flex-row items-start justify-between gap-6">
+        <div class="mb-6 flex flex-col items-start justify-between gap-6 lg:flex-row">
             <!-- KIRI: Info Kelas -->
             <div class="flex-1">
                 <h1 class="text-2xl font-bold text-gray-800">
@@ -19,13 +19,14 @@
             <div class="flex flex-col gap-3">
                 <!-- Tombol QR -->
                 <div x-data="qrAbsensiComponent({{ $wali->kelas_id }}, {{ $wali->tahun_ajar_id }})" class="relative">
-                    <button @click="openModal" class="rounded bg-blue-600 px-4 py-2 text-white">
-                        Tampilkan QR
-                    </button>
+                    <button @click="openModal" class="rounded bg-blue-600 px-4 py-2 text-white">Tampilkan QR</button>
 
                     <!-- MODAL -->
-                    <div x-show="open" x-transition
-                        class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+                    <div
+                        x-show="open"
+                        x-transition
+                        class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
+                    >
                         <div class="relative w-96 rounded-xl bg-white p-6 shadow-lg">
                             <!-- CLOSE BUTTON -->
                             <button class="absolute right-3 top-3 text-gray-600 hover:text-black" @click="closeModal">
@@ -45,7 +46,8 @@
                             </div>
 
                             <p class="mt-3 text-center text-gray-500">
-                                Expired: <span x-text="expires"></span>
+                                Expired:
+                                <span x-text="expires"></span>
                             </p>
                         </div>
                     </div>
@@ -62,7 +64,6 @@
                 </form>
             </div>
         </div>
-
 
         <!-- PERSENTASE (progress bars) -->
         <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-4">
@@ -143,20 +144,37 @@
                                 @endphp
 
                                 <td class="p-3 text-center">
-                                    <input type="radio" name="{{ $inputName }}" value="hadir"
-                                        {{ $statusNow === 'hadir' ? 'checked' : '' }} required />
+                                    <input
+                                        type="radio"
+                                        name="{{ $inputName }}"
+                                        value="hadir"
+                                        {{ $statusNow === 'hadir' ? 'checked' : '' }}
+                                        required
+                                    />
                                 </td>
                                 <td class="p-3 text-center">
-                                    <input type="radio" name="{{ $inputName }}" value="izin"
-                                        {{ $statusNow === 'izin' ? 'checked' : '' }} />
+                                    <input
+                                        type="radio"
+                                        name="{{ $inputName }}"
+                                        value="izin"
+                                        {{ $statusNow === 'izin' ? 'checked' : '' }}
+                                    />
                                 </td>
                                 <td class="p-3 text-center">
-                                    <input type="radio" name="{{ $inputName }}" value="sakit"
-                                        {{ $statusNow === 'sakit' ? 'checked' : '' }} />
+                                    <input
+                                        type="radio"
+                                        name="{{ $inputName }}"
+                                        value="sakit"
+                                        {{ $statusNow === 'sakit' ? 'checked' : '' }}
+                                    />
                                 </td>
                                 <td class="p-3 text-center">
-                                    <input type="radio" name="{{ $inputName }}" value="alpa"
-                                        {{ $statusNow === 'alpa' ? 'checked' : '' }} />
+                                    <input
+                                        type="radio"
+                                        name="{{ $inputName }}"
+                                        value="alpa"
+                                        {{ $statusNow === 'alpa' ? 'checked' : '' }}
+                                    />
                                 </td>
                             </tr>
                         @empty
@@ -202,16 +220,16 @@
 
                 loadQr() {
                     fetch('{{ route('wali.qr.generate') }}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            },
-                            body: JSON.stringify({
-                                kelas_id: kelasId,
-                                tahun_ajar_id: tahunAjarId,
-                            }),
-                        })
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        },
+                        body: JSON.stringify({
+                            kelas_id: kelasId,
+                            tahun_ajar_id: tahunAjarId,
+                        }),
+                    })
                         .then((res) => res.json())
                         .then((data) => {
                             this.qr = data.qr;

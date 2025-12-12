@@ -16,6 +16,7 @@ class AbsenController extends Controller
 {
     public function index()
     {
+        $Header = 'Absensi';
         $user = auth()->user();
         $wali = WaliKelas::with('kelas', 'tahunAjar')->where('user_id', $user->id)->firstOrFail();
 
@@ -56,7 +57,8 @@ class AbsenController extends Controller
                 'siswa',
                 'persentase',
                 'absensiMap',
-                'qr', // 🔥 jangan lupa ini
+                'qr',
+                'Header'
             ),
         );
     }

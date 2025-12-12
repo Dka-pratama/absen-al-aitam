@@ -5,7 +5,6 @@ namespace App\Http\Controllers\CRUD;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Kelas;
-use Illuminate\Support\Facades\DB;
 use App\Models\Siswa;
 use App\Models\TahunAjar;
 use App\Models\KelasSiswa;

@@ -16,10 +16,11 @@ class SiswaController extends Controller
 {
     public function index()
     {
+        $Header = 'Data Siswa';
         $wali = WaliKelas::where('user_id', Auth::id())->firstOrFail();
         $dataSiswa = $this->getDataSiswa($wali);
 
-        return view('wali.siswa.index', compact('dataSiswa', 'wali'));
+        return view('wali.siswa.index', compact('dataSiswa', 'wali', 'Header'));
     }
 
     public function exportExcel($waliId)

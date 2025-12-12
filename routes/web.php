@@ -90,6 +90,7 @@ Route::middleware(['auth', 'role:siswa'])
     ->prefix('siswa')
     ->group(function () {
         Route::get('dashboard', [DashboardSiswaController::class, 'index'])->name('siswa.dashboard');
+        Route::get('rekap', [DashboardSiswaController::class, 'rekap'])->name('siswa.rekap');
         Route::post('/absen', [App\Http\Controllers\Siswa\AbsenController::class, 'absen'])->name('siswa.absen');
         Route::post('/scan', [ScanController::class, 'scan'])->name('siswa.scan');
         Route::post('/absen-mandiri', [App\Http\Controllers\Siswa\AbsenController::class, 'absenMandiri'])->name(

@@ -8,7 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
-use App\Models\User;
+use App\Models\UserSession;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -38,6 +38,11 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        UserSession::create([
+            'user_id' => auth()->id(),
+            'login_at' => now(),
+            'last_activity_at' => now(),
+        ]);
         // redirect sesuai role
         $user = auth()->user();
         if ($user->hasRole('admin')) {
@@ -56,10 +61,22 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        $userId = auth()->id();
+
+    $session = UserSession::where('user_id', $userId)
+        ->whereNull('logout_at')
+        ->latest()
+        ->first();
+
+    if ($session) {
+        $session->update([
+            'logout_at' => now(),
+            'duration_minutes' => now()->diffInMinutes($session->login_at),
+        ]);
+    }
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect()->route('login');

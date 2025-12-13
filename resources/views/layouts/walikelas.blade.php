@@ -176,7 +176,7 @@
                 <div class="space-y-2 border-t border-white/40 py-5">
                     <!-- PROFILE -->
                     <a
-                        href="#"
+                        href="{{ route('wali.profile') }}"
                         class="{{ request()->is('walikelas/profile') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }} flex items-center gap-3 rounded-lg p-3 transition"
                     >
                         <svg

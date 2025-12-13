@@ -1,14 +1,17 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Wali\DashboardWaliController;
 use App\Http\Controllers\Siswa\DashboardSiswaController;
-use App\Http\Controllers\Wali\SiswaController;
-use App\Http\Controllers\Wali\LaporanController;
-use App\Http\Controllers\Wali\AbsenController;
-use App\Http\Controllers\Wali\QrController;
+use App\Http\Controllers\Wali\{
+    SiswaController, 
+    LaporanController, 
+    AbsenController, 
+    QrController,
+    ProfileWaliController};
 use App\Http\Controllers\Siswa\ScanController;
 use App\Http\Controllers\CRUD\{AbsensiCrud, KelasCrud, SiswaCrud, TahunCrud, WaliCrud};
 
@@ -73,11 +76,12 @@ Route::middleware(['auth', 'role:wali'])
         Route::get('absensi', [AbsenController::class, 'index'])->name('wali.absensi');
         Route::post('absensi', [AbsenController::class, 'simpan'])->name('wali.absensi.simpan');
         Route::post('/qr/generate', [QrController::class, 'generate'])->name('wali.qr.generate');
-
+        Route::get('/profile', [ProfileWaliController::class, 'index'])->name('wali.profile');
         Route::post('/kelas/{kelasId}/toggle-mandiri', [
             App\Http\Controllers\Wali\AbsenController::class,
             'toggleAbsensiMandiri',
         ])->name('wali.toggleMandiri');
+
         // Export Siswa Routes
         Route::get('walikelas/siswa/export-excel/{wali}', [SiswaController::class, 'exportExcel'])->name(
             'siswa.export.excel',

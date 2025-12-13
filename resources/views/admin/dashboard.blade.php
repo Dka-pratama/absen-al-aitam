@@ -58,60 +58,51 @@
         <h2 class="mb-6 mt-6 text-xl font-semibold">Aktivitas web per jam</h2>
 
         <!-- CHART BOX -->
-        <div class="w-full rounded-xl border bg-white p-6 shadow md:p-8">
-            <canvas id="myChart" class="h-64 w-full md:h-80"></canvas>
-        </div>
+        <div class="w-full max-w-full overflow-x-auto rounded-xl border bg-white p-6 shadow md:p-8">
+    <canvas
+        id="loginChart" class="w-full"
+        data-labels='@json($labels)'
+        data-values='@json($values)'>
+    </canvas>
+</div>
     </div>
 
     <!-- CHART.JS -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        const ctx = document.getElementById('myChart').getContext('2d');
+        const canvas = document.getElementById('loginChart');
 
-        new Chart(ctx, {
+        const labels = JSON.parse(canvas.dataset.labels);
+        const values = JSON.parse(canvas.dataset.values);
+
+        new Chart(canvas, {
             type: 'line',
             data: {
-                labels: [
-                    '07:00',
-                    '08:00',
-                    '09:00',
-                    '10:00',
-                    '11:00',
-                    '12:00',
-                    '13:00',
-                    '14:00',
-                    '15:00',
-                    '16:00',
-                    '17:00',
-                    '18:00',
-                ],
-                datasets: [
-                    {
-                        label: 'Aktivitas',
-                        data: [12, 16, 9, 12, 20, 18, 17, 14, 13, 10, 8, 18],
-                        fill: true,
-                        borderWidth: 3,
-                        tension: 0.4,
-                        borderColor: 'rgba(0, 60, 255, 1)',
-                        backgroundColor: 'rgba(0, 60, 255, 0.12)',
-                    },
-                ],
+                labels: labels,
+                datasets: [{
+                    label: 'Jumlah Login',
+                    data: values,
+                }]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false,
-                    },
-                },
                 scales: {
+                    x:{
+                        ticks:{
+                            maxRotation: 45,
+                            minRotation: 45,
+                            callback: function(value, index) {
+                    // tampilkan hanya tiap 2 jam
+                    return index % 2 === 0 ? this.getLabelForValue(value) : '';
+                }
+                        }
+                    },
                     y: {
                         beginAtZero: true,
-                    },
-                },
-            },
+                        ticks: { precision: 2 }
+                    }
+                }
+            }
         });
     </script>
 @endsection

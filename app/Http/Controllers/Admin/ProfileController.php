@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+
 
 class ProfileController extends Controller
 {
@@ -30,6 +32,7 @@ class ProfileController extends Controller
             'email' => 'required|email|unique:users,email,' . Auth::id(),
         ]);
 
+        /** @var \App\Models\User $user */
         $user = Auth::user();
         $user->update([
             'name' => $request->name,
@@ -61,11 +64,11 @@ class ProfileController extends Controller
         $user = Auth::user();
 
         // cek password lama
-        if (!\Hash::check($request->old_password, $user->password)) {
+        if (!Hash::check($request->old_password, $user->password)) {
             return back()->withErrors(['old_password' => 'Password lama tidak sesuai.']);
         }
 
-        // update password
+        /** @var \App\Models\User $user */
         $user->update([
             'password' => bcrypt($request->new_password),
         ]);

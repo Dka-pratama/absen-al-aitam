@@ -1,86 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reset Password</title>
-    @vite('resources/css/app.css')
-</head>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Reset Password</title>
+        @vite('resources/css/app.css')
+    </head>
 
-<body class="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+    <body class="flex min-h-screen items-center justify-center bg-gray-100 p-4">
+        <div class="w-full max-w-md rounded-xl bg-white p-8 shadow-lg">
+            <h2 class="mb-2 text-center text-2xl font-bold text-gray-900">Reset Password</h2>
+            <p class="mb-6 text-center text-sm text-gray-600">Enter your new password below.</p>
 
-    <div class="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
-        <h2 class="text-2xl font-bold text-gray-900 mb-2 text-center">Reset Password</h2>
-        <p class="text-sm text-gray-600 text-center mb-6">
-            Enter your new password below.
-        </p>
+            <form method="POST" action="{{ route('password.store') }}" class="space-y-4">
+                @csrf
 
-        <form method="POST" action="{{ route('password.store') }}" class="space-y-4">
-            @csrf
+                <!-- Token dari URL -->
+                <input type="hidden" name="token" value="{{ $request->route('token') }}" />
 
-            <!-- Token dari URL -->
-            <input type="hidden" name="token" value="{{ $request->route('token') }}" />
+                <!-- Email -->
+                <div>
+                    <label class="mb-1 block text-sm font-medium text-gray-700">Email</label>
+                    <input
+                        type="email"
+                        name="email"
+                        value="{{ old('email', $request->email) }}"
+                        class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
+                        required
+                    />
+                </div>
 
-            <!-- Email -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                <input 
-                    type="email"
-                    name="email"
-                    value="{{ old('email', $request->email) }}"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg 
-                           focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                    required 
-                />
+                <!-- Password -->
+                <div>
+                    <label class="mb-1 block text-sm font-medium text-gray-700">New Password</label>
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="••••••••"
+                        class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
+                        required
+                    />
+                </div>
+
+                <!-- Confirm Password -->
+                <div>
+                    <label class="mb-1 block text-sm font-medium text-gray-700">Confirm Password</label>
+                    <input
+                        type="password"
+                        name="password_confirmation"
+                        placeholder="••••••••"
+                        class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
+                        required
+                    />
+                </div>
+
+                <!-- Error -->
+                @foreach ($errors->all() as $error)
+                    <p class="text-sm text-red-500">{{ $error }}</p>
+                @endforeach
+
+                <!-- Submit -->
+                <button
+                    type="submit"
+                    class="w-full rounded-lg bg-indigo-600 py-2.5 font-medium text-white transition hover:bg-indigo-700"
+                >
+                    Reset Password
+                </button>
+            </form>
+
+            <div class="mt-6 text-center text-sm text-gray-600">
+                Remember your password?
+                <a href="{{ route('login') }}" class="font-medium text-indigo-600 hover:text-indigo-500">Sign in</a>
             </div>
-
-            <!-- Password -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
-                <input 
-                    type="password"
-                    name="password"
-                    placeholder="••••••••"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg 
-                           focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                    required
-                />
-            </div>
-
-            <!-- Confirm Password -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
-                <input 
-                    type="password"
-                    name="password_confirmation"
-                    placeholder="••••••••"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg 
-                           focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                    required
-                />
-            </div>
-
-            <!-- Error -->
-            @foreach ($errors->all() as $error)
-                <p class="text-sm text-red-500">{{ $error }}</p>
-            @endforeach
-
-            <!-- Submit -->
-            <button 
-                type="submit"
-                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-lg transition"
-            >
-                Reset Password
-            </button>
-        </form>
-
-        <div class="mt-6 text-center text-sm text-gray-600">
-            Remember your password?
-            <a href="{{ route('login') }}" class="text-indigo-600 hover:text-indigo-500 font-medium">
-                Sign in
-            </a>
         </div>
-    </div>
-
-</body>
+    </body>
 </html>

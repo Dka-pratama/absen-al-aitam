@@ -17,15 +17,15 @@ class TrackUserActivity
     public function handle(Request $request, Closure $next): Response
     {
         if (auth()->check()) {
-        UserSession::where('user_id', auth()->id())
-            ->whereNull('logout_at')
-            ->latest()
-            ->first()
-            ?->update([
-                'last_activity_at' => now()
-            ]);
-    }
+            UserSession::where('user_id', auth()->id())
+                ->whereNull('logout_at')
+                ->latest()
+                ->first()
+                ?->update([
+                    'last_activity_at' => now(),
+                ]);
+        }
 
-    return $next($request);
+        return $next($request);
     }
 }

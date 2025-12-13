@@ -21,36 +21,26 @@ class DashboardController extends Controller
         $totalAkun = User::count();
         $totalJurusan = Kelas::distinct('jurusan')->count('jurusan');
 
-        $raw = UserSession::select(
-            DB::raw('HOUR(login_at) as jam'),
-            DB::raw('COUNT(*) as total')
-        )
-        ->whereDate('login_at', Carbon::today())
-        ->whereHas('user', function ($q) {
-            $q->whereIn('role', ['siswa', 'wali']);
-        })
-        ->groupBy('jam')
-        ->get()
-        ->keyBy('jam');
+        $raw = UserSession::select(DB::raw('HOUR(login_at) as jam'), DB::raw('COUNT(*) as total'))
+            ->whereDate('login_at', Carbon::today())
+            ->whereHas('user', function ($q) {
+                $q->whereIn('role', ['siswa', 'wali']);
+            })
+            ->groupBy('jam')
+            ->get()
+            ->keyBy('jam');
 
-    $labels = [];
-    $values = [];
+        $labels = [];
+        $values = [];
 
-    for ($i = 0; $i < 24; $i++) {
-        $labels[] = sprintf('%02d:00', $i);
-        $values[] = $raw[$i]->total ?? 0; // jika jam itu kosong → 0
-    }
+        for ($i = 0; $i < 24; $i++) {
+            $labels[] = sprintf('%02d:00', $i);
+            $values[] = $raw[$i]->total ?? 0; // jika jam itu kosong → 0
+        }
 
         return view(
             'admin.dashboard',
-            compact('totalSiswa', 
-            'totalKelas', 
-            'totalWali', 
-            'totalAkun', 
-            'totalJurusan', 
-            'Header',
-            'labels',
-        'values'),
+            compact('totalSiswa', 'totalKelas', 'totalWali', 'totalAkun', 'totalJurusan', 'Header', 'labels', 'values'),
         );
     }
 }

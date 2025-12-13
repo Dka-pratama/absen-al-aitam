@@ -53,7 +53,7 @@ class LaporanController extends Controller
 
         $tahunAjar = TahunAjar::all();
 
-        return view('wali.laporan', compact('Header','absensi', 'tahunAjar', 'wali'));
+        return view('wali.laporan', compact('Header', 'absensi', 'tahunAjar', 'wali'));
     }
 
     public function laporanDetail(Request $request)

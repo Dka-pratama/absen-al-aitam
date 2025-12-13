@@ -47,9 +47,9 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function sessions()
-{
-    return $this->hasMany(UserSession::class);
-}
+    {
+        return $this->hasMany(UserSession::class);
+    }
 
     public function siswa()
     {
@@ -71,8 +71,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function hasVerifiedEmail()
     {
-        if(!$this->email)
-        {
+        if (!$this->email) {
             return true;
         }
 

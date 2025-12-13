@@ -4,7 +4,9 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{{ $Header ?? 'Dashboard' }}</title>
-
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
+        <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('favicon-96x96.png') }}">
         <!-- Font Poppins -->
         <link
             href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
@@ -49,7 +51,7 @@
             class="fixed left-0 top-0 z-40 h-screen w-64 -translate-x-full transform rounded-br-[80px] bg-gradient-to-b from-green-600 to-green-700 text-white shadow-lg transition-transform duration-300 md:translate-x-0"
         >
             <!-- LOGO -->
-            <div class="mb-6 flex items-center gap-3 px-4 pt-6">
+            <div class="flex items-center gap-3 px-4 pt-6">
                 <img src="{{ asset('logo.png') }}" class="w-14 drop-shadow-lg" />
                 <div class="text-lg font-bold leading-tight">
                     <div>SMK AL-AITAAM</div>
@@ -58,7 +60,7 @@
             </div>
 
             <!-- MENU -->
-            <nav class="mt-4 space-y-2 p-6">
+            <nav class="space-y-2 p-2">
                 <!-- DASHBOARD -->
                 <a
                     href="{{ route('wali.dashboard') }}"
@@ -235,7 +237,23 @@
             <header class="sticky top-0 z-20 flex items-center justify-between bg-white px-5 py-3 shadow-sm">
                 <!-- HAMBURGER BUTTON -->
                 <button id="toggleSidebar" class="rounded p-2 hover:bg-gray-200 md:hidden">
-                    <i class="fa-solid fa-bars fa-xl"></i>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="icon icon-tabler icons-tabler-outline icon-tabler-menu-2"
+                    >
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M4 6l16 0" />
+                        <path d="M4 12l16 0" />
+                        <path d="M4 18l16 0" />
+                    </svg>
                 </button>
                 <h1 class="text-xl font-semibold tracking-wide md:text-2xl">
                     {{ $Header ?? '-' }}

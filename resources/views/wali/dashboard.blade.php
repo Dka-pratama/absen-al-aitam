@@ -1,11 +1,11 @@
 @extends('layouts.walikelas')
 
 @section('content')
-    <div class="p-2 sm:p-4 lg:p-8">
+    <div class="p-2 sm:p-4 lg:p-6">
         <div class="mb-4">
             <p class="text-xl font-semibold text-gray-800 sm:text-2xl">Halo, {{ $wali->user->name }}!</p>
         </div>
-        <div class="mb-6 flex flex-col gap-4 border-b pb-3 text-gray-700 sm:flex-row sm:items-center sm:justify-start">
+        <div class="mb-6 flex flex-col border-b pb-3 text-gray-700 sm:flex-row sm:items-center sm:justify-start">
             <div>
                 <span class="text-sm font-semibold">Hari Ini:</span>
                 <span class="text-base font-medium">
@@ -22,7 +22,7 @@
             </div>
         </div>
         <!-- CARD WRAPPER -->
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
+        <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
             @php
                 $cards = [
                     [
@@ -71,14 +71,6 @@
                     </div>
                 </div>
             @endforeach
-        </div>
-
-        <!-- CHART TITLE -->
-        <h2 class="mb-6 mt-6 text-xl font-semibold">Aktivitas web per jam</h2>
-
-        <!-- CHART BOX -->
-        <div class="w-full rounded-xl border bg-white p-6 shadow md:p-8">
-            <canvas id="myChart" class="h-64 w-full md:h-80"></canvas>
         </div>
     </div>
 @endsection

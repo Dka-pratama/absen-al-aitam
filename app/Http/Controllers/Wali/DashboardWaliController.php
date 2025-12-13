@@ -66,24 +66,28 @@ class DashboardWaliController extends Controller
             $alpaChart[] = $data->where('status', 'alpa')->count();
         }
 
-        return view('wali.dashboard', [
-            'wali' => $wali,
-            'tahunAjar' => $tahunAjar,
-            'kelas' => $kelas,
-            'totalSiswa' => $totalSiswa,
-            'hadir' => $hadir,
-            'izin' => $izin,
-            'sakit' => $sakit,
-            'alpa' => $alpa,
-            'persentaseHadir' => $persentaseHadir,
-            'hariIni' => $hariIni,
+        return view(
+            'wali.dashboard',
+            [
+                'wali' => $wali,
+                'tahunAjar' => $tahunAjar,
+                'kelas' => $kelas,
+                'totalSiswa' => $totalSiswa,
+                'hadir' => $hadir,
+                'izin' => $izin,
+                'sakit' => $sakit,
+                'alpa' => $alpa,
+                'persentaseHadir' => $persentaseHadir,
+                'hariIni' => $hariIni,
 
-            // Data chart
-            'chartTanggal' => $tanggal,
-            'chartHadir' => $hadirChart,
-            'chartIzin' => $izinChart,
-            'chartSakit' => $sakitChart,
-            'chartAlpa' => $alpaChart,
-        ], compact('Header'));
+                // Data chart
+                'chartTanggal' => $tanggal,
+                'chartHadir' => $hadirChart,
+                'chartIzin' => $izinChart,
+                'chartSakit' => $sakitChart,
+                'chartAlpa' => $alpaChart,
+            ],
+            compact('Header'),
+        );
     }
 }

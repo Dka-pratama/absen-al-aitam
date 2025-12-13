@@ -11,16 +11,16 @@ class ProfileWaliController extends Controller
 {
     public function index()
     {
-        $Header = 'Profil Admin';
+        $Header = 'Profil Wali';
         $user = Auth::user();
-        return view('admin.profile', compact('user', 'Header'));
+        return view('wali.profile', compact('user', 'Header'));
     }
 
     public function edit()
     {
         $user = Auth::user();
-        $Header = 'Edit Profil Admin';
-        return view('admin.profile-edit', compact('user', 'Header'));
+        $Header = 'Edit Profil Wali';
+        return view('wali.profile-edit', compact('user', 'Header'));
     }
 
     public function update(Request $request)
@@ -39,13 +39,13 @@ class ProfileWaliController extends Controller
             'email' => $request->email,
         ]);
 
-        return redirect()->route('admin.profile')->with('success', 'Profil berhasil diperbarui.');
+        return redirect()->route('wali.profile')->with('success', 'Profil berhasil diperbarui.');
     }
 
     public function passwordForm()
     {
         $Header = 'Ganti Password';
-        return view('admin.change-password', compact('Header'));
+        return view('wali.change-password', compact('Header'));
     }
     public function changePassword(Request $request)
     {
@@ -72,6 +72,6 @@ class ProfileWaliController extends Controller
             'password' => bcrypt($request->new_password),
         ]);
 
-        return redirect()->route('admin.profile')->with('success', 'Password berhasil diganti.');
+        return redirect()->route('wali.profile')->with('success', 'Password berhasil diganti.');
     }
 }

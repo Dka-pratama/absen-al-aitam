@@ -1,4 +1,4 @@
-@extends('layouts.wali')
+@extends('layouts.walikelas')
 
 @section('content')
     <div class="mx-auto mt-10 max-w-3xl rounded-lg bg-white p-6 shadow-md">
@@ -28,14 +28,14 @@
         {{-- Tombol --}}
         <div class="mt-8 flex gap-3">
             <a
-                href="{{ route('admin.profile.edit') }}"
+                href="{{ route('wali.profile.edit') }}"
                 class="rounded bg-green-700 px-4 py-2 text-white transition hover:bg-green-800"
             >
                 Edit Profil
             </a>
 
             <a
-                href="{{ route('admin.profile.password') }}"
+                href="{{ route('wali.profile.password') }}"
                 class="rounded bg-yellow-500 px-4 py-2 text-white transition hover:bg-yellow-600"
             >
                 Ganti Password

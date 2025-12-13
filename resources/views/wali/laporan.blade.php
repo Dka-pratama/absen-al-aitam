@@ -33,7 +33,7 @@
 
             <div class="flex flex-col">
                 <label class="text-sm font-semibold">Tahun Ajar</label>
-                <select name="tahun_ajar_id" class="rounded border px-3 py-2">
+                <select name="tahun_ajar_id" class="rounded border py-2 pl-3">
                     @foreach ($tahunAjar as $t)
                         <option value="{{ $t->id }}" {{ request('tahun_ajar_id') == $t->id ? 'selected' : '' }}>
                             {{ $t->tahun }} - {{ $t->semester }}

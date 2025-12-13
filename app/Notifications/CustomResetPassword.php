@@ -36,13 +36,11 @@ class CustomResetPassword extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $url = url('/reset-password/'.$this->token.'?email='.$notifiable->email);
-        return (new MailMessage)
-            ->subject('Reset Password Absensi App')
-            ->view('email.reset-password', [
-                'url' => $url,
-                'nama' => $notifiable->name
-            ]);
+        $url = url('/reset-password/' . $this->token . '?email=' . $notifiable->email);
+        return (new MailMessage())->subject('Reset Password Absensi App')->view('email.reset-password', [
+            'url' => $url,
+            'nama' => $notifiable->name,
+        ]);
     }
 
     /**
@@ -53,7 +51,7 @@ class CustomResetPassword extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            //
-        ];
+                //
+            ];
     }
 }

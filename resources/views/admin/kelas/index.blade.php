@@ -96,6 +96,7 @@
                             {{-- ACTION --}}
                             <td class="flex justify-center gap-3 p-3">
                                 {{-- Edit --}}
+
                                 <div class="group relative">
                                     <a href="{{ route('kelas.edit', $k->id) }}">
                                         <svg

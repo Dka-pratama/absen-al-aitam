@@ -63,17 +63,14 @@ class AuthenticatedSessionController extends Controller
     {
         $userId = auth()->id();
 
-    $session = UserSession::where('user_id', $userId)
-        ->whereNull('logout_at')
-        ->latest()
-        ->first();
+        $session = UserSession::where('user_id', $userId)->whereNull('logout_at')->latest()->first();
 
-    if ($session) {
-        $session->update([
-            'logout_at' => now(),
-            'duration_minutes' => now()->diffInMinutes($session->login_at),
-        ]);
-    }
+        if ($session) {
+            $session->update([
+                'logout_at' => now(),
+                'duration_minutes' => now()->diffInMinutes($session->login_at),
+            ]);
+        }
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

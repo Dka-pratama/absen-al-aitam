@@ -11,9 +11,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
         ]);
-        $middleware->web(append: [
-            TrackUserActivity::class,
-        ]);
+        $middleware->web(append: [TrackUserActivity::class]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

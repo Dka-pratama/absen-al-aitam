@@ -25,19 +25,17 @@ class CloseInactiveSessions extends Command
      * Execute the console command.
      */
     public function handle()
-{
-    $limit = now()->subMinutes(config('session.lifetime'));
+    {
+        $limit = now()->subMinutes(config('session.lifetime'));
 
-    UserSession::whereNull('logout_at')
-        ->where('last_activity_at', '<', $limit)
-        ->get()
-        ->each(function ($session) {
-            $session->update([
-                'logout_at' => $session->last_activity_at,
-                'duration_minutes' =>
-                    $session->last_activity_at
-                        ->diffInMinutes($session->login_at),
-            ]);
-        });
-}
+        UserSession::whereNull('logout_at')
+            ->where('last_activity_at', '<', $limit)
+            ->get()
+            ->each(function ($session) {
+                $session->update([
+                    'logout_at' => $session->last_activity_at,
+                    'duration_minutes' => $session->last_activity_at->diffInMinutes($session->login_at),
+                ]);
+            });
+    }
 }

@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.walikelas')
 
 @section('content')
     <div class="mx-auto max-w-xl rounded-lg bg-white p-6 shadow">
@@ -14,19 +14,18 @@
             </div>
         @endif
 
-        <form action="{{ route('admin.profile.password.update') }}" method="POST" class="space-y-4">
+        <form action="{{ route('wali.profile.password.update') }}" method="POST" class="space-y-4">
             @csrf
 
             <div>
                 <label class="block font-medium">Password Lama</label>
                 <div class="relative">
-                    <input id="old_password" type="password" class="w-full rounded border p-2" name="old_password" />
+                    <input name="old_password" id="old_password" type="password" class="w-full rounded border p-2" />
 
                     <div
                         id="eyeOpenOld"
                         class="absolute right-3 top-3 cursor-pointer"
                         onclick="togglePassword('old_password', 'eyeOpenOld', 'eyeCloseOld')"
-                        name="old_password"
                     >
                         <!-- SVG eye open -->
                         <svg
@@ -77,13 +76,12 @@
             <div>
                 <label class="block font-medium">Password Baru</label>
                 <div class="relative">
-                    <input id="new_password" type="password" class="w-full rounded border p-2" name="new_password" />
+                    <input name="new_password" id="new_password" type="password" class="w-full rounded border p-2" />
 
                     <div
                         id="eyeOpenNew"
                         onclick="togglePassword('new_password', 'eyeOpenNew', 'eyeCloseNew')"
                         class="absolute right-3 top-3 cursor-pointer"
-                        name="new_password"
                     >
                         <!-- SVG -->
                         <svg
@@ -145,7 +143,6 @@
                         id="eyeOpenNew"
                         onclick="togglePassword('new_password', 'eyeOpenNew', 'eyeCloseNew')"
                         class="absolute right-3 top-3 cursor-pointer"
-                        name="new_password_confirmation"
                     >
                         <!-- SVG -->
                     </div>

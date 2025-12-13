@@ -3,7 +3,7 @@
 @section('content')
     <div class="p-2 sm:p-4 md:p-6 lg:p-8">
         <!-- CARD WRAPPER -->
-        <div class="box-border grid w-full gap-2 px-3 md:grid-cols-2 xl:grid-cols-4">
+        <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
             @php
                 $cards = [
                     [
@@ -58,51 +58,63 @@
         <h2 class="mb-6 mt-6 text-xl font-semibold">Aktivitas web per jam</h2>
 
         <!-- CHART BOX -->
-        <div class="w-full max-w-full overflow-x-auto rounded-xl border bg-white p-6 shadow md:p-8">
-    <canvas
-        id="loginChart" class="w-full"
-        data-labels='@json($labels)'
-        data-values='@json($values)'>
-    </canvas>
-</div>
+        <div class="w-full max-w-full overflow-x-auto rounded-xl border bg-white p-6 shadow">
+            <div class="relative h-96 w-full overflow-x-hidden">
+                <canvas id="loginChart" class="max-w-full"></canvas>
+            </div>
+        </div>
     </div>
-
+    @endsection
+@section('script')
     <!-- CHART.JS -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const canvas = document.getElementById('loginChart');
+    if (!canvas) return;
 
-    <script>
-        const canvas = document.getElementById('loginChart');
+    const labels = @json($labels);
+    const values = @json($values);
 
-        const labels = JSON.parse(canvas.dataset.labels);
-        const values = JSON.parse(canvas.dataset.values);
-
-        new Chart(canvas, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Jumlah Login',
-                    data: values,
-                }]
+    new Chart(canvas, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Jumlah Login',
+                data: values,
+                tension: 0.4,
+            }],
+        },
+        options: {
+             responsive: true,
+    maintainAspectRatio: false,
+    layout: {
+        padding: {
+            bottom: 20,
+        },
+    },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                },
+                x : {
+                    ticks: {
+        maxRotation: 45,
+        minRotation: 45,
+        autoSkip: false,
+        callback: function (value, index) {
+            return index % 2 === 0
+                ? this.getLabelForValue(value)
+                : '';
+        },
+    },
+                }
             },
-            options: {
-                scales: {
-                    x:{
-                        ticks:{
-                            maxRotation: 45,
-                            minRotation: 45,
-                            callback: function(value, index) {
-                    // tampilkan hanya tiap 2 jam
-                    return index % 2 === 0 ? this.getLabelForValue(value) : '';
-                }
-                        }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        ticks: { precision: 2 }
-                    }
-                }
-            }
-        });
-    </script>
+        },
+    });
+});
+</script>
+
+
 @endsection

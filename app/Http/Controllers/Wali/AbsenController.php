@@ -50,17 +50,7 @@ class AbsenController extends Controller
         $qr = base64_encode(QrCode::size(300)->generate(json_encode($payload)));
         // ==========================
 
-        return view(
-            'wali.absensi',
-            compact(
-                'wali',
-                'siswa',
-                'persentase',
-                'absensiMap',
-                'qr',
-                'Header'
-            ),
-        );
+        return view('wali.absensi', compact('wali', 'siswa', 'persentase', 'absensiMap', 'qr', 'Header'));
     }
 
     public function simpan(Request $request)

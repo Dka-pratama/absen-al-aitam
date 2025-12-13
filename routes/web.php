@@ -7,11 +7,12 @@ use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Wali\DashboardWaliController;
 use App\Http\Controllers\Siswa\DashboardSiswaController;
 use App\Http\Controllers\Wali\{
-    SiswaController, 
-    LaporanController, 
-    AbsenController, 
+    SiswaController,
+    LaporanController,
+    AbsenController,
     QrController,
-    ProfileWaliController};
+    ProfileWaliController,
+};
 use App\Http\Controllers\Siswa\ScanController;
 use App\Http\Controllers\CRUD\{AbsensiCrud, KelasCrud, SiswaCrud, TahunCrud, WaliCrud};
 
@@ -81,6 +82,15 @@ Route::middleware(['auth', 'role:wali'])
             App\Http\Controllers\Wali\AbsenController::class,
             'toggleAbsensiMandiri',
         ])->name('wali.toggleMandiri');
+
+        // Profile
+        Route::get('profile', [ProfileWaliController::class, 'index'])->name('wali.profile');
+        Route::get('profile/edit', [ProfileWaliController::class, 'edit'])->name('wali.profile.edit');
+        Route::post('profile/update', [ProfileWaliController::class, 'update'])->name('wali.profile.update');
+        Route::get('profile/password', [ProfileWaliController::class, 'passwordForm'])->name('wali.profile.password');
+        Route::post('profile/password', [ProfileWaliController::class, 'changePassword'])->name(
+            'wali.profile.password.update',
+        );
 
         // Export Siswa Routes
         Route::get('walikelas/siswa/export-excel/{wali}', [SiswaController::class, 'exportExcel'])->name(

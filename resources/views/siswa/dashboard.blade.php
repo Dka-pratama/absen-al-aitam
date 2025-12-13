@@ -37,18 +37,22 @@
                             <input type="hidden" name="lng" id="lng" />
                         </form>
                         <!-- MODAL SCAN QR -->
-                        <div x-data="scanQr()" class="mt-2">
+                        <div class="mt-2">
                             <!-- Tombol -->
                             <button @click="openModal" class="rounded-lg bg-blue-600 px-4 py-2 text-white">
                                 Scan QR Absensi
                             </button>
 
                             <!-- Modal -->
-                            <div x-show="show"
-                                class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4">
+                            <div
+                                x-show="show"
+                                class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4"
+                            >
                                 <div class="relative w-full max-w-md rounded-xl bg-white p-4">
-                                    <button class="absolute right-4 top-4 text-gray-500 hover:text-black"
-                                        @click="closeModal">
+                                    <button
+                                        class="absolute right-4 top-4 text-gray-500 hover:text-black"
+                                        @click="closeModal"
+                                    >
                                         ✖
                                     </button>
                                     <h2 class="mb-3 text-center text-lg font-bold">Scan QR Absensi</h2>
@@ -87,8 +91,10 @@
                 {{-- REKAP --}}
                 <div class="rounded-2xl bg-white p-6 shadow-sm">
                     <h3 class="text-lg font-bold text-gray-900">Rekap Absen 1 Semester</h3>
-                    <a href="{{ route('siswa.rekap') }}"
-                        class="mt-4 inline-block w-full rounded-lg bg-green-600 py-2.5 text-center font-semibold text-white shadow transition hover:bg-green-700 lg:w-64">
+                    <a
+                        href="{{ route('siswa.rekap') }}"
+                        class="mt-4 inline-block w-full rounded-lg bg-green-600 py-2.5 text-center font-semibold text-white shadow transition hover:bg-green-700 lg:w-64"
+                    >
                         Lihat Rekap Detail >
                     </a>
                 </div>
@@ -110,7 +116,6 @@
                             </thead>
 
                             <tbody class="text-gray-800">
-
                                 @foreach ($riwayat as $item)
                                     @php
                                         $status = $item['status'];
@@ -127,15 +132,13 @@
 
                                     <tr class="border-b">
                                         <td class="px-3 py-2">{{ $item['hari'] }}</td>
-                                        <td class="px-3 py-2 font-semibold {{ $color }}">
+                                        <td class="{{ $color }} px-3 py-2 font-semibold">
                                             {{ $status }}
                                         </td>
                                     </tr>
                                 @endforeach
-
                             </tbody>
                         </table>
-
                     </div>
                 </div>
             </div>
@@ -145,8 +148,10 @@
         <div class="mx-auto mb-6 mt-10 max-w-7xl px-2 md:hidden">
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
-                <button type="submit"
-                    class="w-full rounded-lg bg-red-500 py-2.5 text-center font-semibold text-white shadow transition hover:bg-red-600 lg:w-64">
+                <button
+                    type="submit"
+                    class="w-full rounded-lg bg-red-500 py-2.5 text-center font-semibold text-white shadow transition hover:bg-red-600 lg:w-64"
+                >
                     Keluar Akun
                 </button>
             </form>
@@ -162,24 +167,30 @@
             return {
                 show: false,
                 qrScanner: null,
+                scanned: false,
 
                 openModal() {
+                    this.scanned = false;
                     this.show = true;
-
-                    // Delay supaya modal benar-benar muncul sebelum load kamera
                     setTimeout(() => this.startScanner(), 300);
                 },
 
                 startScanner() {
                     this.qrScanner = new Html5Qrcode('reader');
 
-                    this.qrScanner.start({
+                    this.qrScanner.start(
+                        {
                             facingMode: 'environment',
-                        }, {
+                        },
+                        {
                             fps: 10,
                             qrbox: 250,
                         },
-                        (decodedText) => this.onSuccess(decodedText),
+                        (decodedText) => {
+                            if (this.scanned) return;
+                            this.scanned = true;
+                            this.onSuccess(decodedText);
+                        },
                     );
                 },
 
@@ -187,15 +198,15 @@
                     this.stopScanner();
 
                     fetch('{{ route('siswa.scan') }}', {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                token,
-                            }),
-                        })
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            token,
+                        }),
+                    })
                         .then((res) => res.json())
                         .then((result) => {
                             alert(result.msg);
@@ -205,7 +216,10 @@
 
                 stopScanner() {
                     if (this.qrScanner) {
-                        this.qrScanner.stop().catch(() => {});
+                        this.qrScanner
+                            .stop()
+                            .then(() => this.qrScanner.clear())
+                            .catch(() => {});
                     }
                 },
 
@@ -218,12 +232,12 @@
 
         function ambilLokasi() {
             navigator.geolocation.getCurrentPosition(
-                function(pos) {
+                function (pos) {
                     document.getElementById('lat').value = pos.coords.latitude;
                     document.getElementById('lng').value = pos.coords.longitude;
                     document.getElementById('formAbsen').submit();
                 },
-                function() {
+                function () {
                     alert('GPS tidak diizinkan!');
                 },
             );

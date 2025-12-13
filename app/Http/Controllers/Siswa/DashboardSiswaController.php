@@ -53,8 +53,7 @@ class DashboardSiswaController extends Controller
                 'status' => $absensiMingguIni[$eng]->status ?? '-', // default "-"
             ];
         }
-        return view('siswa.dashboard', 
-        compact('user', 'kelas', 'absen', 'absenHariIni', 'riwayat', 'Header'));
+        return view('siswa.dashboard', compact('user', 'kelas', 'absen', 'absenHariIni', 'riwayat', 'Header'));
     }
 
     public function rekap(Request $request)
@@ -82,6 +81,6 @@ class DashboardSiswaController extends Controller
 
         $rekap = $query->orderBy('tanggal', 'desc')->paginate(15);
 
-        return view('siswa.rekap', compact('rekap','Header'));
+        return view('siswa.rekap', compact('rekap', 'Header'));
     }
 }

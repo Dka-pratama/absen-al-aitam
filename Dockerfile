@@ -7,14 +7,15 @@ RUN apt-get update && apt-get install -y \
     libjpeg62-turbo-dev \
     libpng-dev \
     libonig-dev \
+    libzip-dev \
     zip \
     unzip \
     git \
     curl \
-    libzip-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd \
-    && docker-php-ext-install pdo pdo_mysql mbstring bcmath zip
+    && docker-php-ext-install pdo pdo_mysql mbstring bcmath zip intl opcache \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /var/www/html
@@ -28,10 +29,10 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Permissions (optional)
+# Permissions (storage & cache)
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Expose port
+# Expose port for PHP-FPM
 EXPOSE 9000
 
 # Start PHP-FPM

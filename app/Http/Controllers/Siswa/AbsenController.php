@@ -91,8 +91,8 @@ class AbsenController extends Controller
         }
 
         // Lokasi sekolah
-        $latSekolah = -6.944586356277864;
-        $lngSekolah = 107.59453839636247;
+        $latSekolah = -6.946701355942461;
+        $lngSekolah = 107.59382239956506;
         $radius = 70; // meter
 
         $jarak = $this->hitungJarak($request->lat, $request->lng, $latSekolah, $lngSekolah);

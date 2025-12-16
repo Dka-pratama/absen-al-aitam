@@ -11,7 +11,7 @@
                 </h1>
                 <p class="text-gray-500">Wali Kelas: {{ optional($wali->user)->name }}</p>
                 <p class="text-gray-500">
-                    Tahun Ajar: {{ optional($wali->tahunAjar)->tahun }} ({{ optional($wali->tahunAjar)->semester }})
+                    Tahun Ajar: {{ optional($wali->tahunAjar)->tahun }} ({{ $semesterAktif->name }})
                 </p>
             </div>
 
@@ -44,11 +44,6 @@
                                     <p class="text-gray-500">Memuat QR...</p>
                                 </template>
                             </div>
-
-                            <p class="mt-3 text-center text-gray-500">
-                                Expired:
-                                <span x-text="expires"></span>
-                            </p>
                         </div>
                     </div>
                 </div>

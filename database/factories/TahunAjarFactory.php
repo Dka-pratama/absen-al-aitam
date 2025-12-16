@@ -19,7 +19,6 @@ class TahunAjarFactory extends Factory
         $start = $this->faker->numberBetween(2022, 2025);
         return [
             'tahun' => $start . '/' . ($start + 1),
-            'semester' => $this->faker->randomElement(['Ganjil', 'Genap']),
             'status' => 'aktif',
         ];
     }

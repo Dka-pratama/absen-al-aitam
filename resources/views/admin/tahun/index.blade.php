@@ -3,47 +3,7 @@
 @section('content')
     <div class="p-6">
         {{-- SEARCH + BUTTON --}}
-        <div class="mb-4 flex items-center justify-between">
-            {{-- Search --}}
-            <form class="form relative">
-                <button class="absolute left-2 top-1/2 -translate-y-1/2 p-1">
-                    <svg
-                        width="17"
-                        height="16"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        role="img"
-                        aria-labelledby="search"
-                        class="h-5 w-5 text-gray-700"
-                    >
-                        <path
-                            d="M7.667 12.667A5.333 5.333 0 107.667 2a5.333 5.333 0 000 10.667zM14.334 14l-2.9-2.9"
-                            stroke="currentColor"
-                            stroke-width="1.333"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        ></path>
-                    </svg>
-                </button>
-                <input
-                    id="searchInput"
-                    class="input rounded-full border-2 border-transparent px-8 py-2 placeholder-gray-400 shadow-md transition-all duration-300 focus:border-blue-500 focus:outline-none"
-                    placeholder="Search..."
-                    type="text"
-                />
-                <button type="reset" class="absolute right-3 top-1/2 -translate-y-1/2 p-1">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5 text-gray-700"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                    >
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </form>
-
+        <div class="mb-4 flex items-center justify-end">
             {{-- Button Tambah --}}
             <a
                 href="{{ route('tahun.create') }}"
@@ -83,88 +43,20 @@
                 </thead>
 
                 <tbody id="tahunAjarTable" class="bg-white">
-                    @foreach ($tahun as $i => $t)
+                    @foreach ($semester as $i => $t)
                         <tr class="border-b hover:bg-gray-50">
                             <td class="p-3">{{ $i + 1 }}</td>
-                            <td class="p-3">{{ $t->tahun }}</td>
-                            <td class="p-3">{{ $t->semester }}</td>
-                            <td class="p-3">
-                                @if ($t->status == 'aktif')
-                                    <span class="rounded bg-green-100 px-2 py-1 text-xs text-green-700">Aktif</span>
-                                @else
-                                    <span class="rounded bg-gray-200 px-2 py-1 text-xs text-gray-700">Tidak Aktif</span>
-                                @endif
-                            </td>
-
+                            <td class="p-3">{{ $t->tahunAjar->tahun }}</td>
+                            <td class="p-3">{{ $t->name }}</td>
+                            <td>
+    @if ($t->status === 'aktif' && $t->tahunAjar->status === 'aktif')
+        <span class="text-green-600 font-semibold">Aktif</span>
+    @else
+        <span class="text-gray-400">Non-Aktif</span>
+    @endif
+</td>
                             {{-- ACTION --}}
                             <td class="flex justify-center gap-3 p-3">
-                                {{-- Edit --}}
-                                <div class="group relative">
-                                    <a href="{{ route('tahun.edit', $t->id) }}">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="24"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            class="h-6 w-6 text-blue-600"
-                                        >
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
-                                            <path
-                                                d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"
-                                            />
-                                            <path d="M16 5l3 3" />
-                                        </svg>
-                                    </a>
-                                    <div
-                                        class="pointer-events-none absolute left-1/2 z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 shadow transition group-hover:opacity-100"
-                                    >
-                                        Edit Tahun Ajar
-                                    </div>
-                                </div>
-
-                                {{-- Hapus --}}
-                                <div class="group relative">
-                                    <form
-                                        action="{{ route('tahun.destroy', $t->id) }}"
-                                        method="POST"
-                                        class="form-hapus inline"
-                                    >
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit">
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                width="24"
-                                                height="24"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                stroke-width="2"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                class="lucide lucide-trash2-icon lucide-trash-2 text-red-600"
-                                            >
-                                                <path d="M10 11v6" />
-                                                <path d="M14 11v6" />
-                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
-                                                <path d="M3 6h18" />
-                                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                                            </svg>
-                                        </button>
-                                    </form>
-                                    <div
-                                        class="pointer-events-none absolute left-1/2 z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 shadow transition group-hover:opacity-100"
-                                    >
-                                        Hapus Tahun Ajar
-                                    </div>
-                                </div>
-
                                 {{-- Info --}}
                                 <div class="group relative">
                                     <a href="{{ route('tahun.show', $t->id) }}">
@@ -197,7 +89,7 @@
                 </tbody>
             </table>
             <div class="mt-4 px-4">
-                {{ $tahun->appends(request()->query())->links() }}
+                {{ $semester->appends(request()->query())->links() }}
             </div>
         </div>
     </div>

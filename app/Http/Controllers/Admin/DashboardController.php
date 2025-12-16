@@ -8,14 +8,19 @@ use App\Models\UserSession;
 use App\Models\Kelas;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use App\Models\Siswa;
+use App\Models\TahunAjar;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
     public function index()
     {
+        $tahunAjarAktif = TahunAjar::where('status', 'aktif')->first();
         $Header = 'Dashboard';
-        $totalSiswa = User::where('role', 'siswa')->count();
+        $totalSiswa = Siswa::whereHas('kelasSiswa', function ($q) use ($tahunAjarAktif) {
+    $q->where('tahun_ajar_id', $tahunAjarAktif->id);
+})->distinct()->count();
         $totalKelas = Kelas::count();
         $totalWali = User::where('role', 'wali')->count();
         $totalAkun = User::count();

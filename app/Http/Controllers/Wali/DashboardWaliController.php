@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\WaliKelas;
 use App\Models\KelasSiswa;
 use App\Models\Absensi;
+use App\Models\Semester;
 
 class DashboardWaliController extends Controller
 {
@@ -15,6 +16,7 @@ class DashboardWaliController extends Controller
     {
         $Header = 'Dashboard';
         $user = Auth::user();
+        $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
         $wali = WaliKelas::with('user', 'kelas', 'tahunAjar')->where('user_id', $user->id)->first();
         if (!$wali) {
             return abort(403, 'Anda bukan wali kelas.');
@@ -23,7 +25,9 @@ class DashboardWaliController extends Controller
         $tahunAjar = $wali->tahunAjar;
         $kelas = $wali->kelas;
 
-        $kelasSiswa = KelasSiswa::where('kelas_id', $kelas->id)->pluck('id');
+        $kelasSiswa = KelasSiswa::where('kelas_id', $kelas->id)
+    ->where('tahun_ajar_id', $tahunAjar->id)
+    ->pluck('id');
         $totalSiswa = $kelasSiswa->count();
 
         $hariIni = date('Y-m-d');
@@ -32,9 +36,10 @@ class DashboardWaliController extends Controller
         $absensiHariIni = $kelas
             ->kelasSiswa()
             ->with([
-                'absensi' => function ($q) use ($hariIni) {
-                    $q->whereDate('tanggal', $hariIni);
-                },
+                'absensi' => function ($q) use ($hariIni, $semesterAktif) {
+    $q->whereDate('tanggal', $hariIni)
+      ->where('semester_id', $semesterAktif->id);
+},
             ])
             ->get()
             ->pluck('absensi')
@@ -47,7 +52,6 @@ class DashboardWaliController extends Controller
 
         $persentaseHadir = $totalSiswa > 0 ? round(($hadir / $totalSiswa) * 100, 1) : 0;
 
-        // --- DATA UNTUK CHART: 30 HARI TERAKHIR ---
         $tanggal = [];
         $hadirChart = [];
         $izinChart = [];
@@ -58,8 +62,10 @@ class DashboardWaliController extends Controller
             $tgl = date('Y-m-d', strtotime("-{$i} days"));
             $tanggal[] = $tgl;
 
-            $data = Absensi::whereIn('kelas_siswa_id', $kelasSiswa)->whereDate('tanggal', $tgl)->get();
-
+           $data = Absensi::whereIn('kelas_siswa_id', $kelasSiswa)
+    ->where('semester_id', $semesterAktif->id)
+    ->whereDate('tanggal', $tgl)
+    ->get();
             $hadirChart[] = $data->where('status', 'hadir')->count();
             $izinChart[] = $data->where('status', 'izin')->count();
             $sakitChart[] = $data->where('status', 'sakit')->count();

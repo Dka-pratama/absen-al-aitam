@@ -13,7 +13,6 @@ return new class extends Migration {
         Schema::create('tahun_ajar', function (Blueprint $table) {
             $table->id();
             $table->string('tahun');
-            $table->enum('semester', ['ganjil', 'genap']);
             $table->enum('status', ['aktif', 'non-aktif'])->default('aktif');
             $table->timestamps();
         });

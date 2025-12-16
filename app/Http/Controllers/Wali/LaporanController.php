@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\WaliKelas;
 use App\Models\KelasSiswa;
 use App\Models\Absensi;
-use App\Models\Kelas;
+use App\Models\Semester;
 use App\Models\TahunAjar;
 
 class LaporanController extends Controller
@@ -16,8 +16,15 @@ class LaporanController extends Controller
     public function index(Request $request)
     {
         $Header = 'Laporan';
+        $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
+
         $user = auth()->user();
-        $wali = WaliKelas::where('user_id', $user->id)->firstOrFail();
+        $wali = WaliKelas::where('user_id', $user->id)
+    ->where('tahun_ajar_id', $semesterAktif->tahun_ajar_id)
+    ->firstOrFail();
+
+        $semester_id = $request->semester_id
+    ?? Semester::where('status', 'aktif')->value('id');
 
         $kelas_id = $wali->kelas_id;
         $tahun_ajar_id = $request->tahun_ajar_id ?? $wali->tahun_ajar_id;
@@ -26,19 +33,20 @@ class LaporanController extends Controller
 
         // Query absensi per tanggal untuk kelas wali
         $absensiQuery = Absensi::query()
-            ->join('kelas_siswa', 'absensi.kelas_siswa_id', '=', 'kelas_siswa.id')
-            ->where('kelas_siswa.kelas_id', $kelas_id)
-            ->where('kelas_siswa.tahun_ajar_id', $tahun_ajar_id)
-            ->selectRaw(
-                'tanggal,
-            SUM(status = "hadir") as hadir,
-            SUM(status = "izin") as izin,
-            SUM(status = "sakit") as sakit,
-            SUM(status = "alpa") as alpa
-        ',
-            )
-            ->groupBy('tanggal')
-            ->orderBy('tanggal', 'desc');
+    ->join('kelas_siswa', 'absensi.kelas_siswa_id', '=', 'kelas_siswa.id')
+    ->join('semester', 'absensi.semester_id', '=', 'semester.id')
+    ->where('kelas_siswa.kelas_id', $kelas_id)
+    ->where('absensi.semester_id', $semester_id)
+    ->selectRaw(
+    'absensi.tanggal,
+     SUM(absensi.status = "hadir") as hadir,
+     SUM(absensi.status = "izin") as izin,
+     SUM(absensi.status = "sakit") as sakit,
+     SUM(absensi.status = "alpa") as alpa'
+)
+    ->groupBy('tanggal')
+    ->orderBy('tanggal', 'desc');
+
 
         // Filter rentang tanggal jika ada
         if ($dari_tanggal && $sampai_tanggal) {
@@ -53,14 +61,17 @@ class LaporanController extends Controller
 
         $tahunAjar = TahunAjar::all();
 
-        return view('wali.laporan', compact('Header', 'absensi', 'tahunAjar', 'wali'));
+        return view('wali.laporan', compact('semesterAktif','Header', 'absensi', 'tahunAjar', 'wali'));
     }
 
     public function laporanDetail(Request $request)
     {
         $user = auth()->user();
-        $wali = WaliKelas::where('user_id', $user->id)->firstOrFail();
-
+        $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
+        $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
+        $wali = WaliKelas::where('user_id', $user->id)
+    ->where('tahun_ajar_id', $semesterAktif->tahun_ajar_id)
+    ->firstOrFail();
         $tanggal = $request->tanggal;
 
         $kelasSiswaIds = KelasSiswa::where('kelas_id', $wali->kelas_id)
@@ -68,11 +79,13 @@ class LaporanController extends Controller
             ->pluck('id');
 
         $absensi = Absensi::with('kelasSiswa.siswa.user')
-            ->whereHas('kelasSiswa', function ($q) use ($wali) {
-                $q->where('kelas_id', $wali->kelas_id);
-            })
-            ->where('tanggal', $tanggal)
-            ->get();
+    ->whereHas('kelasSiswa', function ($q) use ($wali) {
+        $q->where('kelas_id', $wali->kelas_id)
+          ->where('tahun_ajar_id', $wali->tahun_ajar_id);
+    })
+    ->where('semester_id', $semesterAktif->id)
+    ->where('tanggal', $tanggal)
+    ->get();
 
         return view('wali.laporan_detail', compact('absensi', 'wali', 'tanggal'));
     }

@@ -17,7 +17,7 @@ class KelasSiswaFactory extends Factory
         return [
             'siswa_id' => Siswa::factory(),
             'kelas_id' => Kelas::factory(),
-            'tahun_ajar_id' => null, // WAJIB null agar dipasang manual
+            'tahun_ajar_id' => null,
         ];
     }
 

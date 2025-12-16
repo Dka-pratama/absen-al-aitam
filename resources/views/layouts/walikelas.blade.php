@@ -25,7 +25,6 @@
     </head>
 
     <body class="flex min-h-screen bg-[#F5F6EE]">
-        {{-- TOAST CONTAINER --}}
         @if (session('success'))
             <x-alert type="success" :message="session('success')" />
         @endif
@@ -44,13 +43,16 @@
 
         <!-- BACKDROP (HP MODE) -->
         <div id="backdrop" class="fixed inset-0 z-30 hidden bg-black/40 md:hidden"></div>
-
-        <!-- SIDEBAR -->
-        <aside
-            id="sidebar"
-            class="fixed left-0 top-0 z-40 h-screen w-64 -translate-x-full transform rounded-br-[80px] bg-gradient-to-b from-green-600 to-green-700 text-white shadow-lg transition-transform duration-300 md:translate-x-0"
-        >
-            <!-- LOGO -->
+<aside
+    id="sidebar"
+    class="fixed inset-y-0 left-0 z-40 w-64
+           -translate-x-full md:translate-x-0
+           overflow-y-auto
+           rounded-br-[80px]
+           bg-gradient-to-b from-green-600 to-green-700
+           text-white shadow-lg
+           transition-transform duration-300"
+>
             <div class="flex items-center gap-3 px-4 pt-6">
                 <img src="{{ asset('logo.png') }}" class="w-14 drop-shadow-lg" />
                 <div class="text-lg font-bold leading-tight">
@@ -61,7 +63,6 @@
 
             <!-- MENU -->
             <nav class="space-y-2 p-2">
-                <!-- DASHBOARD -->
                 <a
                     href="{{ route('wali.dashboard') }}"
                     class="{{ request()->is('walikelas/dashboard') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }} flex items-center gap-3 rounded-lg p-3 transition"
@@ -89,11 +90,9 @@
                     </svg>
                     Dashboard
                 </a>
-
-                <!-- DATA SISWA -->
                 <a
                     href="{{ route('wali.siswa.index') }}"
-                    class="{{ request()->is('walikelas/siswa*') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }} flex items-center gap-3 rounded-lg p-3 transition"
+                    class="{{ request()->is('wali/siswa*') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }} flex items-center gap-3 rounded-lg p-3 transition"
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -115,8 +114,6 @@
                     </svg>
                     Data Siswa
                 </a>
-
-                <!-- ABSENSI -->
                 <a
                     href="{{ route('wali.absensi') }}"
                     class="{{ request()->is('wali/absensi*') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }} flex items-center gap-3 rounded-lg p-3 transition"
@@ -142,8 +139,6 @@
                     </svg>
                     Absensi
                 </a>
-
-                <!-- PENGUMUMAN -->
                 <a
                     href="{{ route('wali.laporan') }}"
                     class="{{ request()->is('wali/laporan*') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }} flex items-center gap-3 rounded-lg p-3 transition"
@@ -173,10 +168,7 @@
                     </svg>
                     Laporan
                 </a>
-
-                <!-- GARIS PEMBATAS -->
                 <div class="space-y-2 border-t border-white/40 py-5">
-                    <!-- PROFILE -->
                     <a
                         href="{{ route('wali.profile') }}"
                         class="{{ request()->is('walikelas/profile') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }} flex items-center gap-3 rounded-lg p-3 transition"

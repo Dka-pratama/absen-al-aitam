@@ -32,7 +32,12 @@
     <body>
         <h2>Data Siswa Kelas {{ $wali->kelas->nama_kelas }}</h2>
         <p>Wali Kelas: {{ $wali->user->name }}</p>
-        <p>Tahun Ajar: {{ $wali->tahunAjar->tahun }} / {{ $wali->tahunAjar->semester }}</p>
+        <p>
+    Tahun Ajar:
+    {{ $tahunAjarAktif->tahun }}
+    / {{ ucfirst($semesterAktif->name) }}
+</p>
+
 
         <table>
             <thead>

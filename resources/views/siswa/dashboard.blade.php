@@ -4,13 +4,8 @@
 
 @section('content')
     <div class="min-h-screen px-0 py-2 md:p-6">
-        {{-- CONTAINER UTAMA --}}
         <div class="mx-auto grid max-w-7xl grid-cols-1 gap-6 lg:grid-cols-5">
-            {{-- ========================= --}}
-            {{-- KOLOM KIRI --}}
-            {{-- ========================= --}}
             <div class="col-span-2 space-y-6">
-                {{-- PROFIL --}}
                 <div class="flex items-center gap-4 rounded-2xl bg-white p-5 shadow-sm">
                     <div class=""></div>
                     <div>
@@ -18,8 +13,6 @@
                         <p class="text-sm text-gray-600">{{ $kelas->kelas->nama_kelas }}</p>
                     </div>
                 </div>
-
-                {{-- PRESENSI --}}
                 <div x-data="scanQr()" x-cloak class="rounded-2xl bg-white p-6 shadow-md">
                     <h2 class="mb-1 text-xl font-bold">Presensi Hari Ini</h2>
                     <p class="mb-5 text-sm opacity-90">
@@ -36,14 +29,10 @@
                             <input type="hidden" name="lat" id="lat" />
                             <input type="hidden" name="lng" id="lng" />
                         </form>
-                        <!-- MODAL SCAN QR -->
                         <div class="mt-2">
-                            <!-- Tombol -->
                             <button @click="openModal" class="rounded-lg bg-blue-600 px-4 py-2 text-white">
                                 Scan QR Absensi
                             </button>
-
-                            <!-- Modal -->
                             <div
                                 x-show="show"
                                 class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4"
@@ -62,8 +51,6 @@
                         </div>
                     </div>
                 </div>
-
-                {{-- STATISTIK --}}
                 <div class="grid grid-cols-4 gap-3">
                     <div class="rounded-xl bg-white p-4 text-center shadow-sm">
                         <p class="text-xs font-medium text-gray-600">Hadir</p>
@@ -83,12 +70,7 @@
                     </div>
                 </div>
             </div>
-
-            {{-- ========================= --}}
-            {{-- KOLOM KANAN --}}
-            {{-- ========================= --}}
             <div class="col-span-2 space-y-6 lg:col-span-3">
-                {{-- REKAP --}}
                 <div class="rounded-2xl bg-white p-6 shadow-sm">
                     <h3 class="text-lg font-bold text-gray-900">Rekap Absen 1 Semester</h3>
                     <a
@@ -98,8 +80,6 @@
                         Lihat Rekap Detail >
                     </a>
                 </div>
-
-                {{-- RIWAYAT --}}
                 <div class="rounded-2xl bg-white p-6 shadow-sm">
                     <div class="mb-4 flex items-center justify-between">
                         <h3 class="text-lg font-bold text-gray-900">Riwayat</h3>
@@ -119,8 +99,6 @@
                                 @foreach ($riwayat as $item)
                                     @php
                                         $status = $item['status'];
-
-                                        // Tentukan warna otomatis
                                         $color = match ($status) {
                                             'hadir' => 'text-green-600',
                                             'izin' => 'text-yellow-600',
@@ -143,8 +121,6 @@
                 </div>
             </div>
         </div>
-
-        {{-- LOGOUT --}}
         <div class="mx-auto mb-6 mt-10 max-w-7xl px-2 md:hidden">
             <form action="{{ route('logout') }}" method="POST">
                 @csrf

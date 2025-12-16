@@ -6,7 +6,7 @@
         <div class="mb-6">
             <h1 class="text-2xl font-bold text-gray-800">Laporan Absensi Kelas {{ $wali->kelas->nama_kelas }}</h1>
             <p class="text-gray-500">Wali Kelas: {{ $wali->user->name }}</p>
-            <p class="text-gray-500">Tahun Ajar: {{ $wali->tahunAjar->tahun }} ({{ $wali->tahunAjar->semester }})</p>
+            <p class="text-gray-500">Tahun Ajar: {{ $wali->tahunAjar->tahun }} ({{ $semesterAktif->name }})</p>
         </div>
 
         {{-- Filter --}}
@@ -36,7 +36,7 @@
                 <select name="tahun_ajar_id" class="rounded border py-2 pl-3">
                     @foreach ($tahunAjar as $t)
                         <option value="{{ $t->id }}" {{ request('tahun_ajar_id') == $t->id ? 'selected' : '' }}>
-                            {{ $t->tahun }} - {{ $t->semester }}
+                            {{ $t->tahun }} - {{ $semesterAktif->name }}
                         </option>
                     @endforeach
                 </select>

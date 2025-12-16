@@ -6,11 +6,20 @@ use Illuminate\Database\Seeder;
 use App\Models\Absensi;
 use App\Models\KelasSiswa;
 use Carbon\Carbon;
+use App\Models\Semester;
+
 
 class AbsensiSeeder extends Seeder
 {
     public function run(): void
     {
+        $semesterAktif = Semester::where('status', 'aktif')->first();
+
+if (!$semesterAktif) {
+    $this->command->warn('Semester aktif tidak ditemukan — skip AbsensiSeeder');
+    return;
+}
+
         $kelasSiswaList = KelasSiswa::all();
 
         if ($kelasSiswaList->isEmpty()) {
@@ -28,8 +37,10 @@ class AbsensiSeeder extends Seeder
                 $tanggal = Carbon::today()->subDays($i)->format('Y-m-d');
 
                 // Cegah duplikasi
-                $exists = Absensi::where('kelas_siswa_id', $kelasSiswa->id)->where('tanggal', $tanggal)->exists();
-
+                $exists = Absensi::where('kelas_siswa_id', $kelasSiswa->id)
+    ->where('semester_id', $semesterAktif->id)
+    ->where('tanggal', $tanggal)
+    ->exists();
                 if ($exists) {
                     continue;
                 }
@@ -49,6 +60,7 @@ class AbsensiSeeder extends Seeder
 
                 Absensi::create([
                     'kelas_siswa_id' => $kelasSiswa->id,
+                    'semester_id' => $semesterAktif->id,
                     'tanggal' => $tanggal,
                     'waktu_absen' => Carbon::createFromTime(rand(6, 9), rand(0, 59), rand(0, 59)),
                     'status' => $status,

@@ -5,6 +5,8 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Absensi;
 use App\Models\KelasSiswa;
+use App\Models\Semester;
+
 
 class AbsensiFactory extends Factory
 {
@@ -12,6 +14,8 @@ class AbsensiFactory extends Factory
 
     public function definition(): array
     {
+        $semesterAktif = Semester::where('status', 'aktif')->first();
+
         // Ambil 1 hubungan kelas_siswa
         $kelasSiswa = KelasSiswa::inRandomOrder()->first();
 
@@ -28,6 +32,7 @@ class AbsensiFactory extends Factory
 
         return [
             'kelas_siswa_id' => $kelasSiswa->id,
+            'semester_id' => $semesterAktif->id,
             'tanggal' => $tanggal,
             'status' => $this->faker->randomElement(['hadir', 'izin', 'sakit', 'alpa']),
             'waktu_absen' => $this->faker->time(),

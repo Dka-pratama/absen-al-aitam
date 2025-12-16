@@ -1,21 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Login</title>
+        <title>Masuk</title>
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
+        <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('favicon-96x96.png') }}">
         @vite('resources/css/app.css')
         @vite('resources/js/app.js')
     </head>
 
     <body class="flex min-h-screen items-center justify-center bg-gray-100 p-4">
         <div class="w-full max-w-md rounded-xl bg-white p-8 shadow-lg">
-            <h2 class="mb-6 text-center text-2xl font-bold text-gray-900">Sign In</h2>
-
+            <div class="mb-8 text-center">
+        <h2 class="text-2xl font-semibold tracking-tight text-gray-900">
+            Masuk
+        </h2>
+        <p class="mt-2 text-sm text-gray-500">
+            Selamat datang di sistem absensi Al-aitaam
+            <span class="block font-medium text-gray-700">
+                Al-Aitaam
+            </span>
+        </p>
+    </div>
             <form method="POST" action="{{ route('login') }}" class="space-y-4">
                 @csrf
-
-                <!-- Username -->
                 <div>
                     <label class="mb-1 block text-sm font-medium text-gray-700">Username</label>
                     <input
@@ -26,8 +36,6 @@
                         required
                     />
                 </div>
-
-                <!-- Password -->
                 <div>
                     <label class="mb-1 block text-sm font-medium text-gray-700">Password</label>
                     <div class="relative">
@@ -99,15 +107,11 @@
                 @error('email')
                     <p class="text-sm text-red-500">{{ $message }}</p>
                 @enderror
-
-                <!-- Remember + Forgot -->
                 <div class="flex items-center justify-between">
                     <a href="{{ route('password.request') }}" class="text-sm text-indigo-600 hover:text-indigo-500">
-                        Forgot password?
+                        Lupa Passsword?
                     </a>
                 </div>
-
-                <!-- Submit -->
                 <button
                     type="submit"
                     class="w-full rounded-lg bg-indigo-600 py-2.5 font-medium text-white transition-colors hover:bg-indigo-700"

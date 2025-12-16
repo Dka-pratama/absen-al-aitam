@@ -1,85 +1,98 @@
 @if ($paginator->hasPages())
-    <nav role="navigation" aria-label="{{ __('Pagination Navigation') }}" class="flex flex-col gap-4 mb-2">
-
+    <nav class="flex items-center justify-between mt-6 mb-4" role="navigation" aria-label="Pagination">
         {{-- Mobile --}}
-        <div class="flex items-center justify-between sm:hidden">
+        <div class="flex justify-between flex-1 sm:hidden">
+            {{-- Previous --}}
             @if ($paginator->onFirstPage())
-                <span class="px-4 py-2 text-sm rounded-lg bg-gray-100 text-gray-400 dark:bg-gray-800">
-                    {!! __('pagination.previous') !!}
+                <span class="px-5 py-2 text-base text-gray-400 bg-gray-100 border rounded-lg">
+                    Previous
                 </span>
             @else
-                <a href="{{ $paginator->previousPageUrl() }}" class="px-4 py-2 text-sm rounded-lg bg-white border hover:bg-gray-100 dark:bg-gray-900 dark:border-gray-700">
-                    {!! __('pagination.previous') !!}
+                <a href="{{ $paginator->previousPageUrl() }}"
+                   class="px-5 py-2 text-base text-gray-700 bg-white border rounded-lg hover:bg-gray-50">
+                    Previous
                 </a>
             @endif
 
+            {{-- Next --}}
             @if ($paginator->hasMorePages())
-                <a href="{{ $paginator->nextPageUrl() }}" class="px-4 py-2 text-sm rounded-lg bg-white border hover:bg-gray-100 dark:bg-gray-900 dark:border-gray-700">
-                    {!! __('pagination.next') !!}
+                <a href="{{ $paginator->nextPageUrl() }}"
+                   class="px-5 py-2 ml-3 text-base text-gray-700 bg-white border rounded-lg hover:bg-gray-50">
+                    Next
                 </a>
             @else
-                <span class="px-4 py-2 text-sm rounded-lg bg-gray-100 text-gray-400 dark:bg-gray-800">
-                    {!! __('pagination.next') !!}
+                <span class="px-5 py-2 ml-3 text-base text-gray-400 bg-gray-100 border rounded-lg">
+                    Next
                 </span>
             @endif
         </div>
 
         {{-- Desktop --}}
-        <div class="hidden sm:flex items-center justify-between gap-6">
-
+        <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
             {{-- Info --}}
-            <p class="text-sm text-gray-600 dark:text-gray-400">
-                Showing <span class="font-medium">{{ $paginator->firstItem() }}</span>
-                – <span class="font-medium">{{ $paginator->lastItem() }}</span>
-                of <span class="font-medium">{{ $paginator->total() }}</span>
-            </p>
+            <div>
+                <p class="text-base text-gray-600">
+                    Menampilkan
+                    <span class="font-semibold">{{ $paginator->firstItem() }}</span>
+                    –
+                    <span class="font-semibold">{{ $paginator->lastItem() }}</span>
+                    dari
+                    <span class="font-semibold">{{ $paginator->total() }}</span>
+                    data
+                </p>
+            </div>
 
-            {{-- Pagination --}}
-            <div class="flex items-center gap-1">
-
-                {{-- Prev --}}
-                @if ($paginator->onFirstPage())
-                    <span class="p-2 rounded-lg bg-gray-100 text-gray-400 dark:bg-gray-800">
-                        ‹
-                    </span>
-                @else
-                    <a href="{{ $paginator->previousPageUrl() }}" class="p-2 rounded-lg border bg-white hover:bg-gray-100 dark:bg-gray-900 dark:border-gray-700">
-                        ‹
-                    </a>
-                @endif
-
-                {{-- Pages --}}
-                @foreach ($elements as $element)
-                    @if (is_string($element))
-                        <span class="px-3 py-2 text-sm text-gray-400">…</span>
+            {{-- Links --}}
+            <div>
+                <span class="inline-flex items-center gap-2">
+                    {{-- Previous --}}
+                    @if ($paginator->onFirstPage())
+                        <span class="px-4 py-2 text-base text-gray-400 bg-gray-100 border rounded-lg">
+                            ‹
+                        </span>
+                    @else
+                        <a href="{{ $paginator->previousPageUrl() }}"
+                           class="px-4 py-2 text-base text-gray-700 bg-white border rounded-lg hover:bg-gray-50">
+                            ‹
+                        </a>
                     @endif
 
-                    @if (is_array($element))
-                        @foreach ($element as $page => $url)
-                            @if ($page == $paginator->currentPage())
-                                <span class="px-4 py-2 text-sm rounded-lg bg-blue-600 text-white font-medium">
-                                    {{ $page }}
-                                </span>
-                            @else
-                                <a href="{{ $url }}" class="px-4 py-2 text-sm rounded-lg border bg-white hover:bg-blue-50 dark:bg-gray-900 dark:border-gray-700">
-                                    {{ $page }}
-                                </a>
-                            @endif
-                        @endforeach
+                    {{-- Pages --}}
+                    @foreach ($elements as $element)
+                        @if (is_string($element))
+                            <span class="px-3 py-2 text-base text-gray-400">
+                                {{ $element }}
+                            </span>
+                        @endif
+
+                        @if (is_array($element))
+                            @foreach ($element as $page => $url)
+                                @if ($page == $paginator->currentPage())
+                                    <span class="px-4 py-2 text-base font-semibold text-white bg-blue-600 rounded-lg">
+                                        {{ $page }}
+                                    </span>
+                                @else
+                                    <a href="{{ $url }}"
+                                       class="px-4 py-2 text-base text-gray-700 bg-white border rounded-lg hover:bg-blue-50 hover:text-blue-600">
+                                        {{ $page }}
+                                    </a>
+                                @endif
+                            @endforeach
+                        @endif
+                    @endforeach
+
+                    {{-- Next --}}
+                    @if ($paginator->hasMorePages())
+                        <a href="{{ $paginator->nextPageUrl() }}"
+                           class="px-4 py-2 text-base text-gray-700 bg-white border rounded-lg hover:bg-gray-50">
+                            ›
+                        </a>
+                    @else
+                        <span class="px-4 py-2 text-base text-gray-400 bg-gray-100 border rounded-lg">
+                            ›
+                        </span>
                     @endif
-                @endforeach
-
-                {{-- Next --}}
-                @if ($paginator->hasMorePages())
-                    <a href="{{ $paginator->nextPageUrl() }}" class="p-2 rounded-lg border bg-white hover:bg-gray-100 dark:bg-gray-900 dark:border-gray-700">
-                        ›
-                    </a>
-                @else
-                    <span class="p-2 rounded-lg bg-gray-100 text-gray-400 dark:bg-gray-800">
-                        ›
-                    </span>
-                @endif
-
+                </span>
             </div>
         </div>
     </nav>

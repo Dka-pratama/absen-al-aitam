@@ -27,9 +27,20 @@ class DatabaseSeeder extends Seeder
         // ====== Tahun Ajar Aktif ======
         $tahunAjar = TahunAjar::factory()->create([
             'tahun' => '2024/2025',
-            'semester' => 'Ganjil',
             'status' => 'aktif',
         ]);
+        $semesterGanjil = \App\Models\Semester::create([
+    'tahun_ajar_id' => $tahunAjar->id,
+    'name' => 'ganjil',
+    'status' => 'aktif',
+]);
+
+\App\Models\Semester::create([
+    'tahun_ajar_id' => $tahunAjar->id,
+    'name' => 'genap',
+    'status' => 'non-aktif',
+]);
+
 
         // ====== Wali Kelas Manual ======
         $waliUser = User::factory()
@@ -81,7 +92,6 @@ class DatabaseSeeder extends Seeder
             ->count(5)
             ->create()
             ->each(function ($kelas) use ($tahunAjar) {
-                // Buat 15 siswa untuk setiap kelas
                 Siswa::factory(15)
                     ->create()
                     ->each(function ($siswa) use ($kelas, $tahunAjar) {

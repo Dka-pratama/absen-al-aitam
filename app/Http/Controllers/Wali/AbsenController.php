@@ -11,14 +11,20 @@ use Carbon\Carbon;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\Siswa;
 use Illuminate\Support\Facades\Cache;
+use App\Models\Semester;
 
 class AbsenController extends Controller
 {
     public function index()
     {
+        $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
+
         $Header = 'Absensi';
         $user = auth()->user();
-        $wali = WaliKelas::with('kelas', 'tahunAjar')->where('user_id', $user->id)->firstOrFail();
+        $wali = WaliKelas::with('kelas', 'tahunAjar')
+    ->where('user_id', $user->id)
+    ->where('tahun_ajar_id', $semesterAktif->tahun_ajar_id)
+    ->firstOrFail();
 
         // Ambil siswa
         $siswa = KelasSiswa::with('siswa.user')
@@ -30,39 +36,48 @@ class AbsenController extends Controller
         $today = Carbon::today()->toDateString();
 
         $absensiToday = Absensi::whereHas('kelasSiswa', function ($q) use ($wali) {
-            $q->where('kelas_id', $wali->kelas_id)->where('tahun_ajar_id', $wali->tahun_ajar_id);
-        })
-            ->where('tanggal', $today)
-            ->get();
+        $q->where('kelas_id', $wali->kelas_id)
+          ->where('tahun_ajar_id', $wali->tahun_ajar_id);
+    })
+    ->where('tanggal', $today)
+    ->where('semester_id', $semesterAktif->id)
+    ->get();
+
 
         $absensiMap = $absensiToday->keyBy('kelas_siswa_id');
         $persentase = $this->hitungPersentase($siswa, $absensiToday);
 
-        // ==========================
-        // 🔥 Tambahkan ini
-        // ==========================
         $payload = [
-            'kelas_id' => $wali->kelas_id,
-            'tahun_ajar_id' => $wali->tahun_ajar_id,
-            'tanggal' => $today,
-        ];
+    'kelas_id' => $wali->kelas_id,
+    'tahun_ajar_id' => $wali->tahun_ajar_id,
+    'semester_id' => $semesterAktif->id,
+    'tanggal' => $today,
+];
+
 
         $qr = base64_encode(QrCode::size(300)->generate(json_encode($payload)));
         // ==========================
 
-        return view('wali.absensi', compact('wali', 'siswa', 'persentase', 'absensiMap', 'qr', 'Header'));
+        return view('wali.absensi', compact('wali', 'siswa', 'persentase', 'absensiMap', 'qr', 'Header','semesterAktif'));
     }
 
     public function simpan(Request $request)
     {
-        $wali = WaliKelas::where('user_id', auth()->id())->firstOrFail();
+        $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
+        $user = auth()->user();
+        $wali = WaliKelas::with('kelas', 'tahunAjar')
+        ->where('user_id', $user->id)
+        ->where('tahun_ajar_id', $semesterAktif->tahun_ajar_id)
+        ->firstOrFail();
         $tanggal = Carbon::today()->toDateString();
-
+        $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
+        
         foreach ($request->status as $kelasSiswaId => $status) {
             Absensi::updateOrCreate(
                 [
                     'kelas_siswa_id' => $kelasSiswaId,
                     'tanggal' => $tanggal,
+                    'semester_id' => $semesterAktif->id,
                 ],
                 [
                     'status' => $status,

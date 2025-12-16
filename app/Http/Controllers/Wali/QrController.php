@@ -35,7 +35,6 @@ class QrController extends Controller
         return [
             'token' => $token,
             'qr' => $qrBase64,
-            'expires' => $qr->expired_at->format('H:i:s'),
         ];
     }
 }

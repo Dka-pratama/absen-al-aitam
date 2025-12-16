@@ -7,22 +7,27 @@ use Illuminate\Http\Request;
 use App\Models\TahunAjar as Tahun;
 use App\Models\Absensi;
 use App\Models\Kelas;
+use App\Models\Semester;
+use Illuminate\Support\Facades\DB;
 
 class TahunCrud extends Controller
 {
     public function index()
     {
         $Header = 'Data Tahun Ajaran';
-        $tahun = Tahun::orderBy('created_at', 'desc')->paginate(15);
-        return view('admin.tahun.index', compact('tahun', 'Header'));
+        $semester = Semester::with('tahunAjar')
+        ->orderBy('created_at', 'desc')
+        ->paginate(15);
+        return view('admin.tahun.index', compact('semester', 'Header'));
     }
 
     public function show($id)
     {
         $Header = 'Detail Tahun Ajaran';
-        $tahunAjar = Tahun::findOrFail($id);
+        $semester = Semester::with('tahunAjar')->findOrFail($id);
 
-        // Ambil semua baris pivot kelas_siswa milik tahun ajar ini
+        $tahunAjarId = $semester->tahun_ajar_id;
+        $semesterId  = $semester->id;
         $kelasSiswaIds = \DB::table('kelas_siswa')->where('tahun_ajar_id', $id)->pluck('id'); // ← ambil ID pivot (kelas_siswa_id)
 
         // Statistik absensi berdasarkan pivot kelas_siswa_id
@@ -34,50 +39,104 @@ class TahunCrud extends Controller
         ];
 
         // Rekap Per Kelas
-        $rekapKelas = Kelas::get()->map(function ($k) use ($id) {
-            // Ambil semua pivot kelas_siswa untuk kelas tersebut & tahun ajar tersebut
-            $pivotIds = \DB::table('kelas_siswa')->where('kelas_id', $k->id)->where('tahun_ajar_id', $id)->pluck('id');
+       $rekapKelas = Kelas::get()->map(function ($k) use ($tahunAjarId, $semesterId) {
 
-            // Hitung absensi untuk pivot itu
-            $k->absensi_count = Absensi::whereIn('kelas_siswa_id', $pivotIds)->count();
+        $pivotIds = \DB::table('kelas_siswa')
+            ->where('kelas_id', $k->id)
+            ->where('tahun_ajar_id', $tahunAjarId)
+            ->pluck('id');
 
-            // Hitung jumlah siswa juga
-            $k->siswa_count = $pivotIds->count();
+        $k->absensi_count = Absensi::whereIn('kelas_siswa_id', $pivotIds)
+            ->where('semester_id', $semesterId)
+            ->count();
 
-            return $k;
-        });
+        $k->siswa_count = $pivotIds->count();
 
-        return view('admin.tahun.show', compact('Header', 'tahunAjar', 'stats', 'rekapKelas'));
-    }
+        return $k;
+    });
 
-    public function activate($id)
-    {
-        // Nonaktifkan semua
-        Tahun::where('status', 'aktif')->update(['status' => 'nonaktif']);
+    return view('admin.tahun.show', compact(
+        'Header',
+        'semester',
+        'stats',
+        'rekapKelas'
+    ));
+}
 
-        $tahunAjar = Tahun::findOrFail($id);
-        $tahunAjar->update(['status' => 'aktif']);
+public function activate($id)
+{
+    DB::transaction(function () use ($id) {
 
-        return redirect()->back()->with('success', 'Tahun ajar berhasil diaktifkan.');
-    }
+        // 1. Nonaktifkan semua semester
+        Semester::where('status', 'aktif')
+            ->update(['status' => 'non-aktif']);
+
+        // 2. Ambil semester target
+        $semester = Semester::with('tahunAjar')->findOrFail($id);
+
+        // 3. Aktifkan semester
+        $semester->update(['status' => 'aktif']);
+
+        // 4. Nonaktifkan semua tahun ajar
+        Tahun::where('status', 'aktif')
+            ->update(['status' => 'non-aktif']);
+
+        // 5. Aktifkan tahun ajar milik semester
+        $semester->tahunAjar->update(['status' => 'aktif']);
+    });
+
+    return back()->with('success', 'Semester & Tahun Ajar berhasil diaktifkan.');
+}
+
+
 
     public function deactivate($id)
-    {
+{
+    DB::transaction(function () use ($id) {
+
         $tahunAjar = Tahun::findOrFail($id);
 
-        if ($tahunAjar->status == 'aktif') {
-            $tahunAjar->update(['status' => 'nonaktif']);
-        }
+        if ($tahunAjar->status === 'aktif') {
 
-        return redirect()->back()->with('success', 'Tahun ajar berhasil dinonaktifkan.');
-    }
+            // 1. Nonaktifkan tahun ajar
+            $tahunAjar->update(['status' => 'non-aktif']);
+
+            // 2. Nonaktifkan semua semester miliknya
+            Semester::where('tahun_ajar_id', $id)
+                ->update(['status' => 'non-aktif']);
+        }
+    });
+
+    return back()->with('success', 'Tahun ajar & semester berhasil dinonaktifkan.');
+}
+
 
     public function destroy($id)
-    {
-        $tahun = Tahun::findOrFail($id);
-        $tahun->delete();
-        return redirect()->route('tahun.index')->with('success', 'Tahun deleted successfully.');
+{
+    $tahun = Tahun::with('semesters')->findOrFail($id);
+
+    // 1. Tidak boleh hapus kalau tinggal 1
+    if (Tahun::count() <= 1) {
+        return back()->with('error', 'Tidak bisa dihapus, minimal harus ada 1 tahun ajar.');
     }
+
+    // 2. Tidak boleh hapus tahun ajar aktif
+    if ($tahun->status === 'aktif') {
+        return back()->with('error', 'Tidak bisa menghapus tahun ajar yang sedang aktif.');
+    }
+
+    // 3. Tidak boleh hapus jika masih punya semester
+    if ($tahun->semesters->count() > 0) {
+        return back()->with('error', 'Hapus semua semester terlebih dahulu.');
+    }
+
+    $tahun->delete();
+
+    return redirect()
+        ->route('tahun.index')
+        ->with('success', 'Tahun ajar berhasil dihapus.');
+}
+
 
     public function create()
     {
@@ -86,27 +145,45 @@ class TahunCrud extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'tahun' => 'required|string|max:20',
-            'semester' => 'required|in:Ganjil,Genap',
-            'status' => 'required|in:Aktif,Non-Aktif',
-        ]);
+{
+    $request->validate([
+        'tahun' => 'required|string|max:20',
+        'status' => 'required|in:aktif,non-aktif',
+    ]);
 
-        // Jika status aktif, nonaktifkan semua tahun ajar lain
-        if ($request->status === 'Aktif') {
-            Tahun::where('status', 'Aktif')->update(['status' => 'Non-Aktif']);
-        }
-
-        Tahun::create($request->all());
-
-        return redirect()->route('tahun.index')->with('success', 'Tahun ajar berhasil ditambahkan.');
+    if ($request->status === 'aktif') {
+        Tahun::where('status', 'aktif')
+            ->update(['status' => 'non-aktif']);
     }
+
+    $tahunAjar = Tahun::create([
+        'tahun' => $request->tahun,
+        'status' => $request->status,
+    ]);
+
+    Semester::create([
+        'tahun_ajar_id' => $tahunAjar->id,
+        'name' => 'ganjil',
+        'status' => 'aktif',
+    ]);
+
+    Semester::create([
+        'tahun_ajar_id' => $tahunAjar->id,
+        'name' => 'genap',
+        'status' => 'non-aktif',
+    ]);
+
+    return redirect()
+        ->route('tahun.index')
+        ->with('success', 'Tahun ajar berhasil ditambahkan.');
+}
+
 
     public function edit($id)
     {
+        $Header = "Edit Tahun Ajar";
         $tahunAjar = Tahun::findOrFail($id);
-        return view('admin.tahun.edit', compact('tahunAjar'));
+        return view('admin.tahun.edit', compact('tahunAjar', 'Header'));
     }
 
     public function update(Request $request, $id)

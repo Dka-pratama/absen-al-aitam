@@ -7,11 +7,14 @@ use Illuminate\Http\Request;
 use App\Models\Absensi;
 use App\Models\KelasSiswa;
 use Illuminate\Support\Facades\Cache;
+use App\Models\Semester;
+
 
 class AbsenController extends Controller
 {
     public function absen(Request $request)
     {
+        $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
         $payload = json_decode($request->input('data'), true);
 
         if (!$payload) {
@@ -59,6 +62,7 @@ class AbsenController extends Controller
         Absensi::create([
             'kelas_siswa_id' => $kelasSiswa->id,
             'tanggal' => $tanggal,
+            'semester_id' => $semesterAktif->id,
             'status' => 'hadir',
             'method' => 'scan',
         ]);
@@ -72,6 +76,7 @@ class AbsenController extends Controller
     {
         $user = auth()->user();
         $siswa = $user->siswa;
+        $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
 
         $kelasSiswa = KelasSiswa::where('siswa_id', $siswa->id)->first();
         if (!$kelasSiswa) {
@@ -114,6 +119,7 @@ class AbsenController extends Controller
         Absensi::create([
             'kelas_siswa_id' => $kelasSiswa->id,
             'tanggal' => now()->toDateString(),
+            'semester_id' => $semesterAktif->id,
             'status' => 'hadir',
             'method' => 'mandiri',
             'waktu_absen' => now()->format('H:i:s'),

@@ -36,7 +36,6 @@
                         {{ $wali->tahunAjar->tahun ?? '-' }} ({{ $wali->tahunAjar->semester ?? '-' }})
                     </p>
                 </div>
-
                 <hr class="my-4" />
 
                 {{-- Rekap Siswa --}}

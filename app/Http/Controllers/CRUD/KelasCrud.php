@@ -15,21 +15,26 @@ class KelasCrud extends Controller
     public function index()
     {
         $Header = 'Data Kelas';
-        $kelasList = Kelas::withCount('siswa')->get();
+        $tahunAjarAktif = TahunAjar::where('status', 'aktif')->first();
+
+        $kelasList = Kelas::withCount(['kelasSiswa as siswa_count' => function ($q) use ($tahunAjarAktif) {
+        $q->where('tahun_ajar_id', $tahunAjarAktif->id);
+    }])->get();
         return view('admin.kelas.index', compact('kelasList', 'Header'));
     }
 
     public function search(Request $request)
     {
         $keyword = $request->search;
+        $tahunAjarAktif = TahunAjar::where('status', 'aktif')->first();
 
-        $kelasList = Kelas::withCount('siswa')
-            ->where(function ($q) use ($keyword) {
-                $q->where('nama_kelas', 'like', "%$keyword%")
-                    ->orWhere('jurusan', 'like', "%$keyword%")
-                    ->orWhere('angkatan', 'like', "%$keyword%");
-            })
-            ->get();
+        $kelasList = Kelas::withCount(['kelasSiswa as siswa_count' => function ($q) use ($tahunAjarAktif) {
+        $q->where('tahun_ajar_id', $tahunAjarAktif->id);
+    }])->where(function ($q) use ($keyword) {
+        $q->where('nama_kelas', 'like', "%$keyword%")
+          ->orWhere('jurusan', 'like', "%$keyword%")
+          ->orWhere('angkatan', 'like', "%$keyword%");
+    })->get();
 
         return response()->json(
             $kelasList->map(function ($k) {

@@ -3,16 +3,13 @@
 @section('content')
     <div class="p-6">
         <div class="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            {{-- ======================= --}}
-            {{-- FORM FILTER ABSENSI --}}
-            {{-- ======================= --}}
             <form
                 method="GET"
                 action="{{ route('absen.index') }}"
                 class="flex w-full flex-col gap-4 rounded-lg bg-white p-4 shadow md:flex-row md:items-end"
             >
                 {{-- Grid Input --}}
-                <div class="grid w-full grid-cols-1 gap-4 md:grid-cols-3">
+                <div class="grid w-full grid-cols-1 gap-4 md:grid-cols-4">
                     {{-- Filter Tanggal --}}
                     <div class="flex flex-col">
                         <label class="mb-1 text-sm font-semibold">Tanggal</label>
@@ -47,7 +44,21 @@
                                     value="{{ $t->id }}"
                                     {{ request('tahun_ajar_id') == $t->id ? 'selected' : '' }}
                                 >
-                                    {{ $t->tahun }} - {{ $t->semester }}
+                                    {{ $t->tahun }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="mb-1 text-sm font-semibold">Tahun Ajar</label>
+                        <select name="tahun_ajar_id" class="rounded-lg border px-3 py-2 focus:ring focus:ring-blue-200">
+                            <option value="">Semua Semester</option>
+                            @foreach ($semester as $t)
+                                <option
+                                    value="{{ $t->id }}"
+                                    {{ request('tahun_ajar_id') == $t->id ? 'selected' : '' }}
+                                >
+                                    {{ $t->name }}
                                 </option>
                             @endforeach
                         </select>

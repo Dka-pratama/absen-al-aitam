@@ -14,15 +14,25 @@ use App\Models\TahunAjar;
 class SiswaCrud extends Controller
 {
     public function index()
-    {
-        $Header = 'Data Siswa';
-        $siswa = Siswa::with(['user', 'kelasSiswa.kelas'])
-            ->whereHas('kelasSiswa.tahunAjar', function ($q) {
-                $q->where('status', 'aktif');
-            })
-            ->paginate(15);
-        return view('admin.siswa.index', compact('siswa', 'Header'));
-    }
+{
+    $Header = 'Data Siswa';
+
+    $siswa = Siswa::with([
+        'user',
+        'kelasSiswa' => function ($q) {
+            $q->whereHas('tahunAjar', function ($q2) {
+                $q2->where('status', 'aktif');
+            })->with('kelas');
+        }
+    ])
+    ->whereHas('kelasSiswa.tahunAjar', function ($q) {
+        $q->where('status', 'aktif');
+    })
+    ->paginate(15);
+
+    return view('admin.siswa.index', compact('siswa', 'Header'));
+}
+
     public function search(Request $r)
     {
         $keyword = $r->search;

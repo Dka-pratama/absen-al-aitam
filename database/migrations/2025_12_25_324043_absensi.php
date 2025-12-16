@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('absensi', function (Blueprint $table) {
             $table->id();
             $table->foreignId('kelas_siswa_id')->constrained('kelas_siswa')->onDelete('cascade');
+            $table->foreignId('semester_id')->constrained('semester')->onDelete('cascade');
             $table->date('tanggal');
             $table->enum('status', ['hadir', 'izin', 'sakit', 'alpa'])->default('alpa');
             $table->string('method')->nullable();
@@ -20,8 +21,11 @@ return new class extends Migration {
             $table->string('keterangan')->nullable();
             $table->timestamps();
 
-            $table->unique(['kelas_siswa_id', 'tanggal'], 'unique_absensi_siswa_tanggal');
-        });
+            $table->unique(
+    ['kelas_siswa_id', 'semester_id', 'tanggal'],
+    'unique_absensi_siswa_semester_tanggal'
+);
+});
     }
 
     /**

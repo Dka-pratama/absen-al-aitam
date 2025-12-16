@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Kelas;
 use App\Models\Absensi;
 use Illuminate\Support\Facades\DB;
+use App\Models\Semester;
+
 
 class DashboardSiswaController extends Controller
 {
@@ -15,6 +17,8 @@ class DashboardSiswaController extends Controller
     {
         $Header = 'Dashboard';
         $user = Auth::user();
+        $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
+
         $kelas = $user->siswa->kelasSiswa()->with('kelas')->first();
 
         $siswa = $user->siswa;
@@ -23,13 +27,17 @@ class DashboardSiswaController extends Controller
         $kelasSiswa2 = $siswa->kelasSiswa()->first();
         $hariIni = now()->toDateString();
 
-        $absenHariIni = Absensi::where('kelas_siswa_id', $kelasSiswa2->id)->whereDate('tanggal', $hariIni)->first();
+        $absenHariIni = Absensi::where('kelas_siswa_id', $kelasSiswa2->id)
+            ->where('semester_id', $semesterAktif->id)
+            ->whereDate('tanggal', $hariIni)
+            ->first();
         $absen = Absensi::whereIn('kelas_siswa_id', $kelasSiswa)
+            ->where('semester_id', $semesterAktif->id)
             ->select('status', DB::raw('count(*) as total'))
             ->groupBy('status')
             ->pluck('total', 'status');
-
         $absensiMingguIni = Absensi::whereIn('kelas_siswa_id', $kelasSiswa)
+            ->where('semester_id', $semesterAktif->id)
             ->whereBetween('tanggal', [now()->startOfWeek(), now()->endOfWeek()])
             ->get()
             ->keyBy(function ($a) {
@@ -60,6 +68,7 @@ class DashboardSiswaController extends Controller
     {
         $Header = 'Rekap Absensi';
         $user = Auth::user();
+        $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
 
         // dapatkan siswa berdasarkan user id
         $siswa = $user->siswa;
@@ -67,8 +76,9 @@ class DashboardSiswaController extends Controller
         // dapatkan relasi kelas_siswa terbaru (misal kelas aktif)
         $kelasSiswa = $siswa->kelasSiswa()->latest()->first();
 
-        // query dasar
-        $query = Absensi::where('kelas_siswa_id', $kelasSiswa->id);
+        $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
+        $query = Absensi::where('kelas_siswa_id', $kelasSiswa->id)
+            ->where('semester_id', $semesterAktif->id);
 
         // jika filter tanggal diisi
         if ($request->start_date) {

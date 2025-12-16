@@ -3,7 +3,10 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Forgot Password</title>
+        <title>Lupa Password</title>
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
+        <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('favicon-96x96.png') }}">
         @vite('resources/css/app.css')
     </head>
 
@@ -11,7 +14,7 @@
         <div class="w-full max-w-md rounded-xl bg-white p-8 shadow-lg">
             <h2 class="mb-2 text-center text-2xl font-bold text-gray-900">Forgot Password</h2>
             <p class="mb-6 text-center text-sm text-gray-600">
-                Enter your email and we will send you a verification code.
+                Masukan email anda
             </p>
 
             <form method="POST" action="{{ route('password.email') }}" class="space-y-4">
@@ -39,10 +42,13 @@
                     Send Code
                 </button>
             </form>
+            <p class="text-sm text-gray-500 text-center mb-2 tracking-wide">
+    *Note: fitur ini hanya bisa diakses oleh admin dan wali yang sudah mengisi email
+</p>
 
-            <div class="mt-6 text-center text-sm text-gray-600">
-                Remember your password?
-                <a href="{{ route('login') }}" class="font-medium text-indigo-600 hover:text-indigo-500">Sign in</a>
+            <div class="mt-2 text-center text-sm text-gray-600">
+                Inget Password nya?
+                <a href="{{ route('login') }}" class="font-medium text-indigo-600 hover:text-indigo-500">Log in</a>
             </div>
         </div>
     </body>

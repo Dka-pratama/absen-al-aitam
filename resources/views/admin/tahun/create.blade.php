@@ -16,20 +16,11 @@
                         required
                     />
                 </div>
-
-                <div>
-                    <label class="font-semibold">Semester</label>
-                    <select name="semester" class="w-full rounded-lg border p-2 focus:ring" required>
-                        <option value="Ganjil">Ganjil</option>
-                        <option value="Genap">Genap</option>
-                    </select>
-                </div>
-
                 <div>
                     <label class="font-semibold">Status</label>
                     <select name="status" class="w-full rounded-lg border p-2 focus:ring" required>
-                        <option value="Aktif">Aktif</option>
-                        <option value="Non-Aktif">Non-Aktif</option>
+                        <option value="aktif">Aktif</option>
+                        <option value="non-Aktif">Non-Aktif</option>
                     </select>
                 </div>
 

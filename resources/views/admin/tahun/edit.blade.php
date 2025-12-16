@@ -3,7 +3,7 @@
 @section('content')
     <div class="p-4">
         <div class="mx-auto max-w-xl rounded-xl border bg-white p-6 shadow-md">
-            <h2 class="mb-6 text-2xl font-bold">Tambah Kelas</h2>
+            <h2 class="mb-6 text-2xl font-bold">Edit Tahun Ajar</h2>
 
             <form action="{{ route('tahun.update', $tahunAjar->id) }}" method="POST" class="space-y-4">
                 @csrf
@@ -19,15 +19,6 @@
                         required
                     />
                 </div>
-
-                <div>
-                    <label class="font-semibold">Semester</label>
-                    <select name="semester" class="w-full rounded-lg border p-2 focus:ring" required>
-                        <option value="Ganjil" {{ $tahunAjar->semester == 'Ganjil' ? 'selected' : '' }}>Ganjil</option>
-                        <option value="Genap" {{ $tahunAjar->semester == 'Genap' ? 'selected' : '' }}>Genap</option>
-                    </select>
-                </div>
-
                 <div>
                     <label class="font-semibold">Status</label>
                     <select name="status" class="w-full rounded-lg border p-2 focus:ring" required>

@@ -45,13 +45,16 @@
 
         <!-- BACKDROP FOR MOBILE -->
         <div id="backdrop" class="fixed inset-0 z-30 hidden bg-black/40 md:hidden"></div>
-
-        <!-- SIDEBAR -->
         <aside
-            id="sidebar"
-            class="fixed left-0 top-0 z-40 h-screen w-60 -translate-x-full transform rounded-br-[80px] bg-gradient-to-b from-green-600 to-green-700 text-white shadow-lg transition-transform duration-300 md:translate-x-0"
-        >
-            <!-- LOGO -->
+    id="sidebar"
+    class="fixed inset-y-0 left-0 z-40 w-64
+           -translate-x-full md:translate-x-0
+           overflow-y-auto
+           rounded-br-[80px]
+           bg-gradient-to-b from-green-600 to-green-700
+           text-white shadow-lg
+           transition-transform duration-300"
+>
             <div class="flex items-center gap-3 px-4 pt-6">
                 <img src="{{ asset('icon-100.png') }}" class="w-12 drop-shadow-lg" />
                 <div class="text-base font-bold leading-tight">

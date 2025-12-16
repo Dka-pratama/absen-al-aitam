@@ -6,21 +6,21 @@
         <div class="mb-6 flex items-center justify-end">
             <div class="flex gap-2">
                 <a
-                    href="{{ route('tahun.edit', $tahunAjar->id) }}"
+                    href="{{ route('tahun.edit', $semester->tahun_ajar_id) }}"
                     class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
                 >
                     Edit
                 </a>
 
-                @if ($tahunAjar->status == 'aktif')
-                    <form action="{{ route('tahun.deactivate', $tahunAjar->id) }}" method="POST">
+                @if ($semester->status === 'aktif' && $semester->tahunAjar->status === 'aktif')
+                    <form action="{{ route('tahun.deactivate', $semester->id) }}" method="POST">
                         @csrf
                         <button class="rounded-lg bg-gray-500 px-4 py-2 text-white hover:bg-gray-600">
                             Nonaktifkan
                         </button>
                     </form>
                 @else
-                    <form action="{{ route('tahun.activate', $tahunAjar->id) }}" method="POST">
+                    <form action="{{ route('tahun.activate', $semester->id) }}" method="POST">
                         @csrf
                         <button class="rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-green-700">
                             Aktifkan
@@ -29,9 +29,9 @@
                 @endif
 
                 <form
-                    action="{{ route('tahun.destroy', $tahunAjar->id) }}"
+                    action="{{ route('tahun.destroy', $semester->id) }}"
                     method="POST"
-                    onsubmit="return confirm('Yakin ingin menghapus?');"
+                    class = "form-hapus inline"
                 >
                     @csrf
                     @method('DELETE')
@@ -48,27 +48,31 @@
                 <div class="space-y-2 text-sm">
                     <div>
                         <strong>Tahun:</strong>
-                        {{ $tahunAjar->tahun }}
+                        {{ $semester->tahunAjar->tahun }}
                     </div>
                     <div>
                         <strong>Semester:</strong>
-                        {{ ucfirst($tahunAjar->semester) }}
+                        {{ ucfirst($semester->name) }}
                     </div>
                     <div>
                         <strong>Status:</strong>
                         <span
-                            class="{{ $tahunAjar->status == 'aktif' ? 'bg-green-600' : 'bg-gray-500' }} rounded px-2 py-1 text-white"
+                            class="{{ $semester->status === 'aktif' && $semester->tahunAjar->status === 'aktif' ? 'bg-green-600' : 'bg-gray-500' }} rounded px-2 py-1 text-white"
                         >
-                            {{ ucfirst($tahunAjar->status) }}
+                            @if ($semester->status === 'aktif' && $semester->tahunAjar->status === 'aktif')
+        <span class="font-semibold">Aktif</span>
+    @else
+        <span class="">Non-Aktif</span>
+    @endif
                         </span>
                     </div>
                     <div>
                         <strong>Dibuat:</strong>
-                        {{ $tahunAjar->created_at->format('d M Y') }}
+                        {{ $semester->created_at->format('d M Y') }}
                     </div>
                     <div>
                         <strong>Terakhir Update:</strong>
-                        {{ $tahunAjar->updated_at->format('d M Y') }}
+                        {{ $semester->updated_at->format('d M Y') }}
                     </div>
                 </div>
             </div>

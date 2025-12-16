@@ -4,9 +4,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProfileController;
-use App\Http\Controllers\Wali\DashboardWaliController;
 use App\Http\Controllers\Siswa\DashboardSiswaController;
+use App\Http\Controllers\Admin\PromosiKelasController;
 use App\Http\Controllers\Wali\{
+    DashboardWaliController,
     SiswaController,
     LaporanController,
     AbsenController,
@@ -54,8 +55,8 @@ Route::middleware(['auth', 'role:admin'])
             Route::get('{id}/export-excel', [AbsensiCrud::class, 'exportExcel'])->name('absen.export.excel');
             Route::get('{id}/export-pdf', [AbsensiCrud::class, 'exportPDF'])->name('absen.export.pdf');
         });
-
-        // Profile
+        Route::get('/naik-kelas',[PromosiKelasController::class,'index'])->name('promosi.index');
+        Route::post('/naik-kelas',[PromosiKelasController::class,'store'])->name('promosi.store');
         Route::get('profile', [ProfileController::class, 'index'])->name('admin.profile');
         Route::get('profile/edit', [ProfileController::class, 'edit'])->name('admin.profile.edit');
         Route::post('profile/update', [ProfileController::class, 'update'])->name('admin.profile.update');

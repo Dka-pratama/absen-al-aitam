@@ -3,55 +3,47 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Http;
 
 class CustomResetPassword extends Notification
 {
     use Queueable;
 
-    /**
-     * Create a new notification instance.
-     */
-
     public $token;
+
     public function __construct($token)
     {
         $this->token = $token;
     }
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array<int, string>
-     */
+    // ❌ jangan pakai mail channel
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return [];
     }
 
-    /**
-     * Get the mail representation of the notification.
-     */
-    public function toMail(object $notifiable): MailMessage
+    // ✅ kita handle kirim manual
+    public function send($notifiable): void
     {
         $url = url('/reset-password/' . $this->token . '?email=' . $notifiable->email);
-        return (new MailMessage())->subject('Reset Password Absensi App')->view('email.reset-password', [
-            'url' => $url,
-            'nama' => $notifiable->name,
-        ]);
-    }
 
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(object $notifiable): array
-    {
-        return [
-                //
-            ];
+        Http::withHeaders([
+            'api-key' => env('BREVO_API_KEY'),
+            'Content-Type' => 'application/json',
+        ])->post('https://api.brevo.com/v3/smtp/email', [
+            'sender' => [
+                'name' => 'Absensi App',
+                'email' => 'andikarama800@gmail.com',
+            ],
+            'to' => [
+                ['email' => $notifiable->email],
+            ],
+            'subject' => 'Reset Password Absensi App',
+            'htmlContent' => view('email.reset-password', [
+                'url' => $url,
+                'nama' => $notifiable->name,
+            ])->render(),
+        ]);
     }
 }

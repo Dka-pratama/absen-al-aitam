@@ -20,7 +20,7 @@
                     <label class="font-semibold">Status</label>
                     <select name="status" class="w-full rounded-lg border p-2 focus:ring" required>
                         <option value="aktif">Aktif</option>
-                        <option value="non-Aktif">Non-Aktif</option>
+                        <option value="non-aktif">Non-Aktif</option>
                     </select>
                 </div>
 

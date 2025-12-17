@@ -10,7 +10,6 @@ use App\Models\Absensi;
 use Illuminate\Support\Facades\DB;
 use App\Models\Semester;
 
-
 class DashboardSiswaController extends Controller
 {
     public function index()
@@ -77,8 +76,7 @@ class DashboardSiswaController extends Controller
         $kelasSiswa = $siswa->kelasSiswa()->latest()->first();
 
         $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
-        $query = Absensi::where('kelas_siswa_id', $kelasSiswa->id)
-            ->where('semester_id', $semesterAktif->id);
+        $query = Absensi::where('kelas_siswa_id', $kelasSiswa->id)->where('semester_id', $semesterAktif->id);
 
         // jika filter tanggal diisi
         if ($request->start_date) {

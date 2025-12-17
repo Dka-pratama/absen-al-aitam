@@ -132,6 +132,10 @@
                                         action="{{ route('akun-siswa.destroy', $s->id) }}"
                                         method="POST"
                                         class="form-hapus inline"
+                                        data-confirm
+                                        data-title="Hapus Data Siswa?"
+                                        data-text="Data yang terhapus tidak bisa di kembalikan"
+                                        data-icon="error"
                                     >
                                         @csrf
                                         @method('DELETE')

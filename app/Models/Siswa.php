@@ -26,7 +26,6 @@ class Siswa extends Model
         return $this->belongsToMany(Kelas::class, 'kelas_siswa')->withPivot('tahun_ajar_id')->withTimestamps();
     }
 
-    
     public function absensi()
     {
         return $this->hasManyThrough(

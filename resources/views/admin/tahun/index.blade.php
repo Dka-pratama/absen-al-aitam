@@ -49,12 +49,12 @@
                             <td class="p-3">{{ $t->tahunAjar->tahun }}</td>
                             <td class="p-3">{{ $t->name }}</td>
                             <td>
-    @if ($t->status === 'aktif' && $t->tahunAjar->status === 'aktif')
-        <span class="text-green-600 font-semibold">Aktif</span>
-    @else
-        <span class="text-gray-400">Non-Aktif</span>
-    @endif
-</td>
+                                @if ($t->status === 'aktif' && $t->tahunAjar->status === 'aktif')
+                                    <span class="font-semibold text-green-600">Aktif</span>
+                                @else
+                                    <span class="text-gray-400">Non-Aktif</span>
+                                @endif
+                            </td>
                             {{-- ACTION --}}
                             <td class="flex justify-center gap-3 p-3">
                                 {{-- Info --}}

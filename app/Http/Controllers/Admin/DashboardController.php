@@ -19,8 +19,10 @@ class DashboardController extends Controller
         $tahunAjarAktif = TahunAjar::where('status', 'aktif')->first();
         $Header = 'Dashboard';
         $totalSiswa = Siswa::whereHas('kelasSiswa', function ($q) use ($tahunAjarAktif) {
-    $q->where('tahun_ajar_id', $tahunAjarAktif->id);
-})->distinct()->count();
+            $q->where('tahun_ajar_id', $tahunAjarAktif->id);
+        })
+            ->distinct()
+            ->count();
         $totalKelas = Kelas::count();
         $totalWali = User::where('role', 'wali')->count();
         $totalAkun = User::count();

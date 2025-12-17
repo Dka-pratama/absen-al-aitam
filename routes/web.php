@@ -55,8 +55,8 @@ Route::middleware(['auth', 'role:admin'])
             Route::get('{id}/export-excel', [AbsensiCrud::class, 'exportExcel'])->name('absen.export.excel');
             Route::get('{id}/export-pdf', [AbsensiCrud::class, 'exportPDF'])->name('absen.export.pdf');
         });
-        Route::get('/naik-kelas',[PromosiKelasController::class,'index'])->name('promosi.index');
-        Route::post('/naik-kelas',[PromosiKelasController::class,'store'])->name('promosi.store');
+        Route::get('/naik-kelas', [PromosiKelasController::class, 'index'])->name('promosi.index');
+        Route::post('/naik-kelas', [PromosiKelasController::class, 'store'])->name('promosi.store');
         Route::get('profile', [ProfileController::class, 'index'])->name('admin.profile');
         Route::get('profile/edit', [ProfileController::class, 'edit'])->name('admin.profile.edit');
         Route::post('profile/update', [ProfileController::class, 'update'])->name('admin.profile.update');

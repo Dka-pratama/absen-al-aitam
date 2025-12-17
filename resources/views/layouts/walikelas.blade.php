@@ -4,14 +4,15 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{{ $Header ?? 'Dashboard' }}</title>
-        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
-        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
-        <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('favicon-96x96.png') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}" />
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}" />
+        <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('favicon-96x96.png') }}" />
         <!-- Font Poppins -->
         <link
             href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
             rel="stylesheet"
         />
+        <link rel="stylesheet" href="{{ asset('style.css') }}" />
         <!-- Sweet Allert -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -43,18 +44,12 @@
 
         <!-- BACKDROP (HP MODE) -->
         <div id="backdrop" class="fixed inset-0 z-30 hidden bg-black/40 md:hidden"></div>
-<aside
-    id="sidebar"
-    class="fixed inset-y-0 left-0 z-40 w-64
-           -translate-x-full md:translate-x-0
-           overflow-y-auto
-           rounded-br-[80px]
-           bg-gradient-to-b from-green-600 to-green-700
-           text-white shadow-lg
-           transition-transform duration-300"
->
+        <aside
+            id="sidebar"
+            class="fixed inset-y-0 left-0 z-40 w-64 -translate-x-full overflow-y-auto rounded-br-[80px] bg-gradient-to-b from-green-600 to-green-700 text-white shadow-lg transition-transform duration-300 md:translate-x-0"
+        >
             <div class="flex items-center gap-3 px-4 pt-6">
-                <img src="{{ asset('logo.png') }}" class="w-14 drop-shadow-lg" />
+                <img src="{{ asset('icon-100.png') }}" class="w-14 drop-shadow-lg" />
                 <div class="text-lg font-bold leading-tight">
                     <div>SMK AL-AITAAM</div>
                     <p class="text-sm font-normal opacity-80">Wali Kelas</p>

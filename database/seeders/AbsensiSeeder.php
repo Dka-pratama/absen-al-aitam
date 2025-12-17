@@ -8,17 +8,16 @@ use App\Models\KelasSiswa;
 use Carbon\Carbon;
 use App\Models\Semester;
 
-
 class AbsensiSeeder extends Seeder
 {
     public function run(): void
     {
         $semesterAktif = Semester::where('status', 'aktif')->first();
 
-if (!$semesterAktif) {
-    $this->command->warn('Semester aktif tidak ditemukan — skip AbsensiSeeder');
-    return;
-}
+        if (!$semesterAktif) {
+            $this->command->warn('Semester aktif tidak ditemukan — skip AbsensiSeeder');
+            return;
+        }
 
         $kelasSiswaList = KelasSiswa::all();
 
@@ -38,9 +37,9 @@ if (!$semesterAktif) {
 
                 // Cegah duplikasi
                 $exists = Absensi::where('kelas_siswa_id', $kelasSiswa->id)
-    ->where('semester_id', $semesterAktif->id)
-    ->where('tanggal', $tanggal)
-    ->exists();
+                    ->where('semester_id', $semesterAktif->id)
+                    ->where('tanggal', $tanggal)
+                    ->exists();
                 if ($exists) {
                     continue;
                 }

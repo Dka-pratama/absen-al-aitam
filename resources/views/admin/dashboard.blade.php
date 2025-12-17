@@ -64,57 +64,56 @@
             </div>
         </div>
     </div>
-    @endsection
+@endsection
+
 @section('script')
     <!-- CHART.JS -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const canvas = document.getElementById('loginChart');
-    if (!canvas) return;
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('loginChart');
+            if (!canvas) return;
 
-    const labels = @json($labels);
-    const values = @json($values);
+            const labels = @json($labels);
+            const values = @json($values);
 
-    new Chart(canvas, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Jumlah Login',
-                data: values,
-                tension: 0.4,
-            }],
-        },
-        options: {
-             responsive: true,
-    maintainAspectRatio: false,
-    layout: {
-        padding: {
-            bottom: 20,
-        },
-    },
-            scales: {
-                y: {
-                    beginAtZero: true,
+            new Chart(canvas, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Jumlah Login',
+                            data: values,
+                            tension: 0.4,
+                        },
+                    ],
                 },
-                x : {
-                    ticks: {
-        maxRotation: 45,
-        minRotation: 45,
-        autoSkip: false,
-        callback: function (value, index) {
-            return index % 2 === 0
-                ? this.getLabelForValue(value)
-                : '';
-        },
-    },
-                }
-            },
-        },
-    });
-});
-</script>
-
-
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: {
+                        padding: {
+                            bottom: 20,
+                        },
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                        },
+                        x: {
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45,
+                                autoSkip: false,
+                                callback: function (value, index) {
+                                    return index % 2 === 0 ? this.getLabelForValue(value) : '';
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+        });
+    </script>
 @endsection

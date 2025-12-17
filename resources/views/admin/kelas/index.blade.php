@@ -3,7 +3,7 @@
 @section('content')
     <div class="p-6">
         <div class="mb-4 flex items-center justify-between">
-<form class="form relative">
+            <form class="form relative">
                 <button class="absolute left-2 top-1/2 -translate-y-1/2 p-1">
                     <svg
                         width="17"
@@ -43,36 +43,36 @@
                 </button>
             </form>
             <div class="mb-4 flex items-center gap-2">
+                <a
+                    href="{{ route('promosi.index') }}"
+                    class="flex items-center rounded-lg bg-blue-600 px-4 py-2 text-white shadow hover:bg-blue-700"
+                >
+                    Naik Kelas
+                </a>
 
                 <a
-                href="{{ route('promosi.index') }}"
-                class="flex items-center rounded-lg bg-blue-600 px-4 py-2 text-white shadow hover:bg-blue-700">
-                Naik Kelas
-            </a>
-            
-            <a
-            href="{{ route('kelas.create') }}"
-            class="flex items-center rounded-lg bg-green-600 px-4 py-2 text-white shadow hover:bg-green-700"
-            >
-            <svg
-            xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="lucide lucide-circle-plus-icon lucide-circle-plus mr-2 text-white"
+                    href="{{ route('kelas.create') }}"
+                    class="flex items-center rounded-lg bg-green-600 px-4 py-2 text-white shadow hover:bg-green-700"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-circle-plus-icon lucide-circle-plus mr-2 text-white"
                     >
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M8 12h8" />
-                    <path d="M12 8v8" />
-                </svg>
-                Tambah
-            </a>
-        </div>
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M8 12h8" />
+                        <path d="M12 8v8" />
+                    </svg>
+                    Tambah
+                </a>
+            </div>
         </div>
 
         {{-- TABLE --}}
@@ -135,6 +135,10 @@
                                         action="{{ route('kelas.destroy', $k->id) }}"
                                         method="POST"
                                         class="form-hapus inline"
+                                        data-confirm
+                                        data-title="Hapus Data Kelas?"
+                                        data-text="Data yang terhapus tidak bisa di kembalikan"
+                                        data-icon="error"
                                     >
                                         @csrf
                                         @method('DELETE')

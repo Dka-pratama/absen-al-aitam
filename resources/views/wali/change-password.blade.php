@@ -14,7 +14,15 @@
             </div>
         @endif
 
-        <form action="{{ route('wali.profile.password.update') }}" method="POST" class="space-y-4">
+        <form
+            action="{{ route('wali.profile.password.update') }}"
+            method="POST"
+            class="space-y-4"
+            data-confirm
+            data-title="Ubah Password Data?"
+            data-text="Mohon untuk tidak melupakan password nya !!"
+            data-icon="info"
+        >
             @csrf
 
             <div>

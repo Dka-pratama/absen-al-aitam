@@ -16,9 +16,9 @@ class Absensi extends Model
         return $this->belongsTo(KelasSiswa::class, 'kelas_siswa_id');
     }
     public function semester()
-{
-    return $this->belongsTo(Semester::class);
-}
+    {
+        return $this->belongsTo(Semester::class);
+    }
     public function kelas()
     {
         return $this->hasOneThrough(Kelas::class, KelasSiswa::class, 'id', 'id', 'kelas_siswa_id', 'kelas_id');

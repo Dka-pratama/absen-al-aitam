@@ -4,9 +4,9 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Masuk</title>
-        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
-        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
-        <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('favicon-96x96.png') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}" />
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}" />
+        <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('favicon-96x96.png') }}" />
         @vite('resources/css/app.css')
         @vite('resources/js/app.js')
     </head>
@@ -14,16 +14,12 @@
     <body class="flex min-h-screen items-center justify-center bg-gray-100 p-4">
         <div class="w-full max-w-md rounded-xl bg-white p-8 shadow-lg">
             <div class="mb-8 text-center">
-        <h2 class="text-2xl font-semibold tracking-tight text-gray-900">
-            Masuk
-        </h2>
-        <p class="mt-2 text-sm text-gray-500">
-            Selamat datang di sistem absensi Al-aitaam
-            <span class="block font-medium text-gray-700">
-                Al-Aitaam
-            </span>
-        </p>
-    </div>
+                <h2 class="text-2xl font-semibold tracking-tight text-gray-900">Masuk</h2>
+                <p class="mt-2 text-sm text-gray-500">
+                    Selamat datang di sistem absensi Al-aitaam
+                    <span class="block font-medium text-gray-700">Al-Aitaam</span>
+                </p>
+            </div>
             <form method="POST" action="{{ route('login') }}" class="space-y-4">
                 @csrf
                 <div>
@@ -107,6 +103,7 @@
                 @error('email')
                     <p class="text-sm text-red-500">{{ $message }}</p>
                 @enderror
+
                 <div class="flex items-center justify-between">
                     <a href="{{ route('password.request') }}" class="text-sm text-indigo-600 hover:text-indigo-500">
                         Lupa Passsword?

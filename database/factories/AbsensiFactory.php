@@ -7,7 +7,6 @@ use App\Models\Absensi;
 use App\Models\KelasSiswa;
 use App\Models\Semester;
 
-
 class AbsensiFactory extends Factory
 {
     protected $model = Absensi::class;

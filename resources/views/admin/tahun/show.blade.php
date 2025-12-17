@@ -29,9 +29,14 @@
                 @endif
 
                 <form
-                    action="{{ route('tahun.destroy', $semester->id) }}"
+                    action="{{ route('tahun.destroy', $semester->tahunAjar->id) }}"
                     method="POST"
-                    class = "form-hapus inline"
+                    class="inline"
+                    data-confirm
+                    data-title="Hapus Data Tahun?"
+                    data-text=" ini akan menghapus 1 tahun 2 semester!!
+                    Data yang terhapus tidak bisa di kembalikan"
+                    data-icon="error"
                 >
                     @csrf
                     @method('DELETE')
@@ -60,10 +65,10 @@
                             class="{{ $semester->status === 'aktif' && $semester->tahunAjar->status === 'aktif' ? 'bg-green-600' : 'bg-gray-500' }} rounded px-2 py-1 text-white"
                         >
                             @if ($semester->status === 'aktif' && $semester->tahunAjar->status === 'aktif')
-        <span class="font-semibold">Aktif</span>
-    @else
-        <span class="">Non-Aktif</span>
-    @endif
+                                <span class="font-semibold">Aktif</span>
+                            @else
+                                <span class="">Non-Aktif</span>
+                            @endif
                         </span>
                     </div>
                     <div>

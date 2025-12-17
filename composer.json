@@ -19,12 +19,11 @@
         "ext-gd": "*",
         "ext-zip": "*",
         "ext-intl": "*",
-       "ext-pdo": "*",
-       "ext-pdo_mysql": "*",
-       "ext-bcmath": "*"
+        "ext-pdo": "*",
+        "ext-pdo_mysql": "*",
+        "ext-bcmath": "*"
     },
     "require-dev": {
-        
         "laravel/breeze": "^2.3",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.24",

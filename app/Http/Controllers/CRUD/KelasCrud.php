@@ -17,9 +17,11 @@ class KelasCrud extends Controller
         $Header = 'Data Kelas';
         $tahunAjarAktif = TahunAjar::where('status', 'aktif')->first();
 
-        $kelasList = Kelas::withCount(['kelasSiswa as siswa_count' => function ($q) use ($tahunAjarAktif) {
-        $q->where('tahun_ajar_id', $tahunAjarAktif->id);
-    }])->get();
+        $kelasList = Kelas::withCount([
+            'kelasSiswa as siswa_count' => function ($q) use ($tahunAjarAktif) {
+                $q->where('tahun_ajar_id', $tahunAjarAktif->id);
+            },
+        ])->get();
         return view('admin.kelas.index', compact('kelasList', 'Header'));
     }
 
@@ -28,13 +30,17 @@ class KelasCrud extends Controller
         $keyword = $request->search;
         $tahunAjarAktif = TahunAjar::where('status', 'aktif')->first();
 
-        $kelasList = Kelas::withCount(['kelasSiswa as siswa_count' => function ($q) use ($tahunAjarAktif) {
-        $q->where('tahun_ajar_id', $tahunAjarAktif->id);
-    }])->where(function ($q) use ($keyword) {
-        $q->where('nama_kelas', 'like', "%$keyword%")
-          ->orWhere('jurusan', 'like', "%$keyword%")
-          ->orWhere('angkatan', 'like', "%$keyword%");
-    })->get();
+        $kelasList = Kelas::withCount([
+            'kelasSiswa as siswa_count' => function ($q) use ($tahunAjarAktif) {
+                $q->where('tahun_ajar_id', $tahunAjarAktif->id);
+            },
+        ])
+            ->where(function ($q) use ($keyword) {
+                $q->where('nama_kelas', 'like', "%$keyword%")
+                    ->orWhere('jurusan', 'like', "%$keyword%")
+                    ->orWhere('angkatan', 'like', "%$keyword%");
+            })
+            ->get();
 
         return response()->json(
             $kelasList->map(function ($k) {

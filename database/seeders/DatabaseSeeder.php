@@ -30,17 +30,16 @@ class DatabaseSeeder extends Seeder
             'status' => 'aktif',
         ]);
         $semesterGanjil = \App\Models\Semester::create([
-    'tahun_ajar_id' => $tahunAjar->id,
-    'name' => 'ganjil',
-    'status' => 'aktif',
-]);
+            'tahun_ajar_id' => $tahunAjar->id,
+            'name' => 'ganjil',
+            'status' => 'aktif',
+        ]);
 
-\App\Models\Semester::create([
-    'tahun_ajar_id' => $tahunAjar->id,
-    'name' => 'genap',
-    'status' => 'non-aktif',
-]);
-
+        \App\Models\Semester::create([
+            'tahun_ajar_id' => $tahunAjar->id,
+            'name' => 'genap',
+            'status' => 'non-aktif',
+        ]);
 
         // ====== Wali Kelas Manual ======
         $waliUser = User::factory()

@@ -17,7 +17,7 @@
         <div class="rounded-xl bg-white p-6 shadow-md">
             <!-- Naik Kelas -->
             <div class="mb-10 rounded-xl bg-gray-50 p-6 shadow-inner">
-                <h3 class="mb-4 text-2xl font-bold text-gray-800">Naikkan Semua Siswa ke Kelas Lain</h3>
+                <h3 class="mb-4 text-2xl font-bold text-gray-800">Pindahkan Semua Siswa ke Kelas Lain</h3>
 
                 <form action="{{ route('kelas.naik', $kelas->id) }}" method="POST" class="space-y-4">
                     @csrf
@@ -35,7 +35,7 @@
                     <button
                         class="w-full rounded-lg bg-blue-600 px-5 py-3 text-base font-semibold text-white transition hover:bg-blue-700"
                     >
-                        Naikkan Semua Siswa
+                        Pindahkan Semua Siswa
                     </button>
                 </form>
             </div>

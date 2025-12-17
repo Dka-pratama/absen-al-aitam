@@ -4,9 +4,13 @@
     <div class="p-6">
         {{-- Header --}}
         <div class="mb-6">
-            <h1 class="text-2xl font-bold text-gray-800">Laporan Absensi Kelas {{ $wali->kelas->nama_kelas }}</h1>
-            <p class="text-gray-500">Wali Kelas: {{ $wali->user->name }}</p>
-            <p class="text-gray-500">Tahun Ajar: {{ $wali->tahunAjar->tahun }} ({{ $semesterAktif->name }})</p>
+            @if ($wali)
+                <h1 class="text-2xl font-bold">Laporan Absensi Kelas {{ $wali->kelas->nama_kelas }}</h1>
+                <p class="text-gray-500">Wali Kelas: {{ $wali->user->name }}</p>
+            @else
+                <h1 class="text-2xl font-bold text-gray-700">Laporan Absensi</h1>
+            @endif
+            <p class="text-gray-500">Tahun Ajar: {{ $semesterAktif->tahunAjar?->tahun ?? '-' }}</p>
         </div>
 
         {{-- Filter --}}
@@ -30,13 +34,13 @@
                     class="rounded border px-3 py-2"
                 />
             </div>
-
             <div class="flex flex-col">
-                <label class="text-sm font-semibold">Tahun Ajar</label>
-                <select name="tahun_ajar_id" class="rounded border py-2 pl-3">
-                    @foreach ($tahunAjar as $t)
-                        <option value="{{ $t->id }}" {{ request('tahun_ajar_id') == $t->id ? 'selected' : '' }}>
-                            {{ $t->tahun }} - {{ $semesterAktif->name }}
+                <label class="text-sm font-semibold">Semester</label>
+                <select name="semester_id" class="rounded border py-2 pl-3">
+                    @foreach ($semesters as $s)
+                        <option value="{{ $s->id }}" @selected($s->id == $semesterAktif->id)>
+                            {{ $s->name }} ({{ $s->tahunAjar->tahun }})
+                            {{ $s->status === 'aktif' ? '— Aktif' : '' }}
                         </option>
                     @endforeach
                 </select>
@@ -71,13 +75,35 @@
                             <td class="p-3">{{ $a->izin }}</td>
                             <td class="p-3">{{ $a->sakit }}</td>
                             <td class="p-3">{{ $a->alpa }}</td>
-                            <td class="p-3">
-                                <a
-                                    href="{{ route('wali.laporan.detail', ['tanggal' => $a->tanggal]) }}"
-                                    class="rounded bg-blue-600 px-3 py-1 text-white hover:bg-blue-700"
-                                >
-                                    Detail
-                                </a>
+                            <td class="flex justify-center gap-3 p-3">
+                                {{-- Info --}}
+                                <div class="group relative">
+                                    <a
+                                        href="{{ route('wali.laporan.detail', ['tanggal' => $a->tanggal, 'semester_id' => $semesterAktif->id]) }}"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="24"
+                                            height="24"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="lucide lucide-info-icon lucide-info"
+                                        >
+                                            <circle cx="12" cy="12" r="10" />
+                                            <path d="M12 16v-4" />
+                                            <path d="M12 8h.01" />
+                                        </svg>
+                                    </a>
+                                    <div
+                                        class="pointer-events-none absolute left-1/2 z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 shadow transition group-hover:opacity-100"
+                                    >
+                                        Detail Absensi
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     @endforeach

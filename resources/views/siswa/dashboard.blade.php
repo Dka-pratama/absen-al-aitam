@@ -182,12 +182,15 @@
                         body: JSON.stringify({
                             token,
                         }),
-                    })
-                        .then((res) => res.json())
-                        .then((result) => {
-                            alert(result.msg);
-                            this.show = false;
+                    }).then((result) => {
+                        Swal.fire({
+                            icon: result.status ? 'success' : 'error',
+                            title: result.status ? 'Berhasil' : 'Gagal',
+                            text: result.msg,
+                            confirmButtonText: 'OK',
                         });
+                        this.show = false;
+                    });
                 },
 
                 stopScanner() {
@@ -214,7 +217,11 @@
                     document.getElementById('formAbsen').submit();
                 },
                 function () {
-                    alert('GPS tidak diizinkan!');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'GPS Tidak Aktif',
+                        text: 'Izinkan lokasi untuk melakukan absensi.',
+                    });
                 },
             );
         }

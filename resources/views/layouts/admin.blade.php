@@ -4,9 +4,9 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{{ $Header ?? 'Dashboard' }}</title>
-        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
-        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
-        <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('favicon-96x96.png') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}" />
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}" />
+        <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('favicon-96x96.png') }}" />
 
         <!-- Font Poppins -->
         <link
@@ -48,17 +48,9 @@
 
         <!-- SIDEBAR -->
         <aside
-    id="sidebar"
-    class="fixed inset-y-0 left-0 z-40 w-64
-           -translate-x-full md:translate-x-0
-           overflow-y-auto
-           rounded-br-[80px]
-           bg-gradient-to-b from-green-600 to-green-700
-           text-white shadow-lg
-           transition-transform duration-300"
->
-
-
+            id="sidebar"
+            class="fixed inset-y-0 left-0 z-40 w-64 -translate-x-full overflow-y-auto rounded-br-[80px] bg-gradient-to-b from-green-600 to-green-700 text-white shadow-lg transition-transform duration-300 md:translate-x-0"
+        >
             <!-- LOGO -->
             <div class="flex items-center gap-3 px-4 pt-6">
                 <img src="{{ asset('icon-100.png') }}" class="w-14 drop-shadow-lg" />
@@ -68,7 +60,7 @@
             </div>
 
             <!-- MENU -->
-            <nav class=" space-y-2 p-2">
+            <nav class="space-y-2 p-2">
                 <a
                     href="/admin/dashboard"
                     class="{{ request()->is('admin/dashboard') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }} flex items-center gap-3 rounded-lg p-3 transition"

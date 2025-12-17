@@ -106,10 +106,10 @@
                             <th class="p-3 text-left">No</th>
                             <th class="p-3 text-left">Nama Siswa</th>
                             <th class="p-3 text-left">NISN</th>
-                            <th class="p-3 text-center">Hadir</th>
-                            <th class="p-3 text-center">Izin</th>
-                            <th class="p-3 text-center">Sakit</th>
-                            <th class="p-3 text-center">Alpa</th>
+                            <th class="p-2 text-center"></th>
+                            <th class="p-2 text-center"></th>
+                            <th class="p-2 text-center"></th>
+                            <th class="p-2 text-center"></th>
                         </tr>
                     </thead>
 
@@ -138,38 +138,50 @@
                                     $inputName = 'status[' . (optional($siswaModel)->id ?? 'unknown') . ']';
                                 @endphp
 
-                                <td class="p-3 text-center">
-                                    <input
-                                        type="radio"
-                                        name="{{ $inputName }}"
-                                        value="hadir"
-                                        {{ $statusNow === 'hadir' ? 'checked' : '' }}
-                                        required
-                                    />
+                                <td class="p-2 text-center">
+                                    <label class="radio-circle radio-h">
+                                        <input
+                                            type="radio"
+                                            name="{{ $inputName }}"
+                                            value="hadir"
+                                            {{ $statusNow === 'hadir' ? 'checked' : '' }}
+                                            required
+                                        />
+                                        <span>H</span>
+                                    </label>
                                 </td>
-                                <td class="p-3 text-center">
-                                    <input
-                                        type="radio"
-                                        name="{{ $inputName }}"
-                                        value="izin"
-                                        {{ $statusNow === 'izin' ? 'checked' : '' }}
-                                    />
+                                <td class="p-2 text-center">
+                                    <label class="radio-circle radio-i">
+                                        <input
+                                            type="radio"
+                                            name="{{ $inputName }}"
+                                            value="izin"
+                                            {{ $statusNow === 'izin' ? 'checked' : '' }}
+                                        />
+                                        <span>I</span>
+                                    </label>
                                 </td>
-                                <td class="p-3 text-center">
-                                    <input
-                                        type="radio"
-                                        name="{{ $inputName }}"
-                                        value="sakit"
-                                        {{ $statusNow === 'sakit' ? 'checked' : '' }}
-                                    />
+                                <td class="p-2 text-center">
+                                    <label class="radio-circle radio-s">
+                                        <input
+                                            type="radio"
+                                            name="{{ $inputName }}"
+                                            value="sakit"
+                                            {{ $statusNow === 'sakit' ? 'checked' : '' }}
+                                        />
+                                        <span>S</span>
+                                    </label>
                                 </td>
-                                <td class="p-3 text-center">
-                                    <input
-                                        type="radio"
-                                        name="{{ $inputName }}"
-                                        value="alpa"
-                                        {{ $statusNow === 'alpa' ? 'checked' : '' }}
-                                    />
+                                <td class="p-2 text-center">
+                                    <label class="radio-circle radio-a">
+                                        <input
+                                            type="radio"
+                                            name="{{ $inputName }}"
+                                            value="alpa"
+                                            {{ $statusNow === 'alpa' ? 'checked' : '' }}
+                                        />
+                                        <span>A</span>
+                                    </label>
                                 </td>
                             </tr>
                         @empty

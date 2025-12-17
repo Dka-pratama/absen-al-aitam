@@ -25,9 +25,7 @@ class DashboardWaliController extends Controller
         $tahunAjar = $wali->tahunAjar;
         $kelas = $wali->kelas;
 
-        $kelasSiswa = KelasSiswa::where('kelas_id', $kelas->id)
-    ->where('tahun_ajar_id', $tahunAjar->id)
-    ->pluck('id');
+        $kelasSiswa = KelasSiswa::where('kelas_id', $kelas->id)->where('tahun_ajar_id', $tahunAjar->id)->pluck('id');
         $totalSiswa = $kelasSiswa->count();
 
         $hariIni = date('Y-m-d');
@@ -37,9 +35,8 @@ class DashboardWaliController extends Controller
             ->kelasSiswa()
             ->with([
                 'absensi' => function ($q) use ($hariIni, $semesterAktif) {
-    $q->whereDate('tanggal', $hariIni)
-      ->where('semester_id', $semesterAktif->id);
-},
+                    $q->whereDate('tanggal', $hariIni)->where('semester_id', $semesterAktif->id);
+                },
             ])
             ->get()
             ->pluck('absensi')
@@ -62,10 +59,10 @@ class DashboardWaliController extends Controller
             $tgl = date('Y-m-d', strtotime("-{$i} days"));
             $tanggal[] = $tgl;
 
-           $data = Absensi::whereIn('kelas_siswa_id', $kelasSiswa)
-    ->where('semester_id', $semesterAktif->id)
-    ->whereDate('tanggal', $tgl)
-    ->get();
+            $data = Absensi::whereIn('kelas_siswa_id', $kelasSiswa)
+                ->where('semester_id', $semesterAktif->id)
+                ->whereDate('tanggal', $tgl)
+                ->get();
             $hadirChart[] = $data->where('status', 'hadir')->count();
             $izinChart[] = $data->where('status', 'izin')->count();
             $sakitChart[] = $data->where('status', 'sakit')->count();

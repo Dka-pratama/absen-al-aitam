@@ -15,27 +15,18 @@ use Barryvdh\DomPDF\Facade\Pdf;
 class SiswaController extends Controller
 {
     public function index()
-{
-    $Header = 'Data Siswa';
+    {
+        $Header = 'Data Siswa';
 
-    $wali = WaliKelas::where('user_id', Auth::id())->firstOrFail();
+        $wali = WaliKelas::where('user_id', Auth::id())->firstOrFail();
 
-    $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
-    $tahunAjarAktif = $semesterAktif->tahunAjar; // relasi
+        $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
+        $tahunAjarAktif = $semesterAktif->tahunAjar; // relasi
 
-    $dataSiswa = $this->getDataSiswa($wali);
+        $dataSiswa = $this->getDataSiswa($wali);
 
-    return view(
-        'wali.siswa.index',
-        compact(
-            'dataSiswa',
-            'wali',
-            'semesterAktif',
-            'tahunAjarAktif',
-            'Header'
-        )
-    );
-}
+        return view('wali.siswa.index', compact('dataSiswa', 'wali', 'semesterAktif', 'tahunAjarAktif', 'Header'));
+    }
 
     public function exportExcel($waliId)
     {
@@ -78,45 +69,41 @@ class SiswaController extends Controller
     {
         $semesterAktif = Semester::where('status', 'aktif')->first();
         $wali = WaliKelas::with('user', 'kelas', 'tahunAjar')
-        ->where('user_id', Auth::id())
-        ->where('tahun_ajar_id', $semesterAktif->tahun_ajar_id)
-        ->firstOrFail();
-    $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
-    $tahunAjarAktif = $semesterAktif->tahunAjar;
+            ->where('user_id', Auth::id())
+            ->where('tahun_ajar_id', $semesterAktif->tahun_ajar_id)
+            ->firstOrFail();
+        $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
+        $tahunAjarAktif = $semesterAktif->tahunAjar;
         $dataSiswa = $this->getDataSiswa($wali);
 
         $pdf = Pdf::loadView('wali.siswa.pdf', compact('dataSiswa', 'wali', 'tahunAjarAktif', 'semesterAktif'));
         return $pdf->download('absensi_siswa.pdf');
     }
 
-   private function getDataSiswa(WaliKelas $wali)
-{
-    $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
+    private function getDataSiswa(WaliKelas $wali)
+    {
+        $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
 
-    $kelasSiswaIds = KelasSiswa::where('kelas_id', $wali->kelas_id)
-        ->where('tahun_ajar_id', $wali->tahun_ajar_id)
-        ->pluck('id');
+        $kelasSiswaIds = KelasSiswa::where('kelas_id', $wali->kelas_id)
+            ->where('tahun_ajar_id', $wali->tahun_ajar_id)
+            ->pluck('id');
 
-    $siswa = KelasSiswa::with('siswa.user')
-        ->whereIn('id', $kelasSiswaIds)
-        ->get();
+        $siswa = KelasSiswa::with('siswa.user')->whereIn('id', $kelasSiswaIds)->get();
 
-    $data = [];
-    foreach ($siswa as $ks) {
-        $absensi = Absensi::where('kelas_siswa_id', $ks->id)
-            ->where('semester_id', $semesterAktif->id)
-            ->get();
+        $data = [];
+        foreach ($siswa as $ks) {
+            $absensi = Absensi::where('kelas_siswa_id', $ks->id)->where('semester_id', $semesterAktif->id)->get();
 
-        $data[] = [
-            'nama' => $ks->siswa->user->name,
-            'nisn' => $ks->siswa->NISN,
-            'hadir' => $absensi->where('status', 'hadir')->count(),
-            'izin' => $absensi->where('status', 'izin')->count(),
-            'sakit' => $absensi->where('status', 'sakit')->count(),
-            'alpa' => $absensi->where('status', 'alpa')->count(),
-        ];
+            $data[] = [
+                'nama' => $ks->siswa->user->name,
+                'nisn' => $ks->siswa->NISN,
+                'hadir' => $absensi->where('status', 'hadir')->count(),
+                'izin' => $absensi->where('status', 'izin')->count(),
+                'sakit' => $absensi->where('status', 'sakit')->count(),
+                'alpa' => $absensi->where('status', 'alpa')->count(),
+            ];
+        }
+
+        return $data;
     }
-
-    return $data;
-}
 }

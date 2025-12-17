@@ -36,9 +36,7 @@ class CustomResetPassword extends Notification
                 'name' => 'Absensi App',
                 'email' => 'andikarama800@gmail.com',
             ],
-            'to' => [
-                ['email' => $notifiable->email],
-            ],
+            'to' => [['email' => $notifiable->email]],
             'subject' => 'Reset Password Absensi App',
             'htmlContent' => view('email.reset-password', [
                 'url' => $url,

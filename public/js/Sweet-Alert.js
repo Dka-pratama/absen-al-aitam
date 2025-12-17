@@ -1,33 +1,30 @@
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll('.form-hapus').forEach(form => {
-        form.addEventListener('submit', function(e) {
+document.addEventListener('DOMContentLoaded', () => {
 
-            // Jika sudah dikonfirmasi, langsung submit (biarkan Laravel memproses)
-            if (form.dataset.confirmed === "true") {
-                return; 
-            }
+    document.querySelectorAll('form[data-confirm]').forEach(form => {
 
-            // Hentikan submit pertama
+        form.addEventListener('submit', function (e) {
+
+            // Sudah dikonfirmasi → lanjut submit
+            if (form.dataset.confirmed === 'true') return;
+
             e.preventDefault();
 
             Swal.fire({
-                title: 'Yakin ingin menghapus?',
-                text: "Data yang dihapus tidak dapat dikembalikan!",
-                icon: 'warning',
+                title: form.dataset.title ?? 'Yakin?',
+                text: form.dataset.text ?? 'Aksi ini tidak bisa dibatalkan.',
+                icon: form.dataset.icon ?? 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Ya, hapus',
-                cancelButtonText: 'Batal',
+                confirmButtonText: form.dataset.confirm || 'Ya, lanjutkan',
+                cancelButtonText: form.dataset.cancel || 'Batal',
                 reverseButtons: true,
-                confirmButtonColor: '#e00000',
-            }).then((result) => {
+            }).then(result => {
                 if (result.isConfirmed) {
-                    // Set flag agar submit kedua tidak dicegat SweetAlert
-                    form.dataset.confirmed = "true";
-
-                    // Lanjutkan submit
+                    form.dataset.confirmed = 'true';
                     form.submit();
                 }
             });
         });
+
     });
+
 });

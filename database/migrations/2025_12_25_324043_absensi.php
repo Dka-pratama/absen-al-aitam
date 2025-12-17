@@ -21,11 +21,8 @@ return new class extends Migration {
             $table->string('keterangan')->nullable();
             $table->timestamps();
 
-            $table->unique(
-    ['kelas_siswa_id', 'semester_id', 'tanggal'],
-    'unique_absensi_siswa_semester_tanggal'
-);
-});
+            $table->unique(['kelas_siswa_id', 'semester_id', 'tanggal'], 'unique_absensi_siswa_semester_tanggal');
+        });
     }
 
     /**

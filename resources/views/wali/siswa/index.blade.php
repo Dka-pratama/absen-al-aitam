@@ -13,7 +13,9 @@
                 </p>
                 <p class="text-gray-600">
                     Tahun Ajar:
-                    <span class="font-medium">{{ $tahunAjarAktif->tahun }} ({{ ucfirst($semesterAktif->name) }})</span>
+                    <span class="font-medium">
+                        {{ $tahunAjarAktif->tahun }} ({{ ucfirst($semesterAktif->name) }})
+                    </span>
                 </p>
             </div>
 

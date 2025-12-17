@@ -13,8 +13,8 @@ class Semester extends Model
 
     protected $fillable = [
         'tahun_ajar_id',
-        'name',        // ganjil | genap
-        'status',      // aktif | nonaktif
+        'name', // ganjil | genap
+        'status', // aktif | nonaktif
     ];
 
     public function tahunAjar()
@@ -26,7 +26,6 @@ class Semester extends Model
     {
         return $this->hasMany(Absensi::class);
     }
-
 
     public function scopeAktif($query)
     {

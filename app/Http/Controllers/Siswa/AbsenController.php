@@ -9,7 +9,6 @@ use App\Models\KelasSiswa;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Semester;
 
-
 class AbsenController extends Controller
 {
     public function absen(Request $request)

@@ -127,7 +127,11 @@
                                     <form
                                         action="{{ route('akun-walikelas.destroy', $wk->id) }}"
                                         method="POST"
-                                        class="form-hapus inline"
+                                        class="inline"
+                                        data-confirm
+                                        data-title="Hapus Data Wali Kelas?"
+                                        data-text="Data yang terhapus tidak bisa di kembalikan"
+                                        data-icon="error"
                                     >
                                         @csrf
                                         @method('DELETE')

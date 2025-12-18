@@ -20,6 +20,10 @@
                     <label class="font-semibold">Username</label>
                     <input type="text" name="username" class="w-full rounded-lg border p-2 focus:ring" required />
                 </div>
+                <div>
+                    <label class="font-semibold">Email</label>
+                    <input type="email" name="email" class="w-full rounded-lg border p-2 focus:ring" required />
+                </div>
 
                 <div>
                     <label class="font-semibold">Password</label>

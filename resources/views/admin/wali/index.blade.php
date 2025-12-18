@@ -79,6 +79,7 @@
                         <th class="p-3 text-left">No</th>
                         <th class="p-3 text-left">NUPTK</th>
                         <th class="p-3 text-left">Nama Wali Kelas</th>
+                        <th class="p-3 text-left">Email</th>
                         <th class="p-3 text-left">Kelas</th>
                         <th class="p-3 text-center">Action</th>
                     </tr>
@@ -90,6 +91,7 @@
                             <td class="p-3">{{ $index + 1 }}</td>
                             <td class="p-3">{{ $wk->NUPTK }}</td>
                             <td class="p-3">{{ $wk->user->name }}</td>
+                            <td class="p-3">{{ $wk->user->email ?? '-' }}</td>
                             <td class="p-3">{{ $wk->kelas->nama_kelas }}</td>
                             {{-- ACTION --}}
                             <td class="flex justify-center gap-3 p-3">

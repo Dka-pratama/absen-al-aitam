@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             <td class="p-3">${i + 1}</td>
                             <td class="p-3">${w.NUPTK}</td>
                             <td class="p-3">${w.user?.name}</td>
+                            <td class="p-3">${w.user?.email ?? '-'}</td>
                             <td class="p-3">${w.kelas?.nama_kelas ?? '-'}</td>
 
                             <td class="p-3 flex justify-center gap-3">

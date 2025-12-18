@@ -25,7 +25,9 @@ class WaliCrud extends Controller
 
         $data = Wali::with(['user', 'kelas'])
             ->whereHas('user', function ($q) use ($keyword) {
-                $q->where('name', 'like', "%$keyword%")->orWhere('username', 'like', "%$keyword%");
+                $q->where('name', 'like', "%$keyword%")
+                ->orWhere('username', 'like', "%$keyword%")
+                ->orWhere('email', 'like', "%$keyword%");
             })
             ->orWhere('NUPTK', 'like', "%$keyword%")
             ->get();
@@ -37,6 +39,7 @@ class WaliCrud extends Controller
                     'NUPTK' => $w->NUPTK,
                     'user' => [
                         'name' => $w->user->name,
+                        'email' => $w->user->email,
                     ],
                     'kelas' => [
                         'nama_kelas' => $w->kelas->nama_kelas ?? '-',
@@ -88,6 +91,7 @@ class WaliCrud extends Controller
                 'name' => 'required|string|max:255',
                 'NUPTK' => 'required|string|unique:wali_kelas,NUPTK',
                 'username' => 'required|string|max:255|unique:users,username',
+                'email' => 'string|max:255',
                 'password' => 'required|string|min:6',
             ],
             [
@@ -100,6 +104,7 @@ class WaliCrud extends Controller
         $user = User::create([
             'name' => $request->name,
             'username' => $request->username,
+            'email' => $request->email,
             'password' => bcrypt($request->password),
             'role' => 'wali',
         ]);
@@ -131,6 +136,7 @@ class WaliCrud extends Controller
             [
                 'name' => 'required|string|max:255',
                 'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+                'email' => 'string|max:255',
                 'NUPTK' => 'required|string|unique:wali_kelas,NUPTK,' . $wali->id,
             ],
             [
@@ -143,6 +149,7 @@ class WaliCrud extends Controller
         $user->update([
             'name' => $request->name,
             'username' => $request->username,
+            'email' => $request->email,
         ]);
 
         if ($request->password) {

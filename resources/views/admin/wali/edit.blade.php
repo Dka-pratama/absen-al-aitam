@@ -39,6 +39,16 @@
                         required
                     />
                 </div>
+                <div>
+                    <label class="font-semibold">email</label>
+                    <input
+                        type="email"
+                        name="email"
+                        value="{{ $wali->user->email }}"
+                        class="w-full rounded-lg border p-2 focus:ring"
+                        required
+                    />
+                </div>
 
                 <div>
                     <label class="font-semibold">Password (opsional)</label>

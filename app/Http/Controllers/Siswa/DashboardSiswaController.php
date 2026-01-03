@@ -19,7 +19,9 @@ class DashboardSiswaController extends Controller
         $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
 
         $kelas = $user->siswa->kelasSiswa()->with('kelas')->first();
-
+        if (!$user->siswa) {
+             abort(403, 'Akun ini belum terdaftar sebagai siswa');
+        }
         $siswa = $user->siswa;
 
         $kelasSiswa = $siswa->KelasSiswa()->pluck('id');
@@ -64,31 +66,41 @@ class DashboardSiswaController extends Controller
     }
 
     public function rekap(Request $request)
-    {
-        $Header = 'Rekap Absensi';
-        $user = Auth::user();
-        $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
+{
+    $Header = 'Rekap Absensi';
+    $user = Auth::user();
 
-        // dapatkan siswa berdasarkan user id
-        $siswa = $user->siswa;
+    $tahunAjarAktif = \App\Models\TahunAjar::where('status', 'aktif')->firstOrFail();
+    $semesterAktif = $tahunAjarAktif->semesterAktif;
 
-        // dapatkan relasi kelas_siswa terbaru (misal kelas aktif)
-        $kelasSiswa = $siswa->kelasSiswa()->latest()->first();
-
-        $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
-        $query = Absensi::where('kelas_siswa_id', $kelasSiswa->id)->where('semester_id', $semesterAktif->id);
-
-        // jika filter tanggal diisi
-        if ($request->start_date) {
-            $query->whereDate('tanggal', '>=', $request->start_date);
-        }
-
-        if ($request->end_date) {
-            $query->whereDate('tanggal', '<=', $request->end_date);
-        }
-
-        $rekap = $query->orderBy('tanggal', 'desc')->paginate(15);
-
-        return view('siswa.rekap', compact('rekap', 'Header'));
+    if (!$semesterAktif) {
+        abort(500, 'Semester aktif belum disetting');
     }
+
+    $siswa = $user->siswa;
+
+    $kelasSiswa = $siswa->kelasSiswa()
+        ->where('tahun_ajar_id', $tahunAjarAktif->id)
+        ->first();
+
+    if (!$kelasSiswa) {
+        abort(404, 'Siswa belum terdaftar di kelas tahun ajar aktif');
+    }
+
+    $query = Absensi::where('kelas_siswa_id', $kelasSiswa->id)
+        ->where('semester_id', $semesterAktif->id);
+
+    if ($request->start_date) {
+        $query->whereDate('tanggal', '>=', $request->start_date);
+    }
+
+    if ($request->end_date) {
+        $query->whereDate('tanggal', '<=', $request->end_date);
+    }
+
+    $rekap = $query->orderBy('tanggal', 'desc')->paginate(15);
+
+    return view('siswa.rekap', compact('rekap', 'Header'));
+}
+
 }

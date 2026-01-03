@@ -54,14 +54,22 @@ class AuthSeeder extends Seeder
         }
 
         // ===== AKUN SISWA (SAMPLE LOGIN) =====
-        User::firstOrCreate(
-            ['username' => 'siswa'],
-            [
-                'name' => 'Siswa Demo',
-                'email' => 'siswa@example.com',
-                'password' => bcrypt('password'),
-                'role' => 'siswa',
-            ],
-        );
+        $user = User::firstOrCreate(
+    ['username' => 'siswa'],
+    [
+        'name' => 'Siswa Demo',
+        'email' => 'siswa@example.com',
+        'password' => bcrypt('password'),
+        'role' => 'siswa',
+    ]
+);
+
+// pastikan ada data siswa
+\App\Models\Siswa::firstOrCreate([
+    'user_id' => $user->id,
+], [
+    'NISN' => fake()->unique()->numerify('##########'),
+]);
+
     }
 }

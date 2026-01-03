@@ -12,42 +12,39 @@ class KenaikanKelasSeeder extends Seeder
 {
     public function run(): void
     {
-        $tahun2024 = TahunAjar::where('tahun', '2024/2025')->first();
-        $tahun2025 = TahunAjar::where('tahun', '2025/2026')->first();
+        $tahunLama = TahunAjar::where('tahun', '2024/2025')->first();
+        $tahunBaru = TahunAjar::where('tahun', '2025/2026')->first();
 
-        foreach (['RPL', 'TKJ', 'MM'] as $jurusan) {
-            // X 2024 → XI 2025
-            $this->naikKelas('X', 'XI', $jurusan, $tahun2024, $tahun2025);
+        if (!$tahunLama || !$tahunBaru) return;
 
-            // XI 2024 → XII 2025
-            $this->naikKelas('XI', 'XII', $jurusan, $tahun2024, $tahun2025);
-        }
-    }
+        $map = [
+            'X'  => 'XI',
+            'XI' => 'XII',
+        ];
 
-    private function naikKelas($from, $to, $jurusan, $tahunLama, $tahunBaru)
-    {
-        $kelasLama = Kelas::where([
-            'nama_kelas' => "$from $jurusan 1",
-            'angkatan' => '2024',
-        ])->first();
+        foreach ($map as $from => $to) {
+            $kelasLamaList = Kelas::where('nama_kelas', 'LIKE', "$from %")->get();
 
-        $kelasBaru = Kelas::where([
-            'nama_kelas' => "$to $jurusan 1",
-            'angkatan' => '2025',
-        ])->first();
+            foreach ($kelasLamaList as $kelasLama) {
 
-        if (!$kelasLama || !$kelasBaru) {
-            return;
-        }
+                $kelasBaru = Kelas::where('nama_kelas', str_replace($from, $to, $kelasLama->nama_kelas))
+                    ->first();
 
-        $siswaList = KelasSiswa::where('kelas_id', $kelasLama->id)->where('tahun_ajar_id', $tahunLama->id)->get();
+                if (!$kelasBaru) continue;
 
-        foreach ($siswaList as $item) {
-            KelasSiswa::firstOrCreate([
-                'siswa_id' => $item->siswa_id,
-                'kelas_id' => $kelasBaru->id,
-                'tahun_ajar_id' => $tahunBaru->id,
-            ]);
+                $siswaList = KelasSiswa::where('kelas_id', $kelasLama->id)
+                    ->where('tahun_ajar_id', $tahunLama->id)
+                    ->get();
+
+                foreach ($siswaList as $item) {
+                    KelasSiswa::firstOrCreate([
+                        'siswa_id' => $item->siswa_id,
+                        'kelas_id' => $kelasBaru->id,
+                        'tahun_ajar_id' => $tahunBaru->id,
+                    ]);
+                }
+            }
         }
     }
 }
+

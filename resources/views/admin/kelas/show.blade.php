@@ -8,7 +8,7 @@
             <p class="mt-2 text-lg opacity-90">
                 Tahun Ajar Aktif:
                 <span class="font-semibold">
-                    {{ $tahunAjarAktif->tahun }} ({{ ucfirst($tahunAjarAktif->semester) }})
+                    {{ $tahunAjarAktif->tahun }} ({{ $semesterAktif->name }})
                 </span>
             </p>
         </div>

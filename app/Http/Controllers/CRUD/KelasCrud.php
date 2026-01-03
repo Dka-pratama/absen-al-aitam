@@ -64,7 +64,7 @@ class KelasCrud extends Controller
         $Header = 'Detail Kelas';
         $kelas = Kelas::findOrFail($id);
         $tahunAjarAktif = TahunAjar::where('status', 'aktif')->first();
-
+        $semesterAktif = $tahunAjarAktif->semesterAktif;
         $siswa = KelasSiswa::with('siswa.user')
             ->where('kelas_id', $id)
             ->where('tahun_ajar_id', $tahunAjarAktif->id)
@@ -72,7 +72,7 @@ class KelasCrud extends Controller
 
         $daftarKelas = Kelas::orderBy('nama_kelas')->get(); // untuk dropdown
 
-        return view('admin.kelas.show', compact('Header', 'kelas', 'siswa', 'tahunAjarAktif', 'daftarKelas'));
+        return view('admin.kelas.show', compact('Header', 'kelas', 'siswa', 'tahunAjarAktif', 'semesterAktif', 'daftarKelas'));
     }
 
     public function naikKelas(Request $request, $id)

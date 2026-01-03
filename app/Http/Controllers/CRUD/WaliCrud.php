@@ -26,8 +26,8 @@ class WaliCrud extends Controller
         $data = Wali::with(['user', 'kelas'])
             ->whereHas('user', function ($q) use ($keyword) {
                 $q->where('name', 'like', "%$keyword%")
-                ->orWhere('username', 'like', "%$keyword%")
-                ->orWhere('email', 'like', "%$keyword%");
+                    ->orWhere('username', 'like', "%$keyword%")
+                    ->orWhere('email', 'like', "%$keyword%");
             })
             ->orWhere('NUPTK', 'like', "%$keyword%")
             ->get();

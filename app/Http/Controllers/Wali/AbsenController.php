@@ -63,6 +63,7 @@ class AbsenController extends Controller
 
     public function simpan(Request $request)
     {
+
         $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
         $user = auth()->user();
         $wali = WaliKelas::with('kelas', 'tahunAjar')
@@ -74,21 +75,29 @@ class AbsenController extends Controller
 
         foreach ($request->status as $kelasSiswaId => $status) {
 
-    $absen = Absensi::where('kelas_siswa_id', $kelasSiswaId)
+    // pastikan kelas_siswa ini milik wali & tahun ajar aktif
+    $kelasSiswa = KelasSiswa::where('id', $kelasSiswaId)
+        ->where('kelas_id', $wali->kelas_id)
+        ->where('tahun_ajar_id', $wali->tahun_ajar_id)
+        ->first();
+
+    if (!$kelasSiswa) {
+        continue; // cegah update data nyasar
+    }
+
+    $absen = Absensi::where('kelas_siswa_id', $kelasSiswa->id)
         ->where('tanggal', $tanggal)
         ->where('semester_id', $semesterAktif->id)
         ->first();
 
     if ($absen) {
-        // UPDATE data dari seeder
         $absen->update([
             'status' => $status,
             'keterangan' => $request->keterangan[$kelasSiswaId] ?? null,
         ]);
     } else {
-        // BUAT BARU kalau belum ada
         Absensi::create([
-            'kelas_siswa_id' => $kelasSiswaId,
+            'kelas_siswa_id' => $kelasSiswa->id,
             'semester_id' => $semesterAktif->id,
             'tanggal' => $tanggal,
             'waktu_absen' => now(),
@@ -97,6 +106,7 @@ class AbsenController extends Controller
         ]);
     }
 }
+
 
 
         return back()->with('success', 'Absensi berhasil disimpan!');

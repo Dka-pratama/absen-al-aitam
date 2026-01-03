@@ -135,7 +135,7 @@
 
                                 {{-- important: input name uses siswa id (not kelas_siswa id) --}}
                                 @php
-                                    $inputName = 'status[' . (optional($siswaModel)->id ?? 'unknown') . ']';
+                                    $inputName = 'status[' . $kelasSiswaId . ']';
                                 @endphp
 
                                 <td class="p-2 text-center">

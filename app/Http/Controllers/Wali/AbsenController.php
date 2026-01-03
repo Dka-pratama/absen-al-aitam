@@ -73,18 +73,31 @@ class AbsenController extends Controller
         $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
 
         foreach ($request->status as $kelasSiswaId => $status) {
-            Absensi::updateOrCreate(
-                [
-                    'kelas_siswa_id' => $kelasSiswaId,
-                    'tanggal' => $tanggal,
-                    'semester_id' => $semesterAktif->id,
-                ],
-                [
-                    'status' => $status,
-                    'keterangan' => $request->keterangan[$kelasSiswaId] ?? null,
-                ],
-            );
-        }
+
+    $absen = Absensi::where('kelas_siswa_id', $kelasSiswaId)
+        ->where('tanggal', $tanggal)
+        ->where('semester_id', $semesterAktif->id)
+        ->first();
+
+    if ($absen) {
+        // UPDATE data dari seeder
+        $absen->update([
+            'status' => $status,
+            'keterangan' => $request->keterangan[$kelasSiswaId] ?? null,
+        ]);
+    } else {
+        // BUAT BARU kalau belum ada
+        Absensi::create([
+            'kelas_siswa_id' => $kelasSiswaId,
+            'semester_id' => $semesterAktif->id,
+            'tanggal' => $tanggal,
+            'waktu_absen' => now(),
+            'status' => $status,
+            'keterangan' => $request->keterangan[$kelasSiswaId] ?? null,
+        ]);
+    }
+}
+
 
         return back()->with('success', 'Absensi berhasil disimpan!');
     }

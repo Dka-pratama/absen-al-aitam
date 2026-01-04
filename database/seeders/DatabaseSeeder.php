@@ -13,8 +13,6 @@ class DatabaseSeeder extends Seeder
             KelasSeeder::class,
             AuthSeeder::class,
             SiswaSeeder::class,
-            KenaikanKelasSeeder::class,
-            SiswaBaruSeeder::class,
             AbsensiSeeder::class,
         ]);
     }

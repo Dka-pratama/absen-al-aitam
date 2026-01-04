@@ -13,19 +13,18 @@ class SiswaSeeder extends Seeder
 {
     public function run(): void
     {
-        $tahun = TahunAjar::where('tahun', '2024/2025')->first();
-
-        if (!$tahun) {
-            $this->command->error('Tahun ajar 2024/2025 tidak ditemukan');
+        $tahunAktif = TahunAjar::where('status', 'aktif')->first();
+        if (!$tahunAktif) {
             return;
         }
 
-        $kelasX = Kelas::where('nama_kelas', 'LIKE', 'X %')->get();
+        $kelasList = Kelas::all();
 
-        foreach ($kelasX as $kelas) {
+        foreach ($kelasList as $kelas) {
             for ($i = 0; $i < 30; $i++) {
-                // 🔥 30 siswa per kelas
-                $user = User::factory()->create(['role' => 'siswa']);
+                $user = User::factory()->create([
+                    'role' => 'siswa',
+                ]);
 
                 $siswa = Siswa::create([
                     'user_id' => $user->id,
@@ -35,11 +34,9 @@ class SiswaSeeder extends Seeder
                 KelasSiswa::create([
                     'siswa_id' => $siswa->id,
                     'kelas_id' => $kelas->id,
-                    'tahun_ajar_id' => $tahun->id,
+                    'tahun_ajar_id' => $tahunAktif->id,
                 ]);
             }
         }
-
-        $this->command->info('SiswaSeeder: siswa & kelas_siswa berhasil dibuat');
     }
 }

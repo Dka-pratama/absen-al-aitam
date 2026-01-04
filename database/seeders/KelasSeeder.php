@@ -11,15 +11,10 @@ class KelasSeeder extends Seeder
     {
         foreach (['RPL', 'TKJ', 'MM'] as $jurusan) {
             foreach (['X', 'XI', 'XII'] as $tingkat) {
-                Kelas::firstOrCreate(
-                    [
-                        'nama_kelas' => "$tingkat $jurusan 1",
-                        'jurusan' => $jurusan,
-                    ],
-                    [
-                        'angkatan' => null,
-                    ],
-                );
+                Kelas::firstOrCreate([
+                    'nama_kelas' => "$tingkat $jurusan 1",
+                    'jurusan' => $jurusan,
+                ]);
             }
         }
     }

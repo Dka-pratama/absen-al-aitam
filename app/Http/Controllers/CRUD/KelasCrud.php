@@ -72,7 +72,10 @@ class KelasCrud extends Controller
 
         $daftarKelas = Kelas::orderBy('nama_kelas')->get(); // untuk dropdown
 
-        return view('admin.kelas.show', compact('Header', 'kelas', 'siswa', 'tahunAjarAktif', 'semesterAktif', 'daftarKelas'));
+        return view(
+            'admin.kelas.show',
+            compact('Header', 'kelas', 'siswa', 'tahunAjarAktif', 'semesterAktif', 'daftarKelas'),
+        );
     }
 
     public function naikKelas(Request $request, $id)

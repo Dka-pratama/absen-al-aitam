@@ -7,9 +7,7 @@
             <h1 class="text-3xl font-bold">{{ $kelas->nama_kelas }}</h1>
             <p class="mt-2 text-lg opacity-90">
                 Tahun Ajar Aktif:
-                <span class="font-semibold">
-                    {{ $tahunAjarAktif->tahun }} ({{ $semesterAktif->name }})
-                </span>
+                <span class="font-semibold">{{ $tahunAjarAktif->tahun }} ({{ $semesterAktif->name }})</span>
             </p>
         </div>
 

@@ -63,7 +63,6 @@ class AbsenController extends Controller
 
     public function simpan(Request $request)
     {
-
         $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
         $user = auth()->user();
         $wali = WaliKelas::with('kelas', 'tahunAjar')
@@ -74,40 +73,37 @@ class AbsenController extends Controller
         $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
 
         foreach ($request->status as $kelasSiswaId => $status) {
+            // pastikan kelas_siswa ini milik wali & tahun ajar aktif
+            $kelasSiswa = KelasSiswa::where('id', $kelasSiswaId)
+                ->where('kelas_id', $wali->kelas_id)
+                ->where('tahun_ajar_id', $wali->tahun_ajar_id)
+                ->first();
 
-    // pastikan kelas_siswa ini milik wali & tahun ajar aktif
-    $kelasSiswa = KelasSiswa::where('id', $kelasSiswaId)
-        ->where('kelas_id', $wali->kelas_id)
-        ->where('tahun_ajar_id', $wali->tahun_ajar_id)
-        ->first();
+            if (!$kelasSiswa) {
+                continue; // cegah update data nyasar
+            }
 
-    if (!$kelasSiswa) {
-        continue; // cegah update data nyasar
-    }
+            $absen = Absensi::where('kelas_siswa_id', $kelasSiswa->id)
+                ->where('tanggal', $tanggal)
+                ->where('semester_id', $semesterAktif->id)
+                ->first();
 
-    $absen = Absensi::where('kelas_siswa_id', $kelasSiswa->id)
-        ->where('tanggal', $tanggal)
-        ->where('semester_id', $semesterAktif->id)
-        ->first();
-
-    if ($absen) {
-        $absen->update([
-            'status' => $status,
-            'keterangan' => $request->keterangan[$kelasSiswaId] ?? null,
-        ]);
-    } else {
-        Absensi::create([
-            'kelas_siswa_id' => $kelasSiswa->id,
-            'semester_id' => $semesterAktif->id,
-            'tanggal' => $tanggal,
-            'waktu_absen' => now(),
-            'status' => $status,
-            'keterangan' => $request->keterangan[$kelasSiswaId] ?? null,
-        ]);
-    }
-}
-
-
+            if ($absen) {
+                $absen->update([
+                    'status' => $status,
+                    'keterangan' => $request->keterangan[$kelasSiswaId] ?? null,
+                ]);
+            } else {
+                Absensi::create([
+                    'kelas_siswa_id' => $kelasSiswa->id,
+                    'semester_id' => $semesterAktif->id,
+                    'tanggal' => $tanggal,
+                    'waktu_absen' => now(),
+                    'status' => $status,
+                    'keterangan' => $request->keterangan[$kelasSiswaId] ?? null,
+                ]);
+            }
+        }
 
         return back()->with('success', 'Absensi berhasil disimpan!');
     }

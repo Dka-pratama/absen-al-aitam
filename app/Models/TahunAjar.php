@@ -21,7 +21,7 @@ class TahunAjar extends Model
         return $this->hasMany(Semester::class);
     }
 
-     public function semesterAktif()
+    public function semesterAktif()
     {
         return $this->hasOne(Semester::class)->where('status', 'aktif');
     }

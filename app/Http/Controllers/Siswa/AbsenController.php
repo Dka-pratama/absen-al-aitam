@@ -6,27 +6,46 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Absensi;
 use App\Models\KelasSiswa;
-use Illuminate\Support\Facades\Cache;
 use App\Models\Semester;
+use App\Models\QrToken;
+use Illuminate\Support\Facades\Cache;
+use Carbon\Carbon;
 
 class AbsenController extends Controller
 {
     public function absen(Request $request)
     {
+        // Semester aktif
         $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
-        $payload = json_decode($request->input('data'), true);
 
-        if (!$payload) {
+        // Ambil token dari hasil scan QR
+        $token = $request->input('token');
+
+        if (!$token) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'QR Code tidak valid.',
+                'message' => 'Token QR tidak ditemukan.',
             ]);
         }
 
-        $tanggal = $payload['tanggal'];
-        $kelasId = $payload['kelas_id'];
-        $tahunAjarId = $payload['tahun_ajar_id'];
+        // Cari token & pastikan belum expired
+        $qrToken = QrToken::where('token', $token)
+            ->where('expired_at', '>', now())
+            ->first();
 
+        if (!$qrToken) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'QR Code tidak valid atau sudah kedaluwarsa.',
+            ]);
+        }
+
+        // Ambil data dari token
+        $kelasId = $qrToken->kelas_id;
+        $tahunAjarId = $qrToken->tahun_ajar_id;
+        $tanggal = Carbon::today()->toDateString();
+
+        // Ambil siswa dari user login
         $siswa = \App\Models\Siswa::where('user_id', auth()->id())->first();
 
         if (!$siswa) {
@@ -36,6 +55,7 @@ class AbsenController extends Controller
             ]);
         }
 
+        // Validasi siswa terdaftar di kelas tsb
         $kelasSiswa = KelasSiswa::where('siswa_id', $siswa->id)
             ->where('kelas_id', $kelasId)
             ->where('tahun_ajar_id', $tahunAjarId)
@@ -48,8 +68,10 @@ class AbsenController extends Controller
             ]);
         }
 
-        // Cek sudah absen
-        $cek = Absensi::whereDate('tanggal', $tanggal)->where('kelas_siswa_id', $kelasSiswa->id)->first();
+        // Cek apakah sudah absen hari ini
+        $cek = Absensi::where('kelas_siswa_id', $kelasSiswa->id)
+            ->whereDate('tanggal', $tanggal)
+            ->first();
 
         if ($cek) {
             return response()->json([
@@ -58,19 +80,25 @@ class AbsenController extends Controller
             ]);
         }
 
+        // Simpan absensi
         Absensi::create([
             'kelas_siswa_id' => $kelasSiswa->id,
             'tanggal' => $tanggal,
             'semester_id' => $semesterAktif->id,
             'status' => 'hadir',
             'method' => 'scan',
+            'waktu_absen' => now()->format('H:i:s'),
+            'keterangan' => null,
         ]);
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Absensi berhasil dicatat!',
+            'message' => 'Absensi berhasil dicatat.',
         ]);
     }
+
+    /* ================= ABSEN MANDIRI (TIDAK DIUBAH) ================= */
+
     public function absenMandiri(Request $request)
     {
         $user = auth()->user();
@@ -84,40 +112,42 @@ class AbsenController extends Controller
 
         $key = 'absensi_mandiri_kelas_' . $kelasSiswa->kelas_id;
 
-        // cek apakah wali kelas mengaktifkan
         if (!Cache::get($key, false)) {
             return back()->with('error', 'Absensi mandiri belum diaktifkan.');
         }
 
-        // Validasi GPS
         if (!$request->lat || !$request->lng) {
             return back()->with('error', 'GPS tidak ditemukan.');
         }
 
-        // Lokasi sekolah
         $latSekolah = -6.946701355942461;
         $lngSekolah = 107.59382239956506;
-        $radius = 70; // meter
+        $radius = 70;
 
-        $jarak = $this->hitungJarak($request->lat, $request->lng, $latSekolah, $lngSekolah);
+        $jarak = $this->hitungJarak(
+            $request->lat,
+            $request->lng,
+            $latSekolah,
+            $lngSekolah
+        );
 
         if ($jarak > $radius) {
             return back()->with('error', 'Anda berada di luar area sekolah.');
         }
 
-        // Cek sudah absen hari ini atau belum
+        $tanggal = Carbon::today()->toDateString();
+
         $cek = Absensi::where('kelas_siswa_id', $kelasSiswa->id)
-            ->whereDate('tanggal', now()->toDateString())
+            ->whereDate('tanggal', $tanggal)
             ->first();
 
         if ($cek) {
             return back()->with('error', 'Anda sudah melakukan absensi hari ini.');
         }
 
-        // Simpan absensi
         Absensi::create([
             'kelas_siswa_id' => $kelasSiswa->id,
-            'tanggal' => now()->toDateString(),
+            'tanggal' => $tanggal,
             'semester_id' => $semesterAktif->id,
             'status' => 'hadir',
             'method' => 'mandiri',
@@ -136,9 +166,9 @@ class AbsenController extends Controller
         $dLat = deg2rad($lat2 - $lat1);
         $dLng = deg2rad($lng2 - $lng1);
 
-        $a =
-            sin($dLat / 2) * sin($dLat / 2) +
-            cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLng / 2) * sin($dLng / 2);
+        $a = sin($dLat / 2) * sin($dLat / 2) +
+            cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+            sin($dLng / 2) * sin($dLng / 2);
 
         $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
 

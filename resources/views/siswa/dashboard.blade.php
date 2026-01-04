@@ -171,27 +171,39 @@
                 },
 
                 onSuccess(token) {
-                    this.stopScanner();
+    this.stopScanner();
 
-                    fetch('{{ route('siswa.scan') }}', {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            token,
-                        }),
-                    }).then((result) => {
-                        Swal.fire({
-                            icon: result.status ? 'success' : 'error',
-                            title: result.status ? 'Berhasil' : 'Gagal',
-                            text: result.msg,
-                            confirmButtonText: 'OK',
-                        });
-                        this.show = false;
-                    });
-                },
+    fetch('{{ route('siswa.scan') }}', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token }),
+    })
+        .then(res => res.json())
+        .then(data => {
+            Swal.fire({
+                icon: data.status === 'success' ? 'success' : 'error',
+                title: data.status === 'success' ? 'Berhasil' : 'Gagal',
+                text: data.message,
+                confirmButtonText: 'OK',
+            }).then(() => {
+                if (data.status === 'success') {
+                    location.reload(); // refresh biar status & rekap update
+                }
+            });
+
+            this.show = false;
+        })
+        .catch(() => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Gagal menghubungi server.',
+            });
+        });
+},
 
                 stopScanner() {
                     if (this.qrScanner) {

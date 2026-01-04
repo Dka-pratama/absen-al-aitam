@@ -32,6 +32,7 @@ class ScanController extends Controller
             return response()->json(['status' => 'error', 'msg' => 'Anda bukan siswa kelas ini'], 403);
         }
 
+        
         // Tandai hadir
         Absensi::updateOrCreate(
             [

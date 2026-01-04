@@ -84,6 +84,14 @@ class AbsenController extends Controller
                 );
             }
 
+
+            if (!$semesterAktif) {
+    return response()->json([
+        'status' => 'error',
+        'msg' => 'Semester aktif tidak ditemukan'
+    ], 500);
+}
+
             Absensi::create([
                 'kelas_siswa_id' => $kelasSiswa->id,
                 'tanggal' => $tanggal,

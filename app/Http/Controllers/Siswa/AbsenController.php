@@ -14,21 +14,19 @@ use Carbon\Carbon;
 class AbsenController extends Controller
 {
     public function absen(Request $request)
-    {
-        // Semester aktif
+{
+    try {
         $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
 
-        // Ambil token dari hasil scan QR
         $token = $request->input('token');
 
         if (!$token) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Token QR tidak ditemukan.',
-            ]);
+                'message' => 'Token tidak dikirim.',
+            ], 400);
         }
 
-        // Cari token & pastikan belum expired
         $qrToken = QrToken::where('token', $token)
             ->where('expired_at', '>', now())
             ->first();
@@ -37,38 +35,31 @@ class AbsenController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'QR Code tidak valid atau sudah kedaluwarsa.',
-            ]);
+            ], 400);
         }
 
-        // Ambil data dari token
-        $kelasId = $qrToken->kelas_id;
-        $tahunAjarId = $qrToken->tahun_ajar_id;
-        $tanggal = Carbon::today()->toDateString();
-
-        // Ambil siswa dari user login
         $siswa = \App\Models\Siswa::where('user_id', auth()->id())->first();
-
         if (!$siswa) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Siswa tidak ditemukan.',
-            ]);
+                'message' => 'Akun siswa tidak ditemukan.',
+            ], 404);
         }
 
-        // Validasi siswa terdaftar di kelas tsb
         $kelasSiswa = KelasSiswa::where('siswa_id', $siswa->id)
-            ->where('kelas_id', $kelasId)
-            ->where('tahun_ajar_id', $tahunAjarId)
+            ->where('kelas_id', $qrToken->kelas_id)
+            ->where('tahun_ajar_id', $qrToken->tahun_ajar_id)
             ->first();
 
         if (!$kelasSiswa) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Anda tidak terdaftar pada kelas ini.',
-            ]);
+                'message' => 'Anda tidak terdaftar di kelas ini.',
+            ], 403);
         }
 
-        // Cek apakah sudah absen hari ini
+        $tanggal = now()->toDateString();
+
         $cek = Absensi::where('kelas_siswa_id', $kelasSiswa->id)
             ->whereDate('tanggal', $tanggal)
             ->first();
@@ -77,10 +68,9 @@ class AbsenController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Anda sudah absen hari ini.',
-            ]);
+            ], 409);
         }
 
-        // Simpan absensi
         Absensi::create([
             'kelas_siswa_id' => $kelasSiswa->id,
             'tanggal' => $tanggal,
@@ -88,14 +78,20 @@ class AbsenController extends Controller
             'status' => 'hadir',
             'method' => 'scan',
             'waktu_absen' => now()->format('H:i:s'),
-            'keterangan' => null,
         ]);
 
         return response()->json([
             'status' => 'success',
             'message' => 'Absensi berhasil dicatat.',
         ]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage(),
+        ], 500);
     }
+}
+
 
     /* ================= ABSEN MANDIRI (TIDAK DIUBAH) ================= */
 

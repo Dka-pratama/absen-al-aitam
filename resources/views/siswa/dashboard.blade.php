@@ -175,34 +175,55 @@
 
     fetch('{{ route('siswa.scan') }}', {
         method: 'POST',
+        credentials: 'same-origin',
         headers: {
             'X-CSRF-TOKEN': '{{ csrf_token() }}',
             'Content-Type': 'application/json',
+            'Accept': 'application/json', // ⬅️ PENTING
         },
         body: JSON.stringify({ token }),
     })
-        .then(res => res.json())
-        .then(data => {
-            Swal.fire({
-                icon: data.status === 'success' ? 'success' : 'error',
-                title: data.status === 'success' ? 'Berhasil' : 'Gagal',
-                text: data.message,
-                confirmButtonText: 'OK',
-            }).then(() => {
-                if (data.status === 'success') {
-                    location.reload(); // refresh biar status & rekap update
-                }
-            });
+    .then(async res => {
+        let data;
 
-            this.show = false;
-        })
-        .catch(() => {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Gagal menghubungi server.',
-            });
+        try {
+            data = await res.json();
+        } catch (e) {
+            // kalau response bukan JSON
+            throw {
+                status: res.status,
+                text: await res.text()
+            };
+        }
+
+        if (!res.ok) {
+            throw data;
+        }
+
+        Swal.fire({
+            icon: data.status === 'success' ? 'success' : 'error',
+            title: data.status === 'success' ? 'Berhasil' : 'Gagal',
+            text: data.message ?? 'Terjadi kesalahan.',
+        }).then(() => {
+            if (data.status === 'success') {
+                location.reload();
+            }
         });
+
+        this.show = false;
+    })
+    .catch(err => {
+        console.error('SCAN ERROR:', err);
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text:
+                err?.message ||
+                err?.error ||
+                'Server tidak mengirim pesan kesalahan.',
+        });
+    });
 },
 
                 stopScanner() {

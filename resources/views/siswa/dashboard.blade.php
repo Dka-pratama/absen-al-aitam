@@ -175,10 +175,9 @@
 
     fetch('{{ route('siswa.scan') }}', {
         method: 'POST',
-        credentials: 'same-origin', // ⬅️ PALING PENTING
         headers: {
             'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            'Accept': 'application/json',
+            'Content-Type': 'application/json',
         },
         body: JSON.stringify({ token }),
     })
@@ -188,19 +187,19 @@
             icon: data.status === 'success' ? 'success' : 'error',
             title: data.status === 'success' ? 'Berhasil' : 'Gagal',
             text: data.message,
-        }).then(() => {
-            if (data.status === 'success') {
-                location.reload();
-            }
         });
+
+        if (data.status === 'success') {
+            location.reload();
+        }
 
         this.show = false;
     })
     .catch(() => {
         Swal.fire({
             icon: 'error',
-            title: 'Gagal',
-            text: 'Session habis atau CSRF ditolak.',
+            title: 'Error',
+            text: 'Gagal terhubung ke server',
         });
     });
 },

@@ -28,8 +28,9 @@ class AbsenController extends Controller
         }
 
         $qrToken = QrToken::where('token', $token)
-            ->where('expired_at', '>', now())
-            ->first();
+    ->where('expired_at', '>', now()->subSeconds(10))
+    ->first();
+
 
         if (!$qrToken) {
             return response()->json([
@@ -91,9 +92,6 @@ class AbsenController extends Controller
         ], 500);
     }
 }
-
-
-    /* ================= ABSEN MANDIRI (TIDAK DIUBAH) ================= */
 
     public function absenMandiri(Request $request)
     {

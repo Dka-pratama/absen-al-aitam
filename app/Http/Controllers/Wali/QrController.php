@@ -17,7 +17,7 @@ class QrController extends Controller
         $tahunAjarId = $request->tahun_ajar_id;
 
         // Hapus token lama yg expired
-        QrToken::where('expired_at', '<', now())->delete();
+        QrToken::where('expired_at', '<', now()->subSecond())->delete();
 
         // Buat token acak
         $token = bin2hex(random_bytes(16));

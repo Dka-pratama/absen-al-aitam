@@ -171,38 +171,40 @@
                 },
 
                 onSuccess(token) {
-                    this.stopScanner();
+    this.stopScanner();
 
-                    fetch('{{ route('siswa.scan') }}', {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ token }),
-                    })
-                        .then((res) => res.json())
-                        .then((data) => {
-                            Swal.fire({
-                                icon: data.status === 'success' ? 'success' : 'error',
-                                title: data.status === 'success' ? 'Berhasil' : 'Gagal',
-                                text: data.message,
-                            });
+    fetch('{{ route('siswa.scan') }}', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token }),
+    })
+    .then(res => res.json())
+    .then(data => {
+        Swal.fire({
+            icon: data.status === 'success' ? 'success' : 'error',
+            title: data.status === 'success' ? 'Berhasil' : 'Gagal',
+            text: data.message,
+        }).then(() => {
+            if (data.status === 'success') {
+                window.location.reload();
+            }
+        });
+    })
+    .catch(err => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Gagal menghubungi server',
+        });
+        console.error(err);
+    });
 
-                            if (data.status === 'success') {
-                                location.reload();
-                            }
-
-                            this.show = false;
-                        })
-                        .catch(() => {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: 'Gagal terhubung ke server',
-                            });
-                        });
-                },
+    this.show = false;
+},
 
                 stopScanner() {
                     if (this.qrScanner) {

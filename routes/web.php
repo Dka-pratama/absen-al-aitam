@@ -14,7 +14,6 @@ use App\Http\Controllers\Wali\{
     QrController,
     ProfileWaliController,
 };
-use App\Http\Controllers\Siswa\ScanController;
 use App\Http\Controllers\CRUD\{AbsensiCrud, KelasCrud, SiswaCrud, TahunCrud, WaliCrud};
 
 Route::get('/', function () {
@@ -107,7 +106,7 @@ Route::middleware(['auth', 'role:siswa'])
         Route::get('dashboard', [DashboardSiswaController::class, 'index'])->name('siswa.dashboard');
         Route::get('rekap', [DashboardSiswaController::class, 'rekap'])->name('siswa.rekap');
         Route::post('/absen', [App\Http\Controllers\Siswa\AbsenController::class, 'absen'])->name('siswa.absen');
-        Route::post('/scan', [ScanController::class, 'scan'])->name('siswa.scan');
+        Route::post('/scan', [AbsenController::class, 'absen'])->name('siswa.scan');
         Route::post('/absen-mandiri', [App\Http\Controllers\Siswa\AbsenController::class, 'absenMandiri'])->name(
             'siswa.absenMandiri',
         );

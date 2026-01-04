@@ -10,13 +10,18 @@ use App\Models\Semester;
 use App\Models\QrToken;
 use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
+use App\Models\TahunAjar;
 
 class AbsenController extends Controller
 {
     public function absen(Request $request)
     {
         try {
-            $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
+            $tahunAktif = TahunAjar::where('status', 'aktif')->first();
+
+$semesterAktif = Semester::where('tahun_ajar_id', $tahunAktif->id)
+    ->where('status', 'aktif')
+    ->first();
 
             $token = $request->input('token');
 

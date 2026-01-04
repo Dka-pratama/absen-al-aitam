@@ -35,7 +35,7 @@ class AbsensiSeeder extends Seeder
     $days = 30;
 
     foreach ($kelasSiswaList as $kelasSiswa) {
-        for ($i = 0; $i < $days; $i++) {
+        for ($i = 1; $i < $days; $i++) {
             $tanggal = Carbon::today()->subDays($i)->format('Y-m-d');
 
             $exists = Absensi::where('kelas_siswa_id', $kelasSiswa->id)

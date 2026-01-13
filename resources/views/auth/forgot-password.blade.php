@@ -7,10 +7,27 @@
         <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}" />
         <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}" />
         <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('favicon-96x96.png') }}" />
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         @vite('resources/css/app.css')
     </head>
 
     <body class="flex min-h-screen items-center justify-center bg-gray-100 p-4">
+                {{-- TOAST CONTAINER --}}
+        @if (session('success'))
+            <x-alert type="success" :message="session('success')" />
+        @endif
+
+        @if (session('error'))
+            <x-alert type="danger" :message="session('error')" />
+        @endif
+
+        @if (session('info'))
+            <x-alert type="info" :message="session('info')" />
+        @endif
+
+        @if ($errors->any())
+            <x-alert type="danger" :message="$errors->first()" />
+        @endif
         <div class="w-full max-w-md rounded-xl bg-white p-8 shadow-lg">
             <h2 class="mb-2 text-center text-2xl font-bold text-gray-900">Forgot Password</h2>
             <p class="mb-6 text-center text-sm text-gray-600">Masukan email anda</p>
@@ -49,5 +66,13 @@
                 <a href="{{ route('login') }}" class="font-medium text-indigo-600 hover:text-indigo-500">Log in</a>
             </div>
         </div>
+        <script src="{{ asset('js/Sweet-Alert.js') }}"></script>
+        <!-- Alpine JS -->
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.15.0/cdn.js"
+            integrity="sha512-nHfCQtLDRfNgzsuMx2O2Joo3+xM8antMOBxo9GodZry1h33+lWa2Dd3a/lkVY4fHJK1CAkFcUrz2jilsaZFWeQ=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        ></script>
     </body>
 </html>

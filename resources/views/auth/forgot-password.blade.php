@@ -12,7 +12,7 @@
     </head>
 
     <body class="flex min-h-screen items-center justify-center bg-gray-100 p-4">
-                {{-- TOAST CONTAINER --}}
+        {{-- TOAST CONTAINER --}}
         @if (session('success'))
             <x-alert type="success" :message="session('success')" />
         @endif
@@ -28,6 +28,7 @@
         @if ($errors->any())
             <x-alert type="danger" :message="$errors->first()" />
         @endif
+
         <div class="w-full max-w-md rounded-xl bg-white p-8 shadow-lg">
             <h2 class="mb-2 text-center text-2xl font-bold text-gray-900">Forgot Password</h2>
             <p class="mb-6 text-center text-sm text-gray-600">Masukan email anda</p>

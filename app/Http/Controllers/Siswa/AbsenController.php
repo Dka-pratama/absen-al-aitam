@@ -19,9 +19,7 @@ class AbsenController extends Controller
         try {
             $tahunAktif = TahunAjar::where('status', 'aktif')->first();
 
-$semesterAktif = Semester::where('tahun_ajar_id', $tahunAktif->id)
-    ->where('status', 'aktif')
-    ->first();
+            $semesterAktif = Semester::where('tahun_ajar_id', $tahunAktif->id)->where('status', 'aktif')->first();
 
             $token = $request->input('token');
 
@@ -89,13 +87,15 @@ $semesterAktif = Semester::where('tahun_ajar_id', $tahunAktif->id)
                 );
             }
 
-
             if (!$semesterAktif) {
-    return response()->json([
-        'status' => 'error',
-        'msg' => 'Semester aktif tidak ditemukan'
-    ], 500);
-}
+                return response()->json(
+                    [
+                        'status' => 'error',
+                        'msg' => 'Semester aktif tidak ditemukan',
+                    ],
+                    500,
+                );
+            }
 
             Absensi::create([
                 'kelas_siswa_id' => $kelasSiswa->id,
@@ -132,25 +132,33 @@ $semesterAktif = Semester::where('tahun_ajar_id', $tahunAktif->id)
             return back()->with('error', 'Data kelas siswa tidak ditemukan.');
         }
 
-        $key = 'absensi_mandiri_kelas_' . $kelasSiswa->kelas_id;
+        $kelasId = $kelasSiswa->kelas_id;
 
-        if (!Cache::get($key, false)) {
+        $globalAktif = Cache::get('absensi_mandiri_global', false);
+        $kelasAktif = Cache::get('absensi_mandiri_kelas_' . $kelasId, false);
+
+        if (!$globalAktif && !$kelasAktif) {
             return back()->with('error', 'Absensi mandiri belum diaktifkan.');
         }
 
         if (!$request->lat || !$request->lng) {
             return back()->with('error', 'GPS tidak ditemukan.');
         }
-
-        $latSekolah = -6.946701355942461;
-        $lngSekolah = 107.59382239956506;
-        $radius = 70;
+        // -6.9443854010929815, 107.58977839651386
+        $latSekolah = -6.9443854010929815;
+        $lngSekolah = 107.58977839651386;
+        $radius = 1000;
 
         $jarak = $this->hitungJarak($request->lat, $request->lng, $latSekolah, $lngSekolah);
 
-        if ($jarak > $radius) {
-            return back()->with('error', 'Anda berada di luar area sekolah.');
-        }
+        $manualByAdmin = Cache::get('absensi_manual_admin', false);
+
+if (!$manualByAdmin) {
+    if ($jarak > $radius) {
+        return back()->with('error', 'Anda berada di luar area sekolah.');
+    }
+}
+
 
         $tanggal = Carbon::today()->toDateString();
 

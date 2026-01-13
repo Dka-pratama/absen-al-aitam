@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Siswa\DashboardSiswaController;
 use App\Http\Controllers\Admin\PromosiKelasController;
+use App\Http\Controllers\Admin\AbsensiController as AdminAbsensiController;
 use App\Http\Controllers\Wali\{
     DashboardWaliController,
     SiswaController,
@@ -14,7 +15,7 @@ use App\Http\Controllers\Wali\{
     QrController,
     ProfileWaliController,
 };
-use App\Http\Controllers\CRUD\{AbsensiCrud, KelasCrud, SiswaCrud, TahunCrud, WaliCrud};
+use App\Http\Controllers\CRUD\{LaporanCrud, KelasCrud, SiswaCrud, TahunCrud, WaliCrud};
 
 Route::get('/', function () {
     if (auth()->check()) {
@@ -49,10 +50,10 @@ Route::middleware(['auth', 'role:admin'])
         Route::post('tahun/{id}/activate', [TahunCrud::class, 'activate'])->name('tahun.activate');
         Route::post('tahun/{id}/deactivate', [TahunCrud::class, 'deactivate'])->name('tahun.deactivate');
 
-        Route::resource('absen', AbsensiCrud::class);
+        Route::resource('absen', LaporanCrud::class);
         Route::prefix('absen')->group(function () {
-            Route::get('{id}/export-excel', [AbsensiCrud::class, 'exportExcel'])->name('absen.export.excel');
-            Route::get('{id}/export-pdf', [AbsensiCrud::class, 'exportPDF'])->name('absen.export.pdf');
+            Route::get('{id}/export-excel', [LaporanCrud::class, 'exportExcel'])->name('absen.export.excel');
+            Route::get('{id}/export-pdf', [LaporanCrud::class, 'exportPDF'])->name('absen.export.pdf');
         });
         Route::get('/naik-kelas', [PromosiKelasController::class, 'index'])->name('promosi.index');
         Route::post('/naik-kelas', [PromosiKelasController::class, 'store'])->name('promosi.store');
@@ -63,6 +64,19 @@ Route::middleware(['auth', 'role:admin'])
         Route::post('profile/password', [ProfileController::class, 'changePassword'])->name(
             'admin.profile.password.update',
         );
+        Route::get('/absensi/manual', [AdminAbsensiController::class, 'index'])->name(
+            'admin.absensi.manual',
+        );
+         Route::post('/absensi/manual', [AdminAbsensiController::class, 'simpan'])
+        ->name('admin.absensi.manual.simpan');
+        Route::post('/absensi-mandiri/toggle-global', [
+            AdminAbsensiController::class,
+            'toggleAbsensiMandiriGlobal',
+        ])->name('admin.absensi.mandiri.global');
+        Route::get('absensi-search', [AdminAbsensiController::class, 'search'])
+    ->name('admin.absensi.search');
+
+
     });
 
 // ========== WALI ==========

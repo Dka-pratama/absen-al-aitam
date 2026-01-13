@@ -41,7 +41,7 @@ class AuthSeeder extends Seeder
                 );
 
                 WaliKelas::firstOrCreate(
-                    [
+                    [   
                         'user_id' => $user->id,
                         'kelas_id' => $kelas->id,
                         'tahun_ajar_id' => $tahunAktif->id,

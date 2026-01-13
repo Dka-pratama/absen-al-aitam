@@ -8,7 +8,7 @@ use App\Models\Absensi;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
 
-class AbsensiCrud extends Controller
+class LaporanCrud extends Controller
 {
     public function index(Request $request)
     {
@@ -56,7 +56,7 @@ class AbsensiCrud extends Controller
         $tahunAjar = \App\Models\TahunAjar::all();
         $semester = \App\Models\Semester::all();
 
-        return view('admin.absensi.index', compact('absensi', 'kelas', 'tahunAjar', 'semester', 'Header'));
+        return view('admin.laporan.index', compact('absensi', 'kelas', 'tahunAjar', 'semester', 'Header'));
     }
 
     private function getAbsensiFullData($id)

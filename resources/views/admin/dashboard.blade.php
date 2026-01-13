@@ -3,7 +3,7 @@
 @section('content')
     <div class="p-2 sm:p-4 md:p-6 lg:p-8">
         <!-- CARD WRAPPER -->
-        <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <div class="mb-4 grid grid-cols-2 gap-4 md:grid-cols-4">
             @php
                 $cards = [
                     [
@@ -53,11 +53,8 @@
                 </div>
             @endforeach
         </div>
-
-        <!-- CHART TITLE -->
+        <!-- CHART LOGIN PER JAM -->
         <h2 class="mb-6 mt-6 text-xl font-semibold">Aktivitas web per jam</h2>
-
-        <!-- CHART BOX -->
         <div class="w-full max-w-full overflow-x-auto rounded-xl border bg-white p-6 shadow">
             <div class="relative h-96 w-full overflow-x-hidden">
                 <canvas id="loginChart" class="max-w-full"></canvas>

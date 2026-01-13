@@ -2,7 +2,6 @@
 
 @section('content')
     <div class="p-6">
-        {{-- SEARCH + BUTTON --}}
         <div class="mb-4 flex items-center justify-between">
             {{-- Search --}}
 

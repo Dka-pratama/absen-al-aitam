@@ -24,26 +24,24 @@ class PasswordResetLinkController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request): RedirectResponse
-{
-    $request->validate([
-        'email' => ['required', 'email', 'exists:users,email'],
-    ]);
-
-    $status = Password::sendResetLink(
-        $request->only('email')
-    );
-
-    if ($status === Password::RESET_LINK_SENT) {
-        return back()->with('success', 
-            '📧 Email reset password berhasil dikirim. Silakan cek inbox atau folder spam.'
-        );
-    }
-
-    return back()
-        ->withInput($request->only('email'))
-        ->withErrors([
-            'email' => '❌ Gagal mengirim email reset password. Silakan coba lagi.'
+    {
+        $request->validate([
+            'email' => ['required', 'email', 'exists:users,email'],
         ]);
-}
 
+        $status = Password::sendResetLink($request->only('email'));
+
+        if ($status === Password::RESET_LINK_SENT) {
+            return back()->with(
+                'success',
+                '📧 Email reset password berhasil dikirim. Silakan cek inbox atau folder spam.',
+            );
+        }
+
+        return back()
+            ->withInput($request->only('email'))
+            ->withErrors([
+                'email' => '❌ Gagal mengirim email reset password. Silakan coba lagi.',
+            ]);
+    }
 }

@@ -1,85 +1,91 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="p-6">
-        <div class="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <form
-                method="GET"
-                action="{{ route('absen.index') }}"
-                class="flex w-full flex-col gap-4 rounded-lg bg-white p-4 shadow md:flex-row md:items-end"
-            >
-                {{-- Grid Input --}}
-                <div class="grid w-full grid-cols-1 gap-4 md:grid-cols-4">
-                    {{-- Filter Tanggal --}}
-                    <div class="flex flex-col">
-                        <label class="mb-1 text-sm font-semibold">Tanggal</label>
-                        <input
-                            type="date"
-                            name="tanggal"
-                            value="{{ request('tanggal') }}"
-                            class="rounded-lg border px-3 py-2 focus:ring focus:ring-blue-200"
-                        />
-                    </div>
+<div class="p-6">
+            
+        {{-- Button aktif, Non-aktif --}}
+        @php
+            use Illuminate\Support\Facades\Cache;
+            $absensiGlobal = Cache::get('absensi_mandiri_global', false);
+        @endphp
 
-                    {{-- Filter Kelas --}}
-                    <div class="flex flex-col">
-                        <label class="mb-1 text-sm font-semibold">Kelas</label>
-                        <select name="kelas_id" class="rounded-lg border px-3 py-2 focus:ring focus:ring-blue-200">
-                            <option value="">Semua Kelas</option>
-                            @foreach ($kelas as $k)
-                                <option value="{{ $k->id }}" {{ request('kelas_id') == $k->id ? 'selected' : '' }}>
-                                    {{ $k->nama_kelas }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+        <div class="mb-6 rounded-lg bg-white p-4 shadow">
+            <h3 class="mb-2 text-lg font-semibold">Absensi Mandiri Global</h3>
 
-                    {{-- Filter Tahun Ajar --}}
-                    <div class="flex flex-col">
-                        <label class="mb-1 text-sm font-semibold">Tahun Ajar</label>
-                        <select name="tahun_ajar_id" class="rounded-lg border px-3 py-2 focus:ring focus:ring-blue-200">
-                            <option value="">Semua Tahun</option>
-                            @foreach ($tahunAjar as $t)
-                                <option
-                                    value="{{ $t->id }}"
-                                    {{ request('tahun_ajar_id') == $t->id ? 'selected' : '' }}
-                                >
-                                    {{ $t->tahun }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="flex flex-col">
-                        <label class="mb-1 text-sm font-semibold">Tahun Ajar</label>
-                        <select name="tahun_ajar_id" class="rounded-lg border px-3 py-2 focus:ring focus:ring-blue-200">
-                            <option value="">Semua Semester</option>
-                            @foreach ($semester as $t)
-                                <option
-                                    value="{{ $t->id }}"
-                                    {{ request('tahun_ajar_id') == $t->id ? 'selected' : '' }}
-                                >
-                                    {{ $t->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
+            <p class="mb-3">
+                Status:
+                @if ($absensiGlobal)
+                    <span class="font-bold text-green-600">AKTIF</span>
+                @else
+                    <span class="font-bold text-red-600">NON-AKTIF</span>
+                @endif
+            </p>
 
-                {{-- Tombol Aksi --}}
-                <div class="flex flex-row gap-2 md:ml-2">
-                    {{-- Tombol Filter --}}
-                    <button class="rounded-lg bg-blue-600 px-4 py-2 text-white shadow hover:bg-blue-700">Filter</button>
-
-                    {{-- Tombol Reset --}}
-                    <a
-                        href="{{ route('absen.index') }}"
-                        class="rounded-lg bg-gray-300 px-4 py-2 text-gray-800 shadow hover:bg-gray-400"
-                    >
-                        Reset
-                    </a>
-                </div>
+            <form method="POST" action="{{ route('admin.absensi.mandiri.global') }}">
+                @csrf
+                <button class="{{ $absensiGlobal ? 'bg-red-600' : 'bg-green-600' }} rounded px-4 py-2 text-white">
+                    {{ $absensiGlobal ? 'NONAKTIFKAN' : 'AKTIFKAN' }}
+                </button>
             </form>
         </div>
+    <div class="mb-4 flex items-center justify-between">
+            <form class="form relative">
+                <button type="button" class="absolute left-2 top-1/2 -translate-y-1/2 p-1">
+                    <svg
+                        width="17"
+                        height="16"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        role="img"
+                        aria-labelledby="search"
+                        class="h-5 w-5 text-gray-700"
+                    >
+                        <path
+                            d="M7.667 12.667A5.333 5.333 0 107.667 2a5.333 5.333 0 000 10.667zM14.334 14l-2.9-2.9"
+                            stroke="currentColor"
+                            stroke-width="1.333"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        ></path>
+                    </svg>
+                </button>
+                <input
+                    id="searchSiswa"
+                    class="input rounded-full border-2 border-transparent px-8 py-2 placeholder-gray-400 shadow-md transition-all duration-300 focus:border-blue-500 focus:outline-none"
+                    placeholder="Search..."
+                    required=""
+                    type="text"
+                />
+                <button type="reset" class="absolute right-3 top-1/2 -translate-y-1/2 p-1">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 text-gray-700"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </form>
+        {{-- TANGGAL --}}
+        <div class="mb-4 max-w-xs">
+            <label class="mb-1 block text-sm font-medium text-gray-700">
+                Tanggal Absensi
+            </label>
+            <input
+                type="date"
+                name="tanggal"
+                value="{{ now()->toDateString() }}"
+                class="w-full rounded-lg border px-3 py-2 shadow-sm focus:border-green-500 focus:outline-none"
+                required
+            >
+        </div>
+        </div>
+
+    <form action="{{ route('admin.absensi.manual.simpan') }}" method="POST">
+        @csrf
+
 
         {{-- TABLE --}}
         <div class="overflow-hidden rounded-xl border bg-white shadow">
@@ -87,60 +93,74 @@
                 <thead class="bg-gray-100">
                     <tr>
                         <th class="p-3 text-left">No</th>
-                        <th class="p-3 text-left">Tanggal</th>
+                        <th class="p-3 text-left">Nama Siswa</th>
                         <th class="p-3 text-left">Kelas</th>
-                        <th class="p-3 text-left">Tahun Ajar</th>
-                        <th class="p-3 text-center">Action</th>
+                        <th class="p-3 text-left">Status</th>
+                        <th class="p-3 text-left">Keterangan</th>
                     </tr>
                 </thead>
 
-                <tbody class="bg-white" id="kelasTable">
-                    @foreach ($absensi as $i => $absen)
+                <tbody id="absensiTable">
+                    @foreach ($kelasSiswa as $i => $ks)
                         <tr class="border-b hover:bg-gray-50">
-                            <td class="p-3">{{ $absensi->firstItem() + $i }}</td>
-                            <td class="p-3">{{ $absen->tanggal }}</td>
-                            <td class="p-3">{{ $absen->nama_kelas }}</td>
-                            <td class="p-3">{{ $absen->tahun }} - {{ $absen->semester }}</td>
-                            {{-- ACTION --}}
-                            <td class="flex justify-center gap-3 p-3">
-                                {{-- Info --}}
-                                <div class="group relative">
-                                    <a href="{{ route('absen.show', $absen->id) }}">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="24"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            class="lucide lucide-info-icon lucide-info"
-                                        >
-                                            <circle cx="12" cy="12" r="10" />
-                                            <path d="M12 16v-4" />
-                                            <path d="M12 8h.01" />
-                                        </svg>
-                                    </a>
-                                    <div
-                                        class="pointer-events-none absolute left-1/2 z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 shadow transition group-hover:opacity-100"
-                                    >
-                                        Detail Absensi
-                                    </div>
-                                </div>
+                            <td class="p-3">{{ $i + 1 }}</td>
+                            <td class="p-3">
+                                {{ $ks->siswa->user->name ?? '-' }}
+                            </td>
+                            <td class="p-3">
+                                {{ $ks->kelas->nama_kelas ?? '-' }}
+                            </td>
+                            <td class="p-3">
+                                @php
+    $absenHariIni = $ks->absensi->first();
+@endphp
+
+<select
+    name="status[{{ $ks->id }}]"
+    class="w-full rounded-lg border px-2 py-1"
+>
+    <option value="">-- pilih --</option>
+    <option value="hadir" {{ $absenHariIni?->status === 'hadir' ? 'selected' : '' }}>Hadir</option>
+    <option value="izin"  {{ $absenHariIni?->status === 'izin' ? 'selected' : '' }}>Izin</option>
+    <option value="sakit" {{ $absenHariIni?->status === 'sakit' ? 'selected' : '' }}>Sakit</option>
+    <option value="alpa"  {{ $absenHariIni?->status === 'alpa' ? 'selected' : '' }}>Alpa</option>
+</select>
+
+                            </td>
+                            <td class="p-3">
+                                <input
+                                    type="text"
+                                    name="keterangan[{{ $ks->id }}]"
+                                    class="w-full rounded-lg border px-2 py-1 focus:border-green-500 focus:outline-none"
+                                    placeholder="Opsional"
+                                >
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
             <div class="mt-4 px-4" id="paginationContainer">
-                {{ $absensi->appends(request()->query())->links() }}
+                {{ $kelasSiswa->appends(request()->query())->links() }}
             </div>
         </div>
-    </div>
+
+        {{-- SUBMIT --}}
+        <div class="mt-4">
+            <button
+                type="submit"
+                class="rounded-lg bg-green-600 px-6 py-2 text-white shadow hover:bg-green-700"
+            >
+                Simpan Absensi
+            </button>
+        </div>
+
+    </form>
+</div>
 @endsection
 
 @section('script')
-    <script src="{{ asset('js/kelas-search.js') }}"></script>
+    <script>
+        const csrfToken = '{{ csrf_token() }}';
+    </script>
+    <script src="{{ asset('js/absensi-search.js') }}"></script>
 @endsection

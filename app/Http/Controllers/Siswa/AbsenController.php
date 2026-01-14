@@ -153,12 +153,11 @@ class AbsenController extends Controller
 
         $manualByAdmin = Cache::get('absensi_manual_admin', false);
 
-if (!$manualByAdmin) {
-    if ($jarak > $radius) {
-        return back()->with('error', 'Anda berada di luar area sekolah.');
-    }
-}
-
+        if (!$manualByAdmin) {
+            if ($jarak > $radius) {
+                return back()->with('error', 'Anda berada di luar area sekolah.');
+            }
+        }
 
         $tanggal = Carbon::today()->toDateString();
 

@@ -1,69 +1,83 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Export PDF Absensi</title>
-        <style>
-            body {
-                font-family: sans-serif;
-                font-size: 12px;
-            }
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 10px;
-            }
-            table,
-            th,
-            td {
-                border: 1px solid #000;
-            }
-            th,
-            td {
-                padding: 6px;
-                text-align: left;
-            }
-            .title {
-                font-size: 18px;
-                font-weight: bold;
-                margin-bottom: 10px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="title">Detail Absensi</div>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Rekap Absensi</title>
+    <style>
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 12px;
+        }
+        h1, h2 {
+            text-align: center;
+            margin: 0;
+        }
+        .info {
+            margin: 15px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 6px;
+            text-align: center;
+        }
+        th {
+            background: #f0f0f0;
+        }
+        .left {
+            text-align: left;
+        }
+        .footer {
+            margin-top: 20px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
 
-        <p>
-            <strong>Tanggal:</strong>
-            {{ $absen->tanggal }}
-        </p>
-        <p>
-            <strong>Kelas:</strong>
-            {{ $absen->nama_kelas }}
-        </p>
-        <p>
-            <strong>Tahun Ajar:</strong>
-            {{ $absen->tahun }} - {{ $absen->semester }}
-        </p>
+    <h1>LAPORAN REKAP ABSENSI</h1>
+    <h2>{{ $kelas->nama_kelas }}</h2>
 
-        <table>
-            <thead>
+    <div class="info">
+        <strong>Periode:</strong> {{ $dari }} s/d {{ $sampai }}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>No</th>
+                <th class="left">Nama Siswa</th>
+                <th>NISN</th>
+                <th>Hadir</th>
+                <th>Izin</th>
+                <th>Sakit</th>
+                <th>Alpa</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($rekap as $i => $r)
                 <tr>
-                    <th>No</th>
-                    <th>Nama Siswa</th>
-                    <th>NISN</th>
-                    <th>Status</th>
+                    <td>{{ $i + 1 }}</td>
+                    <td class="left">{{ $r->name }}</td>
+                    <td>{{ $r->NISN }}</td>
+                    <td>{{ $r->hadir }}</td>
+                    <td>{{ $r->izin }}</td>
+                    <td>{{ $r->sakit }}</td>
+                    <td>{{ $r->alpa }}</td>
+                    <td>{{ $r->total }}</td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach ($detail as $i => $d)
-                    <tr>
-                        <td>{{ $i + 1 }}</td>
-                        <td>{{ $d->name }}</td>
-                        <td>{{ $d->NISN }}</td>
-                        <td>{{ ucfirst($d->status) }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </body>
+            @endforeach
+        </tbody>
+    </table>
+
+    <div class="footer">
+        Dicetak pada {{ now()->format('d-m-Y') }}
+    </div>
+
+</body>
 </html>

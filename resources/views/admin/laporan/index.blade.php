@@ -2,110 +2,114 @@
 
 @section('content')
     <div class="p-6">
-        <div class="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <form
-                method="GET"
-                action="{{ route('absen.index') }}"
-                class="flex w-full flex-col gap-4 rounded-lg bg-white p-4 shadow md:flex-row md:items-end"
-            >
-                {{-- Grid Input --}}
-                <div class="grid w-full grid-cols-1 gap-4 md:grid-cols-4">
-                    {{-- Filter Tanggal --}}
-                    <div class="flex flex-col">
-                        <label class="mb-1 text-sm font-semibold">Tanggal</label>
-                        <input
-                            type="date"
-                            name="tanggal"
-                            value="{{ request('tanggal') }}"
-                            class="rounded-lg border px-3 py-2 focus:ring focus:ring-blue-200"
-                        />
-                    </div>
+<div class="mb-4 flex flex-col gap-4 lg:flex-row lg:items-stretch lg:justify-between">
+    {{-- FILTER --}}
+    <form
+        method="GET"
+        action="{{ route('laporan.index') }}"
+        class="flex w-full flex-col gap-4 rounded-lg bg-white p-4 shadow md:flex-row md:items-end lg:w-[calc(100%-160px)]"
+    >
+        <div class="grid w-full grid-cols-1 gap-4 md:grid-cols-3">
+            {{-- Dari Tanggal --}}
+            <div class="flex flex-col">
+                <label class="mb-1 text-sm font-semibold">Dari Tanggal</label>
+                <input
+                    type="date"
+                    name="tanggal_dari"
+                    value="{{ request('tanggal_dari') }}"
+                    class="rounded-lg border px-3 py-2"
+                />
+            </div>
 
-                    {{-- Filter Kelas --}}
-                    <div class="flex flex-col">
-                        <label class="mb-1 text-sm font-semibold">Kelas</label>
-                        <select name="kelas_id" class="rounded-lg border px-3 py-2 focus:ring focus:ring-blue-200">
-                            <option value="">Semua Kelas</option>
-                            @foreach ($kelas as $k)
-                                <option value="{{ $k->id }}" {{ request('kelas_id') == $k->id ? 'selected' : '' }}>
-                                    {{ $k->nama_kelas }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+            {{-- Sampai Tanggal --}}
+            <div class="flex flex-col">
+                <label class="mb-1 text-sm font-semibold">Sampai Tanggal</label>
+                <input
+                    type="date"
+                    name="tanggal_sampai"
+                    value="{{ request('tanggal_sampai') }}"
+                    class="rounded-lg border px-3 py-2"
+                />
+            </div>
 
-                    {{-- Filter Tahun Ajar --}}
-                    <div class="flex flex-col">
-                        <label class="mb-1 text-sm font-semibold">Tahun Ajar</label>
-                        <select name="tahun_ajar_id" class="rounded-lg border px-3 py-2 focus:ring focus:ring-blue-200">
-                            <option value="">Semua Tahun</option>
-                            @foreach ($tahunAjar as $t)
-                                <option
-                                    value="{{ $t->id }}"
-                                    {{ request('tahun_ajar_id') == $t->id ? 'selected' : '' }}
-                                >
-                                    {{ $t->tahun }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="flex flex-col">
-                        <label class="mb-1 text-sm font-semibold">Semester</label>
-                        <select name="tahun_ajar_id" class="rounded-lg border px-3 py-2 focus:ring focus:ring-blue-200">
-                            <option value="">Semua Semester</option>
-                            @foreach ($semester as $t)
-                                <option
-                                    value="{{ $t->id }}"
-                                    {{ request('tahun_ajar_id') == $t->id ? 'selected' : '' }}
-                                >
-                                    {{ $t->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-
-                {{-- Tombol Aksi --}}
-                <div class="flex flex-row gap-2 md:ml-2">
-                    {{-- Tombol Filter --}}
-                    <button class="rounded-lg bg-blue-600 px-4 py-2 text-white shadow hover:bg-blue-700">Filter</button>
-
-                    {{-- Tombol Reset --}}
-                    <a
-                        href="{{ route('absen.index') }}"
-                        class="rounded-lg bg-gray-300 px-4 py-2 text-gray-800 shadow hover:bg-gray-400"
-                    >
-                        Reset
-                    </a>
-                </div>
-            </form>
+            {{-- Kelas --}}
+            <div class="flex flex-col">
+                <label class="mb-1 text-sm font-semibold">Kelas</label>
+                <select name="kelas_id" class="rounded-lg border px-3 py-2">
+                    <option value="">Semua Kelas</option>
+                    @foreach ($kelas as $k)
+                        <option value="{{ $k->id }}" {{ request('kelas_id') == $k->id ? 'selected' : '' }}>
+                            {{ $k->nama_kelas }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
         </div>
+
+        <div class="flex gap-2">
+            <button class="rounded-lg bg-blue-600 px-4 py-2 text-white">
+                Filter
+            </button>
+            <a href="{{ route('laporan.index') }}" class="rounded-lg bg-gray-300 px-4 py-2">
+                Reset
+            </a>
+        </div>
+    </form>
+
+    {{-- EXPORT --}}
+    <div class="flex lg:items-center">
+        <a
+            href="{{ route('laporan.export', request()->query()) }}"
+            class="flex items-center gap-2 rounded-lg bg-green-600 px-5 py-2 text-white shadow hover:bg-green-700"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" />
+            </svg>
+            Export
+        </a>
+    </div>
+
+</div>
+
 
         {{-- TABLE --}}
         <div class="overflow-hidden rounded-xl border bg-white shadow">
             <table class="w-full text-sm">
                 <thead class="bg-gray-100">
                     <tr>
-                        <th class="p-3 text-left">No</th>
-                        <th class="p-3 text-left">Tanggal</th>
-                        <th class="p-3 text-left">Kelas</th>
-                        <th class="p-3 text-left">Tahun Ajar</th>
-                        <th class="p-3 text-center">Action</th>
+                        <th>Tanggal</th>
+                        <th>Kelas</th>
+                        <th class="text-center">Hadir</th>
+                        <th class="text-center">Izin</th>
+                        <th class="text-center">Sakit</th>
+                        <th class="text-center">Alpa</th>
+                        <th class="text-center">Action</th>
                     </tr>
                 </thead>
 
                 <tbody class="bg-white" id="kelasTable">
                     @foreach ($absensi as $i => $absen)
                         <tr class="border-b hover:bg-gray-50">
-                            <td class="p-3">{{ $absensi->firstItem() + $i }}</td>
-                            <td class="p-3">{{ $absen->tanggal }}</td>
-                            <td class="p-3">{{ $absen->nama_kelas }}</td>
-                            <td class="p-3">{{ $absen->tahun }} - {{ $absen->semester }}</td>
+                            <td>{{ $absen->tanggal }}</td>
+                            <td>{{ $absen->nama_kelas }}</td>
+                            <td class="text-center">{{ $absen->hadir }}</td>
+                            <td class="text-center">{{ $absen->izin }}</td>
+                            <td class="text-center">{{ $absen->sakit }}</td>
+                            <td class="text-center">{{ $absen->alpa }}</td>
                             {{-- ACTION --}}
                             <td class="flex justify-center gap-3 p-3">
                                 {{-- Info --}}
                                 <div class="group relative">
-                                    <a href="{{ route('absen.show', $absen->id) }}">
+                                    <a
+                                        href="{{
+                                            route('laporan.detail', [
+                                                'kelas_id' => $absen->kelas_id,
+                                                'tanggal' => $absen->tanggal,
+                                            ])
+                                        }}"
+                                    >
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             width="24"

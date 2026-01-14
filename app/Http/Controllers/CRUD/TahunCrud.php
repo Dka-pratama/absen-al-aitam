@@ -161,7 +161,6 @@ class TahunCrud extends Controller
     {
         $request->validate([
             'tahun' => 'required|string|max:20',
-            'semester' => 'required|in:Ganjil,Genap',
             'status' => 'required|in:Aktif,Non-Aktif',
         ]);
 

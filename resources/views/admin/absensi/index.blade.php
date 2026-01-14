@@ -1,8 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="p-6">
-            
+    <div class="p-6">
         {{-- Button aktif, Non-aktif --}}
         @php
             use Illuminate\Support\Facades\Cache;
@@ -28,7 +27,7 @@
                 </button>
             </form>
         </div>
-    <div class="mb-4 flex items-center justify-between">
+        <div class="mb-4 flex items-center justify-between">
             <form class="form relative">
                 <button type="button" class="absolute left-2 top-1/2 -translate-y-1/2 p-1">
                     <svg
@@ -68,94 +67,85 @@
                     </svg>
                 </button>
             </form>
-        {{-- TANGGAL --}}
-        <div class="mb-4 max-w-xs">
-            <label class="mb-1 block text-sm font-medium text-gray-700">
-                Tanggal Absensi
-            </label>
-            <input
-                type="date"
-                name="tanggal"
-                value="{{ now()->toDateString() }}"
-                class="w-full rounded-lg border px-3 py-2 shadow-sm focus:border-green-500 focus:outline-none"
-                required
-            >
-        </div>
+
         </div>
 
-    <form action="{{ route('admin.absensi.manual.simpan') }}" method="POST">
-        @csrf
-
-
-        {{-- TABLE --}}
-        <div class="overflow-hidden rounded-xl border bg-white shadow">
-            <table class="w-full text-sm">
-                <thead class="bg-gray-100">
-                    <tr>
-                        <th class="p-3 text-left">No</th>
-                        <th class="p-3 text-left">Nama Siswa</th>
-                        <th class="p-3 text-left">Kelas</th>
-                        <th class="p-3 text-left">Status</th>
-                        <th class="p-3 text-left">Keterangan</th>
-                    </tr>
-                </thead>
-
-                <tbody id="absensiTable">
-                    @foreach ($kelasSiswa as $i => $ks)
-                        <tr class="border-b hover:bg-gray-50">
-                            <td class="p-3">{{ $i + 1 }}</td>
-                            <td class="p-3">
-                                {{ $ks->siswa->user->name ?? '-' }}
-                            </td>
-                            <td class="p-3">
-                                {{ $ks->kelas->nama_kelas ?? '-' }}
-                            </td>
-                            <td class="p-3">
-                                @php
-    $absenHariIni = $ks->absensi->first();
-@endphp
-
-<select
-    name="status[{{ $ks->id }}]"
-    class="w-full rounded-lg border px-2 py-1"
->
-    <option value="">-- pilih --</option>
-    <option value="hadir" {{ $absenHariIni?->status === 'hadir' ? 'selected' : '' }}>Hadir</option>
-    <option value="izin"  {{ $absenHariIni?->status === 'izin' ? 'selected' : '' }}>Izin</option>
-    <option value="sakit" {{ $absenHariIni?->status === 'sakit' ? 'selected' : '' }}>Sakit</option>
-    <option value="alpa"  {{ $absenHariIni?->status === 'alpa' ? 'selected' : '' }}>Alpa</option>
-</select>
-
-                            </td>
-                            <td class="p-3">
-                                <input
-                                    type="text"
-                                    name="keterangan[{{ $ks->id }}]"
-                                    class="w-full rounded-lg border px-2 py-1 focus:border-green-500 focus:outline-none"
-                                    placeholder="Opsional"
-                                >
-                            </td>
+        <form action="{{ route('admin.absensi.manual.simpan') }}" method="POST">
+            @csrf
+            {{-- TABLE --}}
+            <div class="overflow-hidden rounded-xl border bg-white shadow">
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="p-3 text-left">No</th>
+                            <th class="p-3 text-left">Nama Siswa</th>
+                            <th class="p-3 text-left">Kelas</th>
+                            <th class="p-3 text-left">Status</th>
+                            <th class="p-3 text-left">Keterangan</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
-            <div class="mt-4 px-4" id="paginationContainer">
-                {{ $kelasSiswa->appends(request()->query())->links() }}
+                    </thead>
+
+                    <tbody id="absensiTable">
+                        @foreach ($kelasSiswa as $i => $ks)
+                            <tr class="border-b hover:bg-gray-50">
+                                <td class="p-3">{{ $i + 1 }}</td>
+                                <td class="p-3">
+                                    {{ $ks->siswa->user->name ?? '-' }}
+                                </td>
+                                <td class="p-3">
+                                    {{ $ks->kelas->nama_kelas ?? '-' }}
+                                </td>
+                                <td class="p-3">
+                                    @php
+                                        $absenHariIni = $ks->absensi->first();
+                                    @endphp
+                                    <select name="status[{{ $ks->id }}]" class="w-full rounded-lg border px-2 py-1">
+                                        <option value="">-- pilih --</option>
+                                        <option
+                                            value="hadir"
+                                            {{ $absenHariIni?->status === 'hadir' ? 'selected' : '' }}
+                                        >
+                                            Hadir
+                                        </option>
+                                        <option value="izin" {{ $absenHariIni?->status === 'izin' ? 'selected' : '' }}>
+                                            Izin
+                                        </option>
+                                        <option
+                                            value="sakit"
+                                            {{ $absenHariIni?->status === 'sakit' ? 'selected' : '' }}
+                                        >
+                                            Sakit
+                                        </option>
+                                        <option value="alpa" {{ $absenHariIni?->status === 'alpa' ? 'selected' : '' }}>
+                                            Alpa
+                                        </option>
+                                    </select>
+                                </td>
+                                <td class="p-3">
+                                    <input
+                                        type="text"
+                                        name="keterangan[{{ $ks->id }}]"
+                                        class="w-full rounded-lg border px-2 py-1 focus:border-green-500 focus:outline-none"
+                                        placeholder="Opsional"
+                                    />
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                <div class="mt-4 px-4" id="paginationContainer">
+                    {{ $kelasSiswa->appends(request()->query())->links() }}
+                </div>
             </div>
-        </div>
 
-        {{-- SUBMIT --}}
-        <div class="mt-4">
-            <button
-                type="submit"
-                class="rounded-lg bg-green-600 px-6 py-2 text-white shadow hover:bg-green-700"
-            >
-                Simpan Absensi
-            </button>
-        </div>
-
-    </form>
-</div>
+            {{-- SUBMIT --}}
+            <div class="mt-4">
+                <button type="submit" class="rounded-lg bg-green-600 px-6 py-2 text-white shadow hover:bg-green-700">
+                    Simpan Absensi
+                </button>
+            </div>
+        </form>
+    </div>
 @endsection
 
 @section('script')

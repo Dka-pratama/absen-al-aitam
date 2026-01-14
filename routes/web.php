@@ -38,6 +38,17 @@ Route::middleware(['auth', 'role:admin'])
 
         Route::resource('akun-siswa', SiswaCrud::class);
         Route::get('siswa-search', [SiswaCrud::class, 'search'])->name('siswa.search');
+        // Import Export Siswa Routes
+        Route::get('siswa/import-export', [SiswaCrud::class, 'importExport'])->name('siswa.import.export');
+        Route::get('siswa/template', [SiswaCrud::class, 'template'])->name('siswa.template');
+        Route::get('siswa/export', [SiswaCrud::class, 'export'])->name('siswa.export');
+        Route::post('siswa/import', [SiswaCrud::class, 'import'])->name('siswa.import');
+
+        Route::get('/siswa/export-update', [SiswaCrud::class, 'exportUpdate'])
+            ->name('siswa.export-update');
+
+        Route::post('/siswa/import-update', [SiswaCrud::class, 'importUpdate'])
+            ->name('siswa.import-update');
 
         Route::resource('akun-walikelas', WaliCrud::class);
         Route::get('wali-search', [WaliCrud::class, 'search'])->name('wali.search');
@@ -50,11 +61,19 @@ Route::middleware(['auth', 'role:admin'])
         Route::post('tahun/{id}/activate', [TahunCrud::class, 'activate'])->name('tahun.activate');
         Route::post('tahun/{id}/deactivate', [TahunCrud::class, 'deactivate'])->name('tahun.deactivate');
 
-        Route::resource('absen', LaporanCrud::class);
-        Route::prefix('absen')->group(function () {
-            Route::get('{id}/export-excel', [LaporanCrud::class, 'exportExcel'])->name('absen.export.excel');
-            Route::get('{id}/export-pdf', [LaporanCrud::class, 'exportPDF'])->name('absen.export.pdf');
-        });
+        Route::resource('laporan', LaporanCrud::class)->except(['show']);
+        Route::get('laporan/detail', [LaporanCrud::class, 'detail'])->name('laporan.detail');
+
+        Route::prefix('laporan')->group(function () {
+    Route::get('export', [LaporanCrud::class, 'exportPage'])->name('laporan.export');
+
+    Route::get('export-range/pdf', [LaporanCrud::class, 'exportRangePDF'])
+        ->name('laporan.export.range.pdf');
+
+    Route::get('export-range/excel', [LaporanCrud::class, 'exportRangeExcel'])
+        ->name('laporan.export.range.excel');
+});
+
         Route::get('/naik-kelas', [PromosiKelasController::class, 'index'])->name('promosi.index');
         Route::post('/naik-kelas', [PromosiKelasController::class, 'store'])->name('promosi.store');
         Route::get('profile', [ProfileController::class, 'index'])->name('admin.profile');
@@ -64,19 +83,13 @@ Route::middleware(['auth', 'role:admin'])
         Route::post('profile/password', [ProfileController::class, 'changePassword'])->name(
             'admin.profile.password.update',
         );
-        Route::get('/absensi/manual', [AdminAbsensiController::class, 'index'])->name(
-            'admin.absensi.manual',
-        );
-         Route::post('/absensi/manual', [AdminAbsensiController::class, 'simpan'])
-        ->name('admin.absensi.manual.simpan');
+        Route::get('/absensi/manual', [AdminAbsensiController::class, 'index'])->name('admin.absensi.manual');
+        Route::post('/absensi/manual', [AdminAbsensiController::class, 'simpan'])->name('admin.absensi.manual.simpan');
         Route::post('/absensi-mandiri/toggle-global', [
             AdminAbsensiController::class,
             'toggleAbsensiMandiriGlobal',
         ])->name('admin.absensi.mandiri.global');
-        Route::get('absensi-search', [AdminAbsensiController::class, 'search'])
-    ->name('admin.absensi.search');
-
-
+        Route::get('absensi-search', [AdminAbsensiController::class, 'search'])->name('admin.absensi.search');
     });
 
 // ========== WALI ==========

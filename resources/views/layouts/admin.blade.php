@@ -207,8 +207,8 @@
                     Absensi
                 </a>
                 <a
-                    href="{{ route('absen.index') }}"
-                    class="{{ Route::is('absen.*') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }} flex items-center gap-3 rounded-lg p-3 transition"
+                    href="{{ route('laporan.index') }}"
+                    class="{{ Route::is('laporan.*') ? 'bg-white/25 font-bold' : 'hover:bg-white/20' }} flex items-center gap-3 rounded-lg p-3 transition"
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"

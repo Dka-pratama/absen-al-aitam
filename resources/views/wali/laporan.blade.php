@@ -5,7 +5,6 @@
         {{-- Header --}}
         <div class="mb-6">
             @if ($wali)
-                <h1 class="text-2xl font-bold">Laporan Absensi Kelas {{ $wali->kelas->nama_kelas }}</h1>
                 <p class="text-gray-500">Wali Kelas: {{ $wali->user->name }}</p>
             @else
                 <h1 class="text-2xl font-bold text-gray-700">Laporan Absensi</h1>
@@ -48,7 +47,14 @@
 
             <div class="mt-4 flex items-end gap-2 md:mt-0">
                 <button class="rounded bg-blue-600 px-4 py-2 text-white">Filter</button>
-                <a href="{{ route('wali.laporan') }}" class="rounded bg-gray-300 px-4 py-2 text-gray-800">Reset</a>
+                <a href="{{ route('wali.laporan.export') }}" class="rounded bg-gray-300 px-4 py-2 text-gray-800">Reset</a>
+                <a
+    href="{{ route('wali.laporan.export', request()->query()) }}"
+    class="rounded bg-green-600 px-5 py-2 text-white"
+>
+    Export
+</a>
+
             </div>
         </form>
 

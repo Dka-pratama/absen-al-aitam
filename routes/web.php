@@ -100,7 +100,15 @@ Route::middleware(['auth', 'role:wali'])
         Route::get('siswa', [SiswaController::class, 'index'])->name('wali.siswa.index');
         Route::get('laporan', [LaporanController::class, 'index'])->name('wali.laporan');
         Route::get('/laporan/detail', [LaporanController::class, 'laporanDetail'])->name('wali.laporan.detail');
+        Route::prefix('laporan')->group(function () {
+    Route::get('wali.laporan.export', [LaporanController::class, 'exportPage'])->name('wali.laporan.export');
 
+    Route::get('export-range/pdf', [LaporanController::class, 'exportRangePDF'])
+        ->name('wali.laporan.export.range.pdf');
+
+    Route::get('export-range/excel', [LaporanController::class, 'exportRangeExcel'])
+        ->name('wali.laporan.export.range.excel');
+});
         Route::get('absensi', [AbsenController::class, 'index'])->name('wali.absensi');
         Route::post('absensi', [AbsenController::class, 'simpan'])->name('wali.absensi.simpan');
         Route::post('/qr/generate', [QrController::class, 'generate'])->name('wali.qr.generate');

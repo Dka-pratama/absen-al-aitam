@@ -76,11 +76,11 @@
 
         {{-- TABLE --}}
         <div class="overflow-hidden rounded-xl border bg-white shadow">
-            <table class="w-full text-sm">
-                <thead class="bg-gray-100">
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-100">
                     <tr>
-                        <th>Tanggal</th>
-                        <th>Kelas</th>
+                        <th class=" py-3 text-center">Tanggal</th>
+                        <th class="text-center">Kelas</th>
                         <th class="text-center">Hadir</th>
                         <th class="text-center">Izin</th>
                         <th class="text-center">Sakit</th>
@@ -92,8 +92,8 @@
                 <tbody class="bg-white" id="kelasTable">
                     @foreach ($absensi as $i => $absen)
                         <tr class="border-b hover:bg-gray-50">
-                            <td>{{ $absen->tanggal }}</td>
-                            <td>{{ $absen->nama_kelas }}</td>
+                            <td class="text-center">{{ $absen->tanggal }}</td>
+                            <td class="text-center">{{ $absen->nama_kelas }}</td>
                             <td class="text-center">{{ $absen->hadir }}</td>
                             <td class="text-center">{{ $absen->izin }}</td>
                             <td class="text-center">{{ $absen->sakit }}</td>

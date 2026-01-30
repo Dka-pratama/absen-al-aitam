@@ -50,52 +50,48 @@ class LaporanCrud extends Controller
     }
 
     public function detail(Request $request)
-{
-    $Header = 'Detail Laporan Absensi';
+    {
+        $Header = 'Detail Laporan Absensi';
 
-    $request->validate([
-        'kelas_id' => 'required|exists:kelas,id',
-        'tanggal' => 'required|date',
-    ]);
+        $request->validate([
+            'kelas_id' => 'required|exists:kelas,id',
+            'tanggal' => 'required|date',
+        ]);
 
-    $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
+        $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
 
-    $kelas = Kelas::findOrFail($request->kelas_id);
+        $kelas = Kelas::findOrFail($request->kelas_id);
 
-    $absensi = Absensi::with(['kelassiswa.siswa.user'])
-        ->whereHas('kelassiswa', function ($q) use ($request) {
-            $q->where('kelas_id', $request->kelas_id);
-        })
-        ->where('tanggal', $request->tanggal)
-        ->where('semester_id', $semesterAktif->id)
-        ->orderBy('kelas_siswa_id')
-        ->get();
+        $absensi = Absensi::with(['kelassiswa.siswa.user'])
+            ->whereHas('kelassiswa', function ($q) use ($request) {
+                $q->where('kelas_id', $request->kelas_id);
+            })
+            ->where('tanggal', $request->tanggal)
+            ->where('semester_id', $semesterAktif->id)
+            ->orderBy('kelas_siswa_id')
+            ->get();
 
-    return view('admin.laporan.detail', compact(
-        'Header',
-        'kelas',
-        'absensi'
-    ))->with('tanggal', $request->tanggal);
-}
-
-private function getRangeTanggal(Request $request)
-{
-    if ($request->mode === 'bulan') {
-        $dari = $request->bulan . '-01';
-        $sampai = date('Y-m-t', strtotime($dari));
-    } else {
-        $dari = $request->tanggal_dari;
-        $sampai = $request->tanggal_sampai;
+        return view('admin.laporan.detail', compact('Header', 'kelas', 'absensi'))->with('tanggal', $request->tanggal);
     }
 
-    return [$dari, $sampai];
-}
+    private function getRangeTanggal(Request $request)
+    {
+        if ($request->mode === 'bulan') {
+            $dari = $request->bulan . '-01';
+            $sampai = date('Y-m-t', strtotime($dari));
+        } else {
+            $dari = $request->tanggal_dari;
+            $sampai = $request->tanggal_sampai;
+        }
 
-private function getRekap(Request $request)
-{
-    [$dari, $sampai] = $this->getRangeTanggal($request);
+        return [$dari, $sampai];
+    }
 
-    return Absensi::select(
+    private function getRekap(Request $request)
+    {
+        [$dari, $sampai] = $this->getRangeTanggal($request);
+
+        return Absensi::select(
             'siswa.id',
             'users.name',
             'siswa.NISN',
@@ -103,66 +99,58 @@ private function getRekap(Request $request)
             \DB::raw('SUM(status="izin") as izin'),
             \DB::raw('SUM(status="sakit") as sakit'),
             \DB::raw('SUM(status="alpa") as alpa'),
-            \DB::raw('COUNT(*) as total')
+            \DB::raw('COUNT(*) as total'),
         )
-        ->join('kelas_siswa', 'absensi.kelas_siswa_id', '=', 'kelas_siswa.id')
-        ->join('siswa', 'kelas_siswa.siswa_id', '=', 'siswa.id')
-        ->join('users', 'siswa.user_id', '=', 'users.id')
-        ->where('kelas_siswa.kelas_id', $request->kelas_id)
-        ->whereBetween('tanggal', [$dari, $sampai])
-        ->groupBy('siswa.id', 'users.name', 'siswa.NISN')
-        ->orderBy('users.name')
-        ->get();
-}
-
+            ->join('kelas_siswa', 'absensi.kelas_siswa_id', '=', 'kelas_siswa.id')
+            ->join('siswa', 'kelas_siswa.siswa_id', '=', 'siswa.id')
+            ->join('users', 'siswa.user_id', '=', 'users.id')
+            ->where('kelas_siswa.kelas_id', $request->kelas_id)
+            ->whereBetween('tanggal', [$dari, $sampai])
+            ->groupBy('siswa.id', 'users.name', 'siswa.NISN')
+            ->orderBy('users.name')
+            ->get();
+    }
 
     public function exportRangeExcel(Request $request)
-{
-    $request->validate([
-        'kelas_id' => 'required|exists:kelas,id',
-        'mode' => 'required|in:bulan,minggu',
-    ]);
+    {
+        $request->validate([
+            'kelas_id' => 'required|exists:kelas,id',
+            'mode' => 'required|in:bulan,minggu',
+        ]);
 
-    $kelas = Kelas::findOrFail($request->kelas_id);
-    $rekap = $this->getRekap($request);
+        $kelas = Kelas::findOrFail($request->kelas_id);
+        $rekap = $this->getRekap($request);
 
-    return Excel::download(
-        new RekapAbsensiExport($rekap),
-        "Rekap-{$kelas->nama_kelas}.xlsx"
-    );
-}
-
+        return Excel::download(new RekapAbsensiExport($rekap), "Rekap-{$kelas->nama_kelas}.xlsx");
+    }
 
     public function exportRangePDF(Request $request)
-{
-    $request->validate([
-        'kelas_id' => 'required|exists:kelas,id',
-        'mode' => 'required|in:bulan,minggu',
-    ]);
+    {
+        $request->validate([
+            'kelas_id' => 'required|exists:kelas,id',
+            'mode' => 'required|in:bulan,minggu',
+        ]);
 
-    $kelas = Kelas::findOrFail($request->kelas_id);
-    $rekap = $this->getRekap($request);
-    [$dari, $sampai] = $this->getRangeTanggal($request);
+        $kelas = Kelas::findOrFail($request->kelas_id);
+        $rekap = $this->getRekap($request);
+        [$dari, $sampai] = $this->getRangeTanggal($request);
 
-    $pdf = Pdf::loadView('admin.laporan.export-pdf', [
-        'kelas' => $kelas,
-        'rekap' => $rekap,
-        'dari' => $dari,
-        'sampai' => $sampai,
-    ])->setPaper('a4', 'landscape');
+        $pdf = Pdf::loadView('admin.laporan.export-pdf', [
+            'kelas' => $kelas,
+            'rekap' => $rekap,
+            'dari' => $dari,
+            'sampai' => $sampai,
+        ])->setPaper('a4', 'landscape');
 
-    return $pdf->stream("Rekap-{$kelas->nama_kelas}.pdf");
-}
-
-
+        return $pdf->download("Rekap-{$kelas->nama_kelas}.pdf");
+    }
 
     public function exportPage(Request $request)
-{
-    $kelas = Kelas::orderBy('nama_kelas')->get();
-
-    return view('admin.laporan.export', compact('kelas'));
-}
-
+    {
+        $kelas = Kelas::orderBy('nama_kelas')->get();
+        $Header = 'Export Laporan';
+        return view('admin.laporan.export', compact('kelas', 'Header'));
+    }
 
     public function destroy($id)
     {

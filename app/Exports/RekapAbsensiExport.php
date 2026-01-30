@@ -2,20 +2,8 @@
 
 namespace App\Exports;
 
-use Maatwebsite\Excel\Concerns\{
-    FromCollection,
-    WithHeadings,
-    WithCharts,
-    WithTitle
-};
-use PhpOffice\PhpSpreadsheet\Chart\{
-    Chart,
-    DataSeries,
-    DataSeriesValues,
-    Legend,
-    PlotArea,
-    Title
-};
+use Maatwebsite\Excel\Concerns\{FromCollection, WithHeadings, WithCharts, WithTitle};
+use PhpOffice\PhpSpreadsheet\Chart\{Chart, DataSeries, DataSeriesValues, Legend, PlotArea, Title};
 
 class RekapAbsensiExport implements FromCollection, WithHeadings, WithCharts, WithTitle
 {
@@ -24,15 +12,7 @@ class RekapAbsensiExport implements FromCollection, WithHeadings, WithCharts, Wi
     public function collection()
     {
         return $this->rekap->map(function ($r) {
-            return [
-                $r->name,
-                $r->NISN,
-                $r->hadir,
-                $r->izin,
-                $r->sakit,
-                $r->alpa,
-                $r->total,
-            ];
+            return [$r->name, $r->NISN, $r->hadir, $r->izin, $r->sakit, $r->alpa, $r->total];
         });
     }
 
@@ -63,17 +43,12 @@ class RekapAbsensiExport implements FromCollection, WithHeadings, WithCharts, Wi
             range(0, count($values) - 1),
             $labels,
             [],
-            $values
+            $values,
         );
 
         $plotArea = new PlotArea(null, [$series]);
 
-        return new Chart(
-            'rekap_chart',
-            new Title('Grafik Rekap Absensi'),
-            new Legend(),
-            $plotArea
-        );
+        return new Chart('rekap_chart', new Title('Grafik Rekap Absensi'), new Legend(), $plotArea);
     }
 
     public function title(): string

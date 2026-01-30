@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.walikelas')
 
 @section('content')
     <div class="mx-auto max-w-4xl p-6">
@@ -26,22 +26,10 @@
                     <input type="date" name="tanggal_sampai" class="mt-1 w-full rounded border px-3 py-2" />
                 </div>
             </div>
-
-            {{-- KELAS --}}
-            <div>
-                <label class="font-semibold">Kelas</label>
-                <select name="kelas_id" class="mt-1 w-full rounded border px-3 py-2">
-                    <option value="">Semua Kelas</option>
-                    @foreach ($kelas as $k)
-                        <option value="{{ $k->id }}">{{ $k->nama_kelas }}</option>
-                    @endforeach
-                </select>
-            </div>
-
             {{-- ACTION --}}
             <div class="flex justify-center gap-4 pt-4">
                 <button
-                    formaction="{{ route('laporan.export.range.pdf') }}"
+                    formaction="{{ route('wali.laporan.export.range.pdf') }}"
                     formmethod="GET"
                     class="rounded-lg bg-red-600 px-6 py-2 text-white"
                 >
@@ -49,7 +37,7 @@
                 </button>
 
                 <button
-                    formaction="{{ route('laporan.export.range.excel') }}"
+                    formaction="{{ route('wali.laporan.export.range.excel') }}"
                     formmethod="GET"
                     class="rounded-lg bg-green-600 px-6 py-2 text-white"
                 >

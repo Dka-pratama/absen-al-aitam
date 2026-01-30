@@ -10,7 +10,7 @@
                     <div class=""></div>
                     <div>
                         <h3 class="text-lg font-bold leading-tight text-gray-900">{{ $user->name }}</h3>
-                        <p class="text-sm text-gray-600">{{ $kelas->kelas->nama_kelas }}</p>
+                        <p class="text-sm text-gray-600">{{ $kelas->nama_kelas ?? '-' }}</p>
                     </div>
                 </div>
                 <div x-data="scanQr()" x-cloak class="rounded-2xl bg-white p-6 shadow-md">

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" style="margin: 0; padding: 0; background: #f3f4f6">
+<html lang="id" style="margin: 0; padding: 0; background: #f3f4f6">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,7 +10,6 @@
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
             <tr>
                 <td align="center">
-                    <!-- CARD -->
                     <table
                         role="presentation"
                         width="100%"
@@ -24,7 +23,6 @@
                             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
                         "
                     >
-                        <!-- HEADER -->
                         <tr>
                             <td align="center" style="padding-bottom: 20px">
                                 <h2 style="color: #01af61; margin: 0; font-size: 26px">Reset Password</h2>
@@ -34,24 +32,26 @@
                             </td>
                         </tr>
 
-                        <!-- MESSAGE -->
                         <tr>
                             <td style="padding-bottom: 25px; font-size: 15px; color: #374151; line-height: 1.6">
                                 Halo
-                                <strong>{{ $nama ?? 'User' }}</strong>
+                                <strong>{{ $notifiable->name ?? 'User' }}</strong>
                                 ,
                                 <br />
                                 <br />
+                                {{-- DEBUG --}}
+                                {{ $notifiable->email }}
+                                {{ $notifiable->name }}
+                                {{ $notifiable->username }}
                                 Kami menerima permintaan untuk mereset password akun Anda. Klik tombol di bawah ini
                                 untuk membuat password baru.
                             </td>
                         </tr>
 
-                        <!-- BUTTON -->
                         <tr>
                             <td align="center" style="padding-bottom: 30px">
                                 <a
-                                    href="{{ $url }}"
+                                    href="{{ $actionUrl }}"
                                     style="
                                         background: linear-gradient(135deg, #01af61, #23db2e);
                                         color: white;
@@ -69,7 +69,6 @@
                             </td>
                         </tr>
 
-                        <!-- NOTES -->
                         <tr>
                             <td style="font-size: 14px; color: #6b7280; line-height: 1.5">
                                 Tautan ini berlaku selama
@@ -81,14 +80,12 @@
                             </td>
                         </tr>
 
-                        <!-- FOOTER -->
                         <tr>
                             <td align="center" style="padding-top: 32px; font-size: 12px; color: #9ca3af">
                                 © {{ date('Y') }} Absensi App — All rights reserved.
                             </td>
                         </tr>
                     </table>
-                    <!-- END CARD -->
                 </td>
             </tr>
         </table>

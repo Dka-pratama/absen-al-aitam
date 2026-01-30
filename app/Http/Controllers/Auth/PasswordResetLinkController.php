@@ -7,6 +7,10 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\View\View;
+use App\Models\User;
+use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class PasswordResetLinkController extends Controller
 {
@@ -29,19 +33,23 @@ class PasswordResetLinkController extends Controller
             'email' => ['required', 'email', 'exists:users,email'],
         ]);
 
-        $status = Password::sendResetLink($request->only('email'));
+        $user = User::where('email', $request->email)->first();
 
-        if ($status === Password::RESET_LINK_SENT) {
-            return back()->with(
-                'success',
-                '📧 Email reset password berhasil dikirim. Silakan cek inbox atau folder spam.',
-            );
-        }
+        // generate token manual
+        $token = Str::random(64);
 
-        return back()
-            ->withInput($request->only('email'))
-            ->withErrors([
-                'email' => '❌ Gagal mengirim email reset password. Silakan coba lagi.',
-            ]);
+        // simpan token (sesuai Laravel 10+)
+        DB::table('password_reset_tokens')->updateOrInsert(
+            ['email' => $user->email],
+            [
+                'token' => bcrypt($token),
+                'created_at' => now(),
+            ],
+        );
+
+        // kirim email via Notification Laravel
+        $user->notify(new ResetPassword($token));
+
+        return back()->with('success', '📧 Email reset password berhasil dikirim. Silakan cek inbox atau folder spam.');
     }
 }

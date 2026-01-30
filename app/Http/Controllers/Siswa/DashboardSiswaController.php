@@ -16,34 +16,49 @@ class DashboardSiswaController extends Controller
     {
         $Header = 'Dashboard';
         $user = Auth::user();
-        $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
+        $siswa = $user->siswa;
+        $kelasSiswaIds = $siswa->kelasSiswa()->pluck('id');
 
-        $kelas = $user->siswa->kelasSiswa()->with('kelas')->first();
-        if (!$user->siswa) {
+        if (!$siswa) {
             abort(403, 'Akun ini belum terdaftar sebagai siswa');
         }
-        $siswa = $user->siswa;
 
-        $kelasSiswa = $siswa->KelasSiswa()->pluck('id');
-        $kelasSiswa2 = $siswa->kelasSiswa()->first();
+        // ambil kelas_siswa aktif, fallback ke terakhir
+        $kelasSiswaAktif = $siswa
+            ->kelasSiswa()
+            ->whereHas('tahunAjar', fn($q) => $q->where('status', 'aktif'))
+            ->with('kelas', 'tahunAjar')
+            ->first();
+
+        $kelasSiswa =
+            $kelasSiswaAktif ?? $siswa->kelasSiswa()->with('kelas', 'tahunAjar')->orderByDesc('tahun_ajar_id')->first();
+        $kelas = $kelasSiswa->kelas;
+        if (!$kelasSiswa) {
+            abort(404, 'Data kelas siswa tidak ditemukan');
+        }
+
+        // ambil semester sesuai tahun ajar kelas siswa
+        $semester = Semester::where('tahun_ajar_id', $kelasSiswa->tahun_ajar_id)->where('status', 'aktif')->first();
         $hariIni = now()->toDateString();
 
-        $absenHariIni = Absensi::where('kelas_siswa_id', $kelasSiswa2->id)
-            ->where('semester_id', $semesterAktif->id)
+        $absenHariIni = Absensi::where('kelas_siswa_id', $kelasSiswa->id)
+            ->when($semester, fn($q) => $q->where('semester_id', $semester->id))
             ->whereDate('tanggal', $hariIni)
             ->first();
-        $absen = Absensi::whereIn('kelas_siswa_id', $kelasSiswa)
-            ->where('semester_id', $semesterAktif->id)
+
+        $kelasSiswaIds = $siswa->kelasSiswa()->pluck('id');
+
+        $absen = Absensi::whereIn('kelas_siswa_id', $kelasSiswaIds)
+            ->when($semester, fn($q) => $q->where('semester_id', $semester->id))
             ->select('status', DB::raw('count(*) as total'))
             ->groupBy('status')
             ->pluck('total', 'status');
-        $absensiMingguIni = Absensi::whereIn('kelas_siswa_id', $kelasSiswa)
-            ->where('semester_id', $semesterAktif->id)
+
+        $absensiMingguIni = Absensi::where('kelas_siswa_id', $kelasSiswa->id)
+            ->when($semester, fn($q) => $q->where('semester_id', $semester->id))
             ->whereBetween('tanggal', [now()->startOfWeek(), now()->endOfWeek()])
             ->get()
-            ->keyBy(function ($a) {
-                return \Carbon\Carbon::parse($a->tanggal)->format('l'); // e.g. "Monday"
-            });
+            ->keyBy(fn($a) => \Carbon\Carbon::parse($a->tanggal)->format('l'));
 
         // List hari (urutan tetap)
         $hariList = [
@@ -70,22 +85,31 @@ class DashboardSiswaController extends Controller
         $Header = 'Rekap Absensi';
         $user = Auth::user();
 
-        $tahunAjarAktif = \App\Models\TahunAjar::where('status', 'aktif')->firstOrFail();
-        $semesterAktif = $tahunAjarAktif->semesterAktif;
-
-        if (!$semesterAktif) {
-            abort(500, 'Semester aktif belum disetting');
-        }
-
         $siswa = $user->siswa;
 
-        $kelasSiswa = $siswa->kelasSiswa()->where('tahun_ajar_id', $tahunAjarAktif->id)->first();
+        $siswa = $user->siswa;
+        if (!$siswa) {
+            abort(403, 'Akun ini belum terdaftar sebagai siswa');
+        }
+
+        $kelasSiswaAktif = $siswa->kelasSiswa()->whereHas('tahunAjar', fn($q) => $q->where('status', 'aktif'))->first();
+
+        $kelasSiswa = $kelasSiswaAktif ?? $siswa->kelasSiswa()->orderByDesc('tahun_ajar_id')->first();
+
+        if (!$kelasSiswa) {
+            abort(404, 'Data kelas siswa tidak ditemukan');
+        }
+
+        $semester = Semester::where('tahun_ajar_id', $kelasSiswa->tahun_ajar_id)->where('status', 'aktif')->first();
 
         if (!$kelasSiswa) {
             abort(404, 'Siswa belum terdaftar di kelas tahun ajar aktif');
         }
 
-        $query = Absensi::where('kelas_siswa_id', $kelasSiswa->id)->where('semester_id', $semesterAktif->id);
+        $query = Absensi::where('kelas_siswa_id', $kelasSiswa->id)->when(
+            $semester,
+            fn($q) => $q->where('semester_id', $semester->id),
+        );
 
         if ($request->start_date) {
             $query->whereDate('tanggal', '>=', $request->start_date);

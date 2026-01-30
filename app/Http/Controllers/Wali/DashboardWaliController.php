@@ -17,12 +17,15 @@ class DashboardWaliController extends Controller
         $Header = 'Dashboard';
         $user = Auth::user();
         $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
-        $wali = WaliKelas::with('user', 'kelas', 'tahunAjar')->where('user_id', $user->id)->first();
+        $wali = WaliKelas::with('user', 'kelas', 'tahunAjar')
+            ->where('user_id', $user->id)
+            ->where('tahun_ajar_id', $semesterAktif->tahun_ajar_id)
+            ->firstOrFail();
         if (!$wali) {
             return abort(403, 'Anda bukan wali kelas.');
         }
 
-        $tahunAjar = $wali->tahunAjar;
+        $tahunAjar = $semesterAktif->tahunAjar;
         $kelas = $wali->kelas;
 
         $kelasSiswa = KelasSiswa::where('kelas_id', $kelas->id)->where('tahun_ajar_id', $tahunAjar->id)->pluck('id');
@@ -31,8 +34,8 @@ class DashboardWaliController extends Controller
         $hariIni = date('Y-m-d');
 
         // --- Statistik hari ini ---
-        $absensiHariIni = $kelas
-            ->kelasSiswa()
+        $absensiHariIni = KelasSiswa::where('kelas_id', $kelas->id)
+            ->where('tahun_ajar_id', $tahunAjar->id)
             ->with([
                 'absensi' => function ($q) use ($hariIni, $semesterAktif) {
                     $q->whereDate('tanggal', $hariIni)->where('semester_id', $semesterAktif->id);

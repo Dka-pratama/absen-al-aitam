@@ -114,6 +114,16 @@ Route::middleware(['auth', 'role:wali'])
             );
         });
 
+    Route::get('wali.laporan.export', [LaporanController::class, 'exportPage'])->name('wali.laporan.export');
+
+    Route::get('export-range/pdf', [LaporanController::class, 'exportRangePDF'])
+        ->name('wali.laporan.export.range.pdf');
+
+    Route::get('export-range/excel', [LaporanController::class, 'exportRangeExcel'])
+        ->name('wali.laporan.export.range.excel');
+});
+        Route::get('absensi', [AbsenController::class, 'index'])->name('wali.absensi');
+        Route::post('absensi', [AbsenController::class, 'simpan'])->name('wali.absensi.simpan');
         Route::post('/qr/generate', [QrController::class, 'generate'])->name('wali.qr.generate');
         Route::get('/profile', [ProfileWaliController::class, 'index'])->name('wali.profile');
         Route::post('/kelas/{kelasId}/toggle-mandiri', [

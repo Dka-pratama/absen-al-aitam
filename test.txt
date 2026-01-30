@@ -1,0 +1,8 @@
+PBgV7UWD7BVi6wJ
+absensi@smkalaitaam.sch.id
+
+
+'htmlContent' => view('email.reset-password', [
+                'url' => $url,
+                'nama' => $notifiable->name,
+            ])->render(),

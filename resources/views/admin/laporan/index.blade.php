@@ -79,9 +79,10 @@
 
         {{-- TABLE --}}
         <div class="overflow-hidden rounded-xl border bg-white shadow">
-            <table class="w-full text-sm">
-                <thead class="bg-gray-100">
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-100">
                     <tr>
+<<<<<<< HEAD
                         <th>Tanggal</th>
                         <th>Kelas</th>
                         <th class="py-3 text-center">Hadir</th>
@@ -89,6 +90,15 @@
                         <th class="py-3 text-center">Sakit</th>
                         <th class="py-3 text-center">Alpa</th>
                         <th class="py-3 text-center">Action</th>
+=======
+                        <th class=" py-3 text-center">Tanggal</th>
+                        <th class="text-center">Kelas</th>
+                        <th class="text-center">Hadir</th>
+                        <th class="text-center">Izin</th>
+                        <th class="text-center">Sakit</th>
+                        <th class="text-center">Alpa</th>
+                        <th class="text-center">Action</th>
+>>>>>>> 28512ed4732bc7880b03e30c25e335f055d081bf
                     </tr>
                 </thead>
 

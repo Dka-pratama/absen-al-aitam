@@ -47,15 +47,7 @@
 
             <div class="mt-4 flex items-end gap-2 md:mt-0">
                 <button class="rounded bg-blue-600 px-4 py-2 text-white">Filter</button>
-                <a href="{{ route('wali.laporan.export') }}" class="rounded bg-gray-300 px-4 py-2 text-gray-800">
-                    Reset
-                </a>
-                <a
-                    href="{{ route('wali.laporan.export', request()->query()) }}"
-                    class="rounded bg-green-600 px-5 py-2 text-white"
-                >
-                    Export
-                </a>
+                <a href="{{ route('wali.laporan') }}" class="rounded bg-gray-300 px-4 py-2 text-gray-800">Reset</a>
             </div>
         </form>
 

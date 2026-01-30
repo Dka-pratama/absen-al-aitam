@@ -169,14 +169,10 @@ class AbsenController extends Controller
         if (!$request->lat || !$request->lng) {
             return back()->with('error', 'GPS tidak ditemukan.');
         }
-        $setting = \App\Models\PengaturanAbsensi::first();
-
-        if (!$setting) {
-            return back()->with('error', 'Lokasi belum di atur oleh admin');
-        }
-        $latSekolah = $setting->lat_sekolah;
-        $lngSekolah = $setting->lng_sekolah;
-        $radius = $setting->radius_meter;
+        // -6.9443854010929815, 107.58977839651386
+        $latSekolah = -6.9443854010929815;
+        $lngSekolah = 107.58977839651386;
+        $radius = 1000;
 
         $jarak = $this->hitungJarak($request->lat, $request->lng, $latSekolah, $lngSekolah);
 

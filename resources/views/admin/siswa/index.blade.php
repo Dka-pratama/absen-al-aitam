@@ -3,6 +3,7 @@
 @section('content')
     <div class="p-6">
         <div class="mb-4 flex items-center justify-between">
+        
             <form class="form relative">
                 <button class="absolute left-2 top-1/2 -translate-y-1/2 p-1">
                     <svg
@@ -42,37 +43,38 @@
                     </svg>
                 </button>
             </form>
-            <div class="flex items-center gap-3">
-                <a
-                    href="{{ route('siswa.import.export') }}"
-                    class="flex items-center rounded-lg bg-blue-600 px-4 py-2 text-white shadow hover:bg-blue-700"
-                >
-                    Import & Export Data Siswa
-                </a>
+    <div class="flex items-center gap-3">
+        <a
+            href="{{ route('siswa.import.export') }}"
+            class="flex items-center rounded-lg bg-blue-600 px-4 py-2 text-white shadow hover:bg-blue-700"
+        >
+            Import & Export Data Siswa
+        </a>
 
-                <a
-                    href="{{ route('akun-siswa.create') }}"
-                    class="flex items-center rounded-lg bg-green-600 px-4 py-2 text-white shadow hover:bg-green-700"
+        <a
+            href="{{ route('akun-siswa.create') }}"
+            class="flex items-center rounded-lg bg-green-600 px-4 py-2 text-white shadow hover:bg-green-700"
+        >
+        <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-circle-plus-icon lucide-circle-plus mr-2 text-white"
                 >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="lucide lucide-circle-plus-icon lucide-circle-plus mr-2 text-white"
-                    >
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="M8 12h8" />
-                        <path d="M12 8v8" />
-                    </svg>
-                    Tambah
-                </a>
-            </div>
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M8 12h8" />
+                    <path d="M12 8v8" />
+                </svg>
+            Tambah
+        </a>
+
+    </div>
         </div>
 
         {{-- TABLE --}}

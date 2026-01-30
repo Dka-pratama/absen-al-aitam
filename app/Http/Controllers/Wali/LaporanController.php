@@ -89,4 +89,147 @@ class LaporanController extends Controller
 
         return view('wali.laporan_detail', compact('Header', 'absensi', 'wali', 'tanggal', 'semester'));
     }
+    private function getRangeTanggal(Request $request)
+    {
+        if ($request->mode === 'bulan') {
+            $dari = $request->bulan . '-01';
+            $sampai = date('Y-m-t', strtotime($dari));
+        } else {
+            $dari = $request->tanggal_dari;
+            $sampai = $request->tanggal_sampai;
+        }
+
+        return [$dari, $sampai];
+    }
+
+    private function getRekap(Request $request, $kelasId)
+    {
+        [$dari, $sampai] = $this->getRangeTanggal($request);
+
+        return Absensi::select(
+                'siswa.id',
+                'users.name',
+                'siswa.NISN',
+                \DB::raw('SUM(status="hadir") as hadir'),
+                \DB::raw('SUM(status="izin") as izin'),
+                \DB::raw('SUM(status="sakit") as sakit'),
+                \DB::raw('SUM(status="alpa") as alpa'),
+                \DB::raw('COUNT(*) as total')
+            )
+            ->join('kelas_siswa', 'absensi.kelas_siswa_id', '=', 'kelas_siswa.id')
+            ->join('siswa', 'kelas_siswa.siswa_id', '=', 'siswa.id')
+            ->join('users', 'siswa.user_id', '=', 'users.id')
+            ->where('kelas_siswa.kelas_id', $kelasId)
+            ->whereBetween('tanggal', [$dari, $sampai])
+            ->groupBy('siswa.id', 'users.name', 'siswa.NISN')
+            ->orderBy('users.name')
+            ->get();
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $request->validate([
+            'mode' => 'required|in:bulan,minggu',
+        ]);
+
+        $wali = Auth::user()->waliKelas;
+        $kelas = $wali->kelas;
+
+        $rekap = $this->getRekap($request, $kelas->id);
+
+        return Excel::download(
+            new RekapAbsensiExport($rekap),
+            "Rekap-{$kelas->nama_kelas}.xlsx"
+        );
+    }
+
+    public function exportPDF(Request $request)
+    {
+        $request->validate([
+            'mode' => 'required|in:bulan,minggu',
+        ]);
+
+        $wali = Auth::user()->waliKelas;
+        $kelas = $wali->kelas;
+
+        $rekap = $this->getRekap($request, $kelas->id);
+        [$dari, $sampai] = $this->getRangeTanggal($request);
+
+        $pdf = Pdf::loadView('wali.laporan.export-pdf', [
+            'kelas' => $kelas,
+            'rekap' => $rekap,
+            'dari' => $dari,
+            'sampai' => $sampai,
+        ])->setPaper('a4', 'landscape');
+
+        return $pdf->download("Rekap-{$kelas->nama_kelas}.pdf");
+    }
+
+    public function exportRangeExcel(Request $request)
+{
+    $request->validate([
+        'mode' => 'required|in:bulan,minggu',
+    ]);
+
+    $semesterAktif = Semester::where('status', 'aktif')->first();
+
+    $wali = WaliKelas::where('user_id', auth()->id())
+    ->where('tahun_ajar_id', $semesterAktif->tahun_ajar_id)
+    ->first();
+
+    if (!$wali || !$wali->kelas) {
+        return redirect()
+            ->route('wali.laporan')
+            ->with('error', 'Akun wali belum terhubung dengan kelas.');
+    }
+    $kelas = $wali->kelas;
+
+    $rekap = $this->getRekap($request, $kelas->id);
+
+    return Excel::download(
+        new RekapAbsensiExport($rekap),
+        "Rekap-{$kelas->nama_kelas}.xlsx"
+    );
+}
+
+public function exportRangePDF(Request $request)
+{
+    $request->validate([
+        'mode' => 'required|in:bulan,minggu',
+    ]);
+
+    $semesterAktif = Semester::where('status', 'aktif')->first();
+
+    $wali = WaliKelas::where('user_id', auth()->id())
+    ->where('tahun_ajar_id', $semesterAktif->tahun_ajar_id)
+    ->first();
+
+    if (!$wali || !$wali->kelas) {
+        return redirect()
+            ->route('wali.laporan')
+            ->with('error', 'Akun wali belum terhubung dengan kelas.');
+    }
+
+    $kelas = $wali->kelas;
+
+    $rekap = $this->getRekap($request, $kelas->id);
+    [$dari, $sampai] = $this->getRangeTanggal($request);
+
+    $pdf = Pdf::loadView('wali.export-pdf', [
+        'kelas' => $kelas,
+        'rekap' => $rekap,
+        'dari' => $dari,
+        'sampai' => $sampai,
+    ])->setPaper('a4', 'landscape');
+
+    return $pdf->download("Rekap-{$kelas->nama_kelas}.pdf");
+}
+
+
+    public function exportPage()
+{
+    $Header = 'Export Laporan';
+    return view('wali.export', compact('Header'));
+}
+
 }

@@ -12,19 +12,23 @@ use Illuminate\View\View;
 
 class WaliCrud extends Controller
 {
-    public function index(): View
-    {
-        $Header = 'Data Wali Kelas';
+   public function index(): View
+{
+    $Header = 'Data Wali Kelas';
 
-        $walikelas = Wali::with(['user', 'kelas', 'tahunAjar'])
-            ->whereIn('id', function ($q) {
-                $q->selectRaw('MAX(id)')->from('wali_kelas')->groupBy('user_id');
-            })
-            ->orderByDesc('tahun_ajar_id')
-            ->paginate(15);
+    $walikelas = Wali::with(['user', 'kelas', 'tahunAjar'])
+        ->whereIn('id', function ($q) {
+            $q->selectRaw('MAX(id)')
+              ->from('wali_kelas')
+              ->groupBy('user_id');
+        })
+        ->orderByDesc('tahun_ajar_id')
+        ->paginate(15);
 
-        return view('admin.wali.index', compact('walikelas', 'Header'));
-    }
+    return view('admin.wali.index', compact('walikelas', 'Header'));
+}
+
+
 
     public function search(Request $r)
     {
@@ -127,6 +131,7 @@ class WaliCrud extends Controller
 
     public function edit($id)
     {
+        
         $tahunAjar = TahunAjar::all();
         $Header = 'Edit Wali Kelas';
         $wali = Wali::with(['user', 'tahunAjar'])->findOrFail($id);
@@ -135,52 +140,56 @@ class WaliCrud extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        $waliLama = Wali::findOrFail($id);
-        $user = User::findOrFail($waliLama->user_id);
+{
+    $waliLama = Wali::findOrFail($id);
+    $user = User::findOrFail($waliLama->user_id);
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
-            'email' => 'string|max:255',
-            'NUPTK' => 'required|string',
-            'kelas_id' => 'required',
-            'tahun_ajar_id' => 'required',
-        ]);
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+        'email' => 'string|max:255',
+        'NUPTK' => 'required|string',
+        'kelas_id' => 'required',
+        'tahun_ajar_id' => 'required',
+    ]);
+    
+    $cekNuptk = Wali::where('NUPTK', $request->NUPTK)
+    ->where('user_id', '!=', $user->id)
+    ->exists();
 
-        $cekNuptk = Wali::where('NUPTK', $request->NUPTK)->where('user_id', '!=', $user->id)->exists();
+if ($cekNuptk) {
+    return back()
+        ->withErrors(['NUPTK' => 'NUPTK sudah digunakan oleh wali lain'])
+        ->withInput();
+}
 
-        if ($cekNuptk) {
-            return back()
-                ->withErrors(['NUPTK' => 'NUPTK sudah digunakan oleh wali lain'])
-                ->withInput();
-        }
 
-        // update user
+    // update user
+    $user->update([
+        'name' => $request->name,
+        'username' => $request->username,
+        'email' => $request->email,
+    ]);
+
+    if ($request->password) {
         $user->update([
-            'name' => $request->name,
-            'username' => $request->username,
-            'email' => $request->email,
+            'password' => bcrypt($request->password),
         ]);
-
-        if ($request->password) {
-            $user->update([
-                'password' => bcrypt($request->password),
-            ]);
-        }
-        Wali::updateOrCreate(
-            [
-                'user_id' => $user->id,
-                'tahun_ajar_id' => $request->tahun_ajar_id,
-            ],
-            [
-                'NUPTK' => $request->NUPTK,
-                'kelas_id' => $request->kelas_id,
-            ],
-        );
-
-        return redirect()
-            ->route('akun-walikelas.index')
-            ->with('success', 'Wali kelas berhasil diperbarui untuk tahun ajar terpilih.');
     }
+    Wali::updateOrCreate(
+        [
+            'user_id' => $user->id,
+            'tahun_ajar_id' => $request->tahun_ajar_id,
+        ],
+        [
+            'NUPTK' => $request->NUPTK,
+            'kelas_id' => $request->kelas_id,
+        ]
+    );
+
+    return redirect()
+        ->route('akun-walikelas.index')
+        ->with('success', 'Wali kelas berhasil diperbarui untuk tahun ajar terpilih.');
+}
+
 }

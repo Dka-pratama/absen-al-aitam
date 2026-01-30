@@ -13,6 +13,7 @@
                 <label class="block text-sm text-gray-600">Username</label>
                 <p class="font-medium">{{ $user->username }}</p>
             </div>
+
             <div>
                 <label class="block text-sm text-gray-600">Email</label>
                 <p class="font-medium">{{ $user->email }}</p>

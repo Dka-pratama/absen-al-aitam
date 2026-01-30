@@ -61,11 +61,11 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->role === $role;
     }
-
+    
     public function sendPasswordResetNotification($token)
-    {
-        $this->notify(new ResetPasswordNotification($token));
-    }
+{
+    $this->notify(new ResetPasswordNotification($token));
+}
 
     public function hasVerifiedEmail()
     {

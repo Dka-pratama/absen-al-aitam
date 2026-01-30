@@ -14,13 +14,14 @@ class DashboardWaliController extends Controller
 {
     public function index()
     {
+        
         $Header = 'Dashboard';
         $user = Auth::user();
         $semesterAktif = Semester::where('status', 'aktif')->firstOrFail();
         $wali = WaliKelas::with('user', 'kelas', 'tahunAjar')
-            ->where('user_id', $user->id)
-            ->where('tahun_ajar_id', $semesterAktif->tahun_ajar_id)
-            ->firstOrFail();
+    ->where('user_id', $user->id)
+    ->where('tahun_ajar_id', $semesterAktif->tahun_ajar_id)
+    ->firstOrFail();
         if (!$wali) {
             return abort(403, 'Anda bukan wali kelas.');
         }
@@ -35,15 +36,16 @@ class DashboardWaliController extends Controller
 
         // --- Statistik hari ini ---
         $absensiHariIni = KelasSiswa::where('kelas_id', $kelas->id)
-            ->where('tahun_ajar_id', $tahunAjar->id)
-            ->with([
-                'absensi' => function ($q) use ($hariIni, $semesterAktif) {
-                    $q->whereDate('tanggal', $hariIni)->where('semester_id', $semesterAktif->id);
-                },
-            ])
-            ->get()
-            ->pluck('absensi')
-            ->flatten();
+    ->where('tahun_ajar_id', $tahunAjar->id)
+    ->with([
+        'absensi' => function ($q) use ($hariIni, $semesterAktif) {
+            $q->whereDate('tanggal', $hariIni)
+              ->where('semester_id', $semesterAktif->id);
+        },
+    ])
+    ->get()
+    ->pluck('absensi')
+    ->flatten();
 
         $hadir = $absensiHariIni->where('status', 'hadir')->count();
         $izin = $absensiHariIni->where('status', 'izin')->count();

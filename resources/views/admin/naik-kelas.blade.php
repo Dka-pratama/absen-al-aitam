@@ -12,6 +12,8 @@
                 </span>
             </p>
         </div>
+
+        {{-- CARD --}}
         <div class="rounded-xl border bg-white p-5 shadow-sm">
             {{-- PILIH TAHUN AJAR ASAL --}}
             <form method="GET" class="mb-4">

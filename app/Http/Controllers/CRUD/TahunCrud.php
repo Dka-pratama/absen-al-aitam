@@ -166,6 +166,7 @@ class TahunCrud extends Controller
 
         $tahunAjar = Tahun::findOrFail($id);
 
+        // Jika status aktif, nonaktifkan yang lain
         if ($request->status === 'Aktif') {
             Tahun::where('id', '!=', $id)
                 ->where('status', 'Aktif')

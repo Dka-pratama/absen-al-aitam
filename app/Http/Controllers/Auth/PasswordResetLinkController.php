@@ -28,28 +28,31 @@ class PasswordResetLinkController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'email' => ['required', 'email', 'exists:users,email'],
-        ]);
+{
+    $request->validate([
+        'email' => ['required', 'email', 'exists:users,email'],
+    ]);
 
-        $user = User::where('email', $request->email)->first();
+    $user = User::where('email', $request->email)->first();
 
-        // generate token manual
-        $token = Str::random(64);
+    // generate token manual
+    $token = Str::random(64);
 
-        // simpan token (sesuai Laravel 10+)
-        DB::table('password_reset_tokens')->updateOrInsert(
-            ['email' => $user->email],
-            [
-                'token' => bcrypt($token),
-                'created_at' => now(),
-            ],
-        );
+    // simpan token (sesuai Laravel 10+)
+    DB::table('password_reset_tokens')->updateOrInsert(
+        ['email' => $user->email],
+        [
+            'token' => bcrypt($token),
+            'created_at' => now(),
+        ]
+    );
 
-        // kirim email via Notification Laravel
-        $user->notify(new ResetPassword($token));
+    // kirim email via Notification Laravel
+    $user->notify(new ResetPassword($token));
 
-        return back()->with('success', '📧 Email reset password berhasil dikirim. Silakan cek inbox atau folder spam.');
-    }
+    return back()->with(
+        'success',
+        '📧 Email reset password berhasil dikirim. Silakan cek inbox atau folder spam.'
+    );
+}
 }

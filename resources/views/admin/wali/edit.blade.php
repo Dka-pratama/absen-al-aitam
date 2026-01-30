@@ -73,15 +73,18 @@
                 </div>
                 <div class="mb-4">
                     <label class="mb-1 block font-medium">Tahun Ajar</label>
-                    <p class="text-sm text-gray-500">Tahun ajar saat ini: {{ $wali->tahunAjar->tahun }}</p>
+                    <p class="text-sm text-gray-500">
+    Tahun ajar saat ini: {{ $wali->tahunAjar->tahun }}
+</p>
 
                     <select name="tahun_ajar_id" class="w-full rounded border p-2" required>
-                        @foreach ($tahunAjar as $t)
-                            <option value="{{ $t->id }}" {{ $wali->tahun_ajar_id == $t->id ? 'selected' : '' }}>
-                                {{ $t->tahun }}
-                            </option>
-                        @endforeach
-                    </select>
+    @foreach ($tahunAjar as $t)
+        <option value="{{ $t->id }}"
+            {{ $wali->tahun_ajar_id == $t->id ? 'selected' : '' }}>
+            {{ $t->tahun }}
+        </option>
+    @endforeach
+</select>
                 </div>
 
                 <button class="w-full rounded-lg bg-blue-600 p-2 text-white hover:bg-blue-700">Update</button>

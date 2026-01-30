@@ -17,17 +17,22 @@ class AbsenController extends Controller
     public function absen(Request $request)
     {
         try {
+
             $tahunAktif = TahunAjar::where('status', 'aktif')->first();
 
-            if (!$tahunAktif) {
-                return back()->with('error', 'Tahun ajar aktif belum disetting');
-            }
+if (!$tahunAktif) {
+    return back()->with('error', 'Tahun ajar aktif belum disetting');
+}
 
-            $semesterAktif = Semester::where('tahun_ajar_id', $tahunAktif->id)->where('status', 'aktif')->first();
 
-            if (!$semesterAktif) {
-                return back()->with('error', 'Semester aktif belum disetting');
-            }
+$semesterAktif = Semester::where('tahun_ajar_id', $tahunAktif->id)
+    ->where('status', 'aktif')
+    ->first();
+
+if (!$semesterAktif) {
+    return back()->with('error', 'Semester aktif belum disetting');
+}
+
 
             $token = $request->input('token');
 
@@ -134,28 +139,33 @@ class AbsenController extends Controller
         $user = auth()->user();
         $siswa = $user->siswa;
         if (!$siswa) {
-            return back()->with('error', 'Akun ini bukan akun siswa');
-        }
+    return back()->with('error', 'Akun ini bukan akun siswa');
+}
 
         $tahunAktif = TahunAjar::where('status', 'aktif')->first();
 
-        if (!$tahunAktif) {
-            return back()->with('error', 'Tahun ajar aktif belum disetting');
-        }
+if (!$tahunAktif) {
+    return back()->with('error', 'Tahun ajar aktif belum disetting');
+}
 
-        $semesterAktif = Semester::where('tahun_ajar_id', $tahunAktif->id)->where('status', 'aktif')->first();
 
-        if (!$semesterAktif) {
-            return back()->with('error', 'Semester aktif belum disetting');
-        }
+$semesterAktif = Semester::where('tahun_ajar_id', $tahunAktif->id)
+    ->where('status', 'aktif')
+    ->first();
+
+if (!$semesterAktif) {
+    return back()->with('error', 'Semester aktif belum disetting');
+}
+
 
         $kelasSiswa = KelasSiswa::where('siswa_id', $siswa->id)
-            ->where('tahun_ajar_id', $semesterAktif->tahun_ajar_id)
-            ->first();
+    ->where('tahun_ajar_id', $semesterAktif->tahun_ajar_id)
+    ->first();
 
-        if (!$kelasSiswa) {
-            return back()->with('error', 'Anda tidak terdaftar di kelas tahun ajar aktif');
-        }
+if (!$kelasSiswa) {
+    return back()->with('error', 'Anda tidak terdaftar di kelas tahun ajar aktif');
+}
+
 
         $kelasId = $kelasSiswa->kelas_id;
 
@@ -169,10 +179,16 @@ class AbsenController extends Controller
         if (!$request->lat || !$request->lng) {
             return back()->with('error', 'GPS tidak ditemukan.');
         }
-        // -6.9443854010929815, 107.58977839651386
-        $latSekolah = -6.9443854010929815;
-        $lngSekolah = 107.58977839651386;
-        $radius = 1000;
+        $setting = \App\Models\PengaturanAbsensi::first();
+
+        
+if (!$setting) {
+    return back()->with('error', 'Lokasi belum di atur oleh admin');
+}   
+        $latSekolah = $setting->lat_sekolah;
+        $lngSekolah = $setting->lng_sekolah;
+        $radius = $setting->radius_meter;
+        
 
         $jarak = $this->hitungJarak($request->lat, $request->lng, $latSekolah, $lngSekolah);
 

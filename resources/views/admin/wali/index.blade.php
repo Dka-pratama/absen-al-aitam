@@ -2,7 +2,9 @@
 
 @section('content')
     <div class="p-6">
+        {{-- SEARCH + BUTTON --}}
         <div class="mb-4 flex items-center justify-between">
+            {{-- Search --}}
 
             <form class="form relative">
                 <button class="absolute left-2 top-1/2 -translate-y-1/2 p-1">
@@ -43,6 +45,8 @@
                     </svg>
                 </button>
             </form>
+
+            {{-- Button Tambah --}}
             <a
                 href="{{ route('akun-walikelas.create') }}"
                 class="flex items-center rounded-lg bg-green-600 px-4 py-2 text-white shadow hover:bg-green-700"
@@ -67,6 +71,7 @@
             </a>
         </div>
 
+        {{-- TABLE --}}
         <div class="overflow-hidden rounded-xl border bg-white shadow">
             <table class="w-full text-sm">
                 <thead class="bg-gray-100">
